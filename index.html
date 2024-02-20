@@ -617,7 +617,7 @@
 
 
         // const select = document.querySelector('#select-event');
-        function select_event_by_value(event_value){
+        function selectEventByValue(event_value){
             const select = document.querySelector('#select-event');
             for(let i=0;i<select.options.length;i++){
                 const optionElement = select.options[i];
@@ -628,37 +628,48 @@
             }
         }
 
-        function select_photographer_by_value(photographer_value){
+        function selectPhotographerByValue(photographer_value){
             const select = document.querySelector('#select-photographer');
             for(let i=0;i<select.options.length;i++){
                 const optionElement = select.options[i];
-                if(optionElement.value==event_value){
+                if(optionElement.value==photographer_value){
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function select_date_by_value(date_value){
+        function selectDateByValue(date_value){
             const select = document.querySelector('#select-date');
             for(let i=0;i<select.options.length;i++){
                 const optionElement = select.options[i];
-                if(optionElement.value==event_value){
+                if(optionElement.value==date_value){
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function select_hour_by_value(hour_value){
+        function selectHourByValue(hour_value){
             const select = document.querySelector('#select-hour');
             for(let i=0;i<select.options.length;i++){
                 const optionElement = select.options[i];
-                if(optionElement.value==event_value){
+                if(optionElement.value==hour_value){
                     optionElement.selected = true;
                     break
                 }
             }
+        }
+
+        function updateQueryString(){
+            const queryString =location.search;
+            const params=new URLSearchParams(queryString)
+
+            params.append('gender',"male")
+            const newQueryString = params.toString();
+
+            history.pushState({}, '', `/index.html${newQueryString}`);
+
         }
 
 
@@ -702,21 +713,20 @@
                 var data = jsonResponse.data;
 
                 document.config.event=data['event']
-
-                select_event_by_value(document.config.event)
+                selectEventByValue(document.config.event)
                 
                 document.config.label=data['label']
                 updatePhotographer();
-                select_photographer_by_value(document.config.label)
+                selectPhotographerByValue(document.config.label)
                 
                 document.config.date=data['date']
-
-                select_date_by_value(document.config.date)
+                selectDateByValue(document.config.date)
 
                 document.config.hour=data['hour']
-                
                 listPhotos()
-                select_hour_by_value(document.config.hour)
+                selectHourByValue(document.config.hour)
+
+                updateQueryString()
             })
         }
 
