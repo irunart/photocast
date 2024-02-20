@@ -671,8 +671,9 @@
             const queryString =location.search;
             const params=new URLSearchParams(queryString)
             
-
+            params.clear()
             const selectEvent = document.querySelector('#select-event');
+            
             params.append('event',selectEvent.value)
             const selectLabel = document.querySelector('#select-photographer');
             params.append('label',selectLabel.value)
