@@ -671,7 +671,9 @@
             const queryString =location.search;
             const params=new URLSearchParams(queryString)
             
-            params.clear()
+            for (const pair of params) {
+                delete params.delete(pair[0]);
+            }
             const selectEvent = document.querySelector('#select-event');
             
             params.append('event',selectEvent.value)
