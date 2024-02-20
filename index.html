@@ -214,6 +214,7 @@
                 select.options[select.selectedIndex + 1].selected = true;
                 addPhotos(nextHour)
             }
+            updateQueryString()
         }
 
         function getNextHour(hourNow) {
@@ -561,6 +562,7 @@
             value = "" + value;
             document.config.hour = value.padStart(2, "0");
             listPhotos()
+            updateQueryString()
         }
 
         var selectDate = document.getElementById('select-date');
@@ -576,6 +578,7 @@
             document.config.date = parseInt(value);
             updateHour()
             listPhotos()
+            updateQueryString()
         }
 
         var selectPhotographer = document.getElementById('select-photographer');
@@ -594,6 +597,7 @@
             updatePhotographer();
             // updateDate()
             // updateHour()
+            updateQueryString()
         }
 
         var selectEvent = document.getElementById('select-event');
@@ -613,6 +617,7 @@
             // updatePhotographer();
             // updateDate()
             // updateHour()
+            updateQueryString()
         }
 
 
@@ -662,13 +667,24 @@
         }
 
         function updateQueryString(){
+
             const queryString =location.search;
             const params=new URLSearchParams(queryString)
+            
 
-            params.append('gender',"male")
+            const selectEvent = document.querySelector('#select-event');
+            params.append('event',selectEvent.value)
+            const selectLabel = document.querySelector('#select-photographer');
+            params.append('label',selectLabel.value)
+            const selectDate = document.querySelector('#select-date');
+            params.append('date',selectDate.value)
+            const selectHour = document.querySelector('#select-hour');
+            params.append('hour',selectHour.value)
+            
+            
             const newQueryString = params.toString();
 
-            history.pushState({}, '', `/index.html${newQueryString}`);
+            history.pushState({}, '', `/photocast/?${newQueryString}`);
 
         }
 
@@ -709,20 +725,43 @@
                     return response.json()
                 }
             ).then(function (jsonResponse) {
-                console.log(jsonResponse);
-                var data = jsonResponse.data;
+                document.config.event=jsonResponse.data['event']
+                document.config.label=jsonResponse.data['label']
+                document.config.date=jsonResponse.data['date']
+                document.config.hour=jsonResponse.data['hour']
 
-                document.config.event=data['event']
-                selectEventByValue(document.config.event)
+                const queryString =location.search;
+                const params=new URLSearchParams(queryString)
                 
-                document.config.label=data['label']
+                paramsEvent=params.get('event')
+                if (paramsEvent!=null){
+                    document.config.event=paramsEvent
+                }
+                paramsLabel=params.get('label')
+                if (paramsLabel!=null){
+                    document.config.label=paramsLabel
+                }
+                
+                
+
+
+                selectEventByValue(document.config.event)
                 updatePhotographer();
+
+                paramsDate=params.get('date')
+                if (paramsDate!=null){
+                    document.config.date=paramsDate
+                }
+                paramsHour=params.get('hour')
+                if (paramsHour!=null){
+                    document.config.hour=paramsHour
+                    
+                }
                 selectPhotographerByValue(document.config.label)
                 
-                document.config.date=data['date']
+                
                 selectDateByValue(document.config.date)
 
-                document.config.hour=data['hour']
                 listPhotos()
                 selectHourByValue(document.config.hour)
 
