@@ -250,6 +250,9 @@
 
             eventDateDic = document.eventDateDic[document.config.event]
 
+            if(eventDateDic==undefined){
+                eventDateDic={}
+            }
             photographers = document.photographers[document.config.label]
             for (const key in photographers["available_time"]) {
                 if (key in eventDateDic) {
