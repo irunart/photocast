@@ -69,12 +69,12 @@
                 <h4>PHOTO</h4>
                 <p>Long press / right click to save photo.</p>
                 <img src="" alt="">
-                <p>本網頁僅為HK100參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。 如有需要下載個人的完整圖片文件，或希望從本網頁移除，請聯絡協調人。
-                    電子郵件：wenjun.ruan@qq.com；或微信號：wenjun_ruan。
-                    The only purpose of Photocast is to provide platform and storage space for picture sharing among
-                    HK100 participants. Photocase might add, revmove or update the pictures from time to time. For any
-                    needs of downloading your pictures in full size, or taking down your picture from Photocast, please
-                    contact the coordinator by either email wenjun.ruan@qq.com or wechat ID wenjun_ruan.</p>
+                <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
+
+                    Photocast is a platform to provide storage of pictures for trail runners.
+                    Photocase might add, revmove or update the pictures from time to time.
+                    For donwloading original photo, or removing your pictures from Photocast, please
+                    contact us: hi@iest.run .</p>
             </div>
 
             <div class="modal-footer">
@@ -178,8 +178,8 @@
         // var urlListCurrent = 'https://storage.googleapis.com/photocast/config/current.json';
         var urlPhotographers = 'https://storage.googleapis.com/photocast/config/photographers.json';
         var urlEvents = 'https://storage.googleapis.com/photocast/config/events.json';
-        var urlEventDateRename='https://storage.googleapis.com/photocast/config/event_date_rename.json';
-        var urlDefault='https://storage.googleapis.com/photocast/config/defaults.json';
+        var urlEventDateRename = 'https://storage.googleapis.com/photocast/config/event_date_rename.json';
+        var urlDefault = 'https://storage.googleapis.com/photocast/config/defaults.json';
         function noCacheUrl(url) {
             var newUrl = url + '?' + Math.random();
             // console.log(newUrl);
@@ -248,7 +248,7 @@
             eventDate = []
 
 
-            eventDateDic=document.eventDateDic[document.config.event]
+            eventDateDic = document.eventDateDic[document.config.event]
 
             photographers = document.photographers[document.config.label]
             for (const key in photographers["available_time"]) {
@@ -507,7 +507,7 @@
                     select.appendChild(option);
                 }
                 document.config.event = Object.keys(data)[1]
-                console.log( document.config.event)
+                console.log(document.config.event)
                 listPhotographers()
             })
         }
@@ -551,7 +551,7 @@
         var selectHour = document.getElementById('select-hour');
         selectHour.addEventListener('change', selectHourChangeHandle);
 
-        function selectHourChangeHandle(){
+        function selectHourChangeHandle() {
             // 获取选中的选项
             var options = selectHour.options;
             var selectedOption = options[selectHour.selectedIndex];
@@ -565,8 +565,8 @@
         }
 
         var selectDate = document.getElementById('select-date');
-        selectDate.addEventListener('change',selectDateChangeHandle);
-        function selectDateChangeHandle(){
+        selectDate.addEventListener('change', selectDateChangeHandle);
+        function selectDateChangeHandle() {
             // 获取选中的选项
             var options = selectDate.options;
             var selectedOption = options[selectDate.selectedIndex];
@@ -583,7 +583,7 @@
         var selectPhotographer = document.getElementById('select-photographer');
         selectPhotographer.addEventListener('change', selectPhotographerChangeHandle);
 
-        function selectPhotographerChangeHandle(){
+        function selectPhotographerChangeHandle() {
             // 获取选中的选项
             var options = selectPhotographer.options;
             var selectedOption = options[selectPhotographer.selectedIndex];
@@ -600,9 +600,9 @@
         }
 
         var selectEvent = document.getElementById('select-event');
-        selectEvent.addEventListener('change',selectEventChangeHandle);
+        selectEvent.addEventListener('change', selectEventChangeHandle);
 
-        function selectEventChangeHandle(){
+        function selectEventChangeHandle() {
             // 获取选中的选项
             var options = selectEvent.options;
             var selectedOption = options[selectEvent.selectedIndex];
@@ -621,68 +621,68 @@
 
 
         // const select = document.querySelector('#select-event');
-        function selectEventByValue(event_value){
+        function selectEventByValue(event_value) {
             const select = document.querySelector('#select-event');
-            for(let i=0;i<select.options.length;i++){
+            for (let i = 0; i < select.options.length; i++) {
                 const optionElement = select.options[i];
-                if(optionElement.value==event_value){
+                if (optionElement.value == event_value) {
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function selectPhotographerByValue(photographer_value){
+        function selectPhotographerByValue(photographer_value) {
             const select = document.querySelector('#select-photographer');
-            for(let i=0;i<select.options.length;i++){
+            for (let i = 0; i < select.options.length; i++) {
                 const optionElement = select.options[i];
-                if(optionElement.value==photographer_value){
+                if (optionElement.value == photographer_value) {
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function selectDateByValue(date_value){
+        function selectDateByValue(date_value) {
             const select = document.querySelector('#select-date');
-            for(let i=0;i<select.options.length;i++){
+            for (let i = 0; i < select.options.length; i++) {
                 const optionElement = select.options[i];
-                if(optionElement.value==date_value){
+                if (optionElement.value == date_value) {
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function selectHourByValue(hour_value){
+        function selectHourByValue(hour_value) {
             const select = document.querySelector('#select-hour');
-            for(let i=0;i<select.options.length;i++){
+            for (let i = 0; i < select.options.length; i++) {
                 const optionElement = select.options[i];
-                if(optionElement.value==hour_value){
+                if (optionElement.value == hour_value) {
                     optionElement.selected = true;
                     break
                 }
             }
         }
 
-        function updateQueryString(){
+        function updateQueryString() {
 
-            const queryString =location.search;
-            const params=new URLSearchParams()
-            
-          
+            const queryString = location.search;
+            const params = new URLSearchParams()
+
+
 
             const selectEvent = document.querySelector('#select-event');
-            
-            params.append('event',selectEvent.value)
+
+            params.append('event', selectEvent.value)
             const selectLabel = document.querySelector('#select-photographer');
-            params.append('label',selectLabel.value)
+            params.append('label', selectLabel.value)
             const selectDate = document.querySelector('#select-date');
-            params.append('date',selectDate.value)
+            params.append('date', selectDate.value)
             const selectHour = document.querySelector('#select-hour');
-            params.append('hour',selectHour.value)
-            
-            
+            params.append('hour', selectHour.value)
+
+
             const newQueryString = params.toString();
 
             history.pushState({}, '', `/photocast/?${newQueryString}`);
@@ -696,11 +696,12 @@
 
         (function () {
             document.config = {
-                event:"",
-                label:"",
-                data:"",
-                hour:""};
-            
+                event: "",
+                label: "",
+                data: "",
+                hour: ""
+            };
+
 
             // listPhotographers();
             eventDateRename();
@@ -708,7 +709,7 @@
             setTimeout(loadDefault, 1000);
         })();
 
-        function eventDateRename(){
+        function eventDateRename() {
             // urlEventDateRename
             fetch(noCacheUrl(urlEventDateRename)).then(
                 function (response) {
@@ -717,51 +718,51 @@
             ).then(function (jsonResponse) {
                 console.log(jsonResponse);
                 var data = jsonResponse.data;
-                document.eventDateDic=data
+                document.eventDateDic = data
             })
         }
-        function loadDefault(){
+        function loadDefault() {
             fetch(noCacheUrl(urlDefault)).then(
                 function (response) {
                     return response.json()
                 }
             ).then(function (jsonResponse) {
                 // alert(123)
-                document.config.event=jsonResponse.data['event']
-                document.config.label=jsonResponse.data['label']
-                document.config.date=jsonResponse.data['date']
-                document.config.hour=jsonResponse.data['hour']
+                document.config.event = jsonResponse.data['event']
+                document.config.label = jsonResponse.data['label']
+                document.config.date = jsonResponse.data['date']
+                document.config.hour = jsonResponse.data['hour']
 
-                const queryString =location.search;
-                const params=new URLSearchParams(queryString)
-                
-                paramsEvent=params.get('event')
-                if (paramsEvent!=null){
-                    document.config.event=paramsEvent
+                const queryString = location.search;
+                const params = new URLSearchParams(queryString)
+
+                paramsEvent = params.get('event')
+                if (paramsEvent != null) {
+                    document.config.event = paramsEvent
                 }
                 updateEvent()
                 selectEventByValue(document.config.event)
-                setTimeout(chooseParams,1000)
+                setTimeout(chooseParams, 1000)
             })
         }
 
-        function chooseParams(){
-            const queryString =location.search;
-            const params=new URLSearchParams(queryString)
-            paramsLabel=params.get('label')
-            if (paramsLabel!=null){
-                document.config.label=paramsLabel
+        function chooseParams() {
+            const queryString = location.search;
+            const params = new URLSearchParams(queryString)
+            paramsLabel = params.get('label')
+            if (paramsLabel != null) {
+                document.config.label = paramsLabel
             }
-            
-            paramsDate=params.get('date')
-            if (paramsDate!=null){
-                document.config.date=paramsDate
+
+            paramsDate = params.get('date')
+            if (paramsDate != null) {
+                document.config.date = paramsDate
             }
-            
-            paramsHour=params.get('hour')
-            if (paramsHour!=null){
-                document.config.hour=paramsHour
-                
+
+            paramsHour = params.get('hour')
+            if (paramsHour != null) {
+                document.config.hour = paramsHour
+
             }
             selectPhotographerByValue(document.config.label)
             selectDateByValue(document.config.date)
