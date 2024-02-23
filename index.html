@@ -182,11 +182,10 @@
         var urlDefault = 'https://storage.googleapis.com/photocast/config/defaults.json';
         function noCacheUrl(url) {
             var newUrl = url + '?' + Math.random();
-            // console.log(newUrl);
             return newUrl;
         }
         // 使用 `lodash` 中的 `throttle` 函数来限制 `handleInfiniteScroll` 函数的执行频率
-        const handleInfiniteScroll = _.throttle(checkBottom, 1000);
+        const handleInfiniteScroll = _.throttle(checkBottom, 2000);
 
         window.addEventListener("scroll", handleInfiniteScroll);
 
@@ -214,7 +213,6 @@
                 select.options[select.selectedIndex + 1].selected = true;
                 addPhotos(nextHour)
             }
-            // updateQueryString()
         }
 
         function getNextHour(hourNow) {
@@ -229,24 +227,24 @@
         }
 
 
-        function updateEvent() {
+        function updateEvent(autoSelect) {
             console.log(document.config.event)
-            listPhotographers()
+            
         }
 
-        function updatePhotographer() {
-            console.log("label", document.config.label);
+        function updatePhotographer(autoSelect) {
             var p = document.photographers[document.config.label];
             console.log(document.photographers);
             console.log(document.config.label)
             document.getElementById('photographer-name').innerText = p['name']
             document.getElementById('photographer-location').innerText = p['location']
             document.getElementById('photographer-event').innerText = p['event']
-            updateDate()
+            
+            updateDate(autoSelect)
+            
         }
-        function updateDate() {
+        function updateDate(autoSelect) {
             eventDate = []
-
 
             eventDateDic = document.eventDateDic[document.config.event]
 
@@ -274,24 +272,30 @@
                 select.appendChild(option);
             }
 
+            if (autoSelect){
+                document.config.date = select.options[0].value
+            }
+            
 
-            document.config.date = select.options[0].value
-            updateHour()
+            selectDateByValue(document.config.date)
+            updateHour(autoSelect)
 
         }
 
-        function updateHour() {
+        function updateHour(autoSelect) {
             label = document.config.label
             date = document.config.date
             const select = document.querySelector('#select-hour');
             select.options.length = 0;
             data = document.photographers[label]
             hours = data["available_time"][date]
-            console.log(date)
-            if (hours.length != 0) {
-                hour = hours[0]
-                document.config.hour = hour
-                listPhotos()
+            if(autoSelect){
+                if (hours.length != 0) {
+                    
+                    hour = hours[0]
+                    document.config.hour = hour
+                    listPhotos(true)
+            }
             } else {
                 clearPhotos()
             }
@@ -303,7 +307,8 @@
                 option.text = hour_text;
                 select.appendChild(option);
             }
-            console.log("hours", hours)
+
+            selectHourByValue(document.config.hour)
 
         }
 
@@ -357,7 +362,11 @@
 
             }
         }
-        function listPhotos() {
+        function listPhotos(autoSelect) {
+            if(autoSelect){
+                updateQueryString()
+            }
+
             M.toast({
                 html: `Refreshing...`,
                 classes: 'yellow darken-3',
@@ -383,7 +392,6 @@
                     }
                 }
             ).then(function (jsonResponse) {
-                // console.log(jsonResponse);
                 var container = document.getElementById('photo-container');
                 container.innerHTML = '';
 
@@ -418,6 +426,8 @@
         }
 
         function addPhotos(hour) {
+
+            updateQueryString()
             var label = document.config.label;
             var date = document.config.date;
             // var hour = document.config.hour;
@@ -436,7 +446,6 @@
                     }
                 }
             ).then(function (jsonResponse) {
-                // console.log(jsonResponse);
                 var container = document.getElementById('photo-container');
                 // container.innerHTML = '';
                 var template = document.getElementById('photo-template');
@@ -469,7 +478,6 @@
             photographer = document.photographers[label]
             if (hour != undefined) {
 
-                // console.log(photographers)
                 return photographer['stats'][date][hour]
             } else if (date != undefined) {
                 count = 0
@@ -490,65 +498,98 @@
         }
 
 
-        function listEvents() {
-            fetch(noCacheUrl(urlEvents)).then(
-                function (response) {
-                    return response.json()
+        function listEvents(autoSelect) {
+
+
+            return new Promise(
+                (resolve,reject)=>{
+
+                    fetch(noCacheUrl(urlEvents)).then(
+                        function (response) {
+                            return response.json()
+                        }
+                    ).then(function (jsonResponse) {
+                        var data = jsonResponse.data;
+                        console.log(data);
+                        const select = document.querySelector('#select-event');
+                        select.options.length = 0;
+                        for (const event in data) {
+                            // document.events[event] = data[event];
+                            const option = document.createElement('option');
+                            option.value = event;
+                            option.text = event;
+                            select.appendChild(option);
+                        }
+                        document.config.event = Object.keys(data)[0]
+                        
+                        if(autoSelect){
+                            listPhotographers(true)
+                        }
+                        resolve("success")
+                        
+                    })
+
                 }
-            ).then(function (jsonResponse) {
-                var data = jsonResponse.data;
-                console.log(data);
-                const select = document.querySelector('#select-event');
-                select.options.length = 0;
-                for (const event in data) {
-                    console.log(event);
-                    // document.events[event] = data[event];
-                    // console.log(document.events[event])
-                    const option = document.createElement('option');
-                    option.value = event;
-                    option.text = event;
-                    select.appendChild(option);
-                }
-                document.config.event = Object.keys(data)[1]
-                console.log(document.config.event)
-                listPhotographers()
-            })
+            )
+            
         }
 
 
-        function listPhotographers() {
-            fetch(noCacheUrl(urlPhotographers)).then(
-                function (response) {
-                    return response.json()
-                }
-            ).then(function (jsonResponse) {
-                console.log(jsonResponse);
-                var data = jsonResponse.data;
-                document.photographers = {}
+        function listPhotographers(autoSelect) {
 
-                const select = document.querySelector('#select-photographer');
-                select.options.length = 0;
-                labelDefault = ''
-                for (var i = 0; i < data.length; i++) {
-                    var event = data[i]['data']['event'];
-                    if (event == document.config.event) {
-                        var label = data[i]['data']['label'];
-                        if (labelDefault == '') labelDefault = label
-                        var name = data[i]['data']['name'];
-                        document.photographers[label] = data[i]['data'];
-                        console.log(event)
-                        var location = data[i]['data']['location'];
-                        const option = document.createElement('option');
-                        option.value = label;
-                        amount = CountPhotoAmount(label)
-                        option.text = name + "(" + amount + "张)";
-                        select.appendChild(option);
-                    }
+
+
+            return new Promise(
+                (resolve,reject)=>{
+                    fetch(noCacheUrl(urlPhotographers)).then(
+                        function (response) {
+                            return response.json()
+                        }
+                    ).then(function (jsonResponse) {
+                        var data = jsonResponse.data;
+                        document.photographers = {}
+
+                        const select = document.querySelector('#select-photographer');
+                        select.options.length = 0;
+                        labelDefault = ''
+                        for (var i = 0; i < data.length; i++) {
+                            var event = data[i]['data']['event'];
+                            if (event == document.config.event) {
+                                var label = data[i]['data']['label'];
+                                if (labelDefault == '') labelDefault = label
+                                var name = data[i]['data']['name'];
+                                document.photographers[label] = data[i]['data'];
+                                var location = data[i]['data']['location'];
+                                const option = document.createElement('option');
+                                option.value = label;
+                                amount = CountPhotoAmount(label)
+                                option.text = name + "(" + amount + "张)";
+                                select.appendChild(option);
+                            }
+
+                        }
+                        if (autoSelect){
+                            document.config.label = labelDefault
+                        }else{
+                            selectEventByValue(document.config.event)
+                            selectPhotographerByValue(document.config.label)
+                        }
+                        updatePhotographer(autoSelect)
+                        
+                        resolve('success')
+                        
+                        
+                    })
+
+
+
 
                 }
-                document.config.label = labelDefault
-                updatePhotographer()
-            })
+
+
+
+            )
+            
         }
         // 绑定 change 事件
         var selectHour = document.getElementById('select-hour');
@@ -563,7 +604,7 @@
             var value = selectedOption.value;
             value = "" + value;
             document.config.hour = value.padStart(2, "0");
-            listPhotos()
+            listPhotos(true)
             // updateQueryString()
         }
 
@@ -578,8 +619,8 @@
             label = document.config.label
             var value = selectedOption.value;
             document.config.date = parseInt(value);
-            updateHour()
-            listPhotos()
+            updateHour(true)
+            // listPhotos()
             // updateQueryString()
         }
 
@@ -591,12 +632,9 @@
             var options = selectPhotographer.options;
             var selectedOption = options[selectPhotographer.selectedIndex];
 
-            // 获取选中的值
-
             var value = selectedOption.value;
-            console.log(value)
             document.config.label = value
-            updatePhotographer();
+            updatePhotographer(true);
             // updateDate()
             // updateHour()
             // updateQueryString()
@@ -613,9 +651,8 @@
             // 获取选中的值
 
             var value = selectedOption.value;
-            console.log(value)
             document.config.event = value
-            updateEvent();
+            listPhotographers(true)
             // updatePhotographer();
             // updateDate()
             // updateHour()
@@ -693,89 +730,77 @@
 
         }
 
-        window.onblur = () => {
-            updateQueryString()// 焦点离开页面时执行的代码
-        };
+        // window.onblur = () => {
+        //     updateQueryString()// 焦点离开页面时执行的代码
+        // };
 
         (function () {
             document.config = {
                 event: "",
                 label: "",
-                data: "",
+                date: "",
                 hour: ""
             };
-
-
-            // listPhotographers();
-            eventDateRename();
-            listEvents();
-            setTimeout(loadDefault, 1000);
+            const queryString = location.search;
+            const params = new URLSearchParams(queryString)
+            eventDateRename().then(listEvents(false)).then(loadDefault(params));
         })();
 
         function eventDateRename() {
-            // urlEventDateRename
-            fetch(noCacheUrl(urlEventDateRename)).then(
-                function (response) {
-                    return response.json()
+
+            return new Promise(
+                (resolve,reject)=>{
+                    // urlEventDateRename
+                fetch(noCacheUrl(urlEventDateRename)).then(
+                    function (response) {
+                        return response.json()
+                    }
+                ).then(function (jsonResponse) {
+                    var data = jsonResponse.data;
+                    document.eventDateDic = data
+                    resolve("success")
+                })
+
                 }
-            ).then(function (jsonResponse) {
-                console.log(jsonResponse);
-                var data = jsonResponse.data;
-                document.eventDateDic = data
-            })
+            )
+            
         }
-        function loadDefault() {
+        function loadDefault(params) {
             fetch(noCacheUrl(urlDefault)).then(
                 function (response) {
                     return response.json()
                 }
             ).then(function (jsonResponse) {
-                // alert(123)
                 document.config.event = jsonResponse.data['event']
                 document.config.label = jsonResponse.data['label']
                 document.config.date = jsonResponse.data['date']
                 document.config.hour = jsonResponse.data['hour']
 
-                const queryString = location.search;
-                const params = new URLSearchParams(queryString)
-
                 paramsEvent = params.get('event')
                 if (paramsEvent != null) {
                     document.config.event = paramsEvent
                 }
-                updateEvent()
-                selectEventByValue(document.config.event)
-                setTimeout(chooseParams, 1000)
+
+                paramsLabel = params.get('label')
+                if (paramsLabel != null) {
+                    document.config.label = paramsLabel
+                }
+
+                paramsDate = params.get('date')
+                if (paramsDate != null) {
+                    document.config.date = paramsDate
+                }
+
+                paramsHour = params.get('hour')
+                if (paramsHour != null) {
+                    document.config.hour = paramsHour
+                }
+                
+                
+                console.log(document.config)
+                listPhotographers(false).then(listPhotos(false))
+                
             })
-        }
-
-        function chooseParams() {
-            const queryString = location.search;
-            const params = new URLSearchParams(queryString)
-            paramsLabel = params.get('label')
-            if (paramsLabel != null) {
-                document.config.label = paramsLabel
-            }
-
-            paramsDate = params.get('date')
-            if (paramsDate != null) {
-                document.config.date = paramsDate
-            }
-
-            paramsHour = params.get('hour')
-            if (paramsHour != null) {
-                document.config.hour = paramsHour
-
-            }
-            selectPhotographerByValue(document.config.label)
-            selectDateByValue(document.config.date)
-
-            // console.log(112244,document.config)
-            // console.log()
-            listPhotos()
-            selectHourByValue(document.config.hour)
-
-            // updateQueryString()
         }
 
     </script>
