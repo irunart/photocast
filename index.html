@@ -176,6 +176,7 @@
         var urlPhotographers = 'https://storage.googleapis.com/photocast/config/photographers.json';
         var urlEvents = 'https://storage.googleapis.com/photocast/config/events.json';
         var urlEventDateRename = 'https://storage.googleapis.com/photocast/config/event_date_rename.json';
+        var urlEventDetail = 'https://storage.googleapis.com/photocast/config/event_detail.json';
         var urlDefault = 'https://storage.googleapis.com/photocast/config/defaults.json';
         function noCacheUrl(url) {
             var newUrl = url + '?' + Math.random();
@@ -510,8 +511,8 @@
                         const select = document.querySelector('#select-event');
                         select.options.length = 0;
                         for (const event in data) {
-                            // document.events[event] = data[event];
                             const option = document.createElement('option');
+                            option.setAttribute("data-icon",document.events[event]['event_icon_url'])
                             option.value = event;
                             option.text = event;
                             select.appendChild(option);
@@ -557,6 +558,7 @@
                                 var name = data[i]['data']['name'];
                                 var location = data[i]['data']['location'];
                                 const option = document.createElement('option');
+                                option.setAttribute("data-icon",data[i]['photographer_icon_url'])
                                 option.value = label;
                                 amount = CountPhotoAmount(label)
                                 option.text = name + "(" + amount + "张)";
@@ -716,10 +718,10 @@
             e.preventDefault();
             alert(`本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
 
-Photocast is a platform to provide storage of pictures for trail runners.
-Photocase might add, revmove or update the pictures from time to time.
-For donwloading original photo, or removing your pictures from Photocast, please
-contact us: hi@iest.run`)
+            Photocast is a platform to provide storage of pictures for trail runners.
+            Photocase might add, revmove or update the pictures from time to time.
+            For donwloading original photo, or removing your pictures from Photocast, please
+            contact us: hi@iest.run`)
         }
 
         // window.onblur = () => {
@@ -735,14 +737,14 @@ contact us: hi@iest.run`)
             };
             const queryString = location.search;
             const params = new URLSearchParams(queryString)
-            eventDateRename().then(listEvents(false)).then(loadDefault(params));
+            Promise.all([eventDateRename(), loadEventInfo()])
+            .then(listEvents(false)).then(loadDefault(params));
         })();
 
         function eventDateRename() {
 
             return new Promise(
                 (resolve,reject)=>{
-                    // urlEventDateRename
                 fetch(noCacheUrl(urlEventDateRename)).then(
                     function (response) {
                         return response.json()
@@ -755,7 +757,27 @@ contact us: hi@iest.run`)
                 }
             )
         }
+
+        function loadEventInfo(){
+
+            return new Promise(
+                (resolve,reject)=>{
+                fetch(noCacheUrl(urlEventDetail)).then(
+                    function (response) {
+                        return response.json()
+                    }
+                ).then(function (jsonResponse) {
+                    var data = jsonResponse.data;
+                    document.events = data
+                    console.log(data)
+                    resolve("success")
+                })
+                }
+            )
+
+        }
         function loadDefault(params) {
+            
             fetch(noCacheUrl(urlDefault)).then(
                 function (response) {
                     return response.json()
