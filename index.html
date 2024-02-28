@@ -232,7 +232,7 @@
                 select.options[select.selectedIndex + 1].selected = true;
                 $('select').formSelect();
                 var div = document.getElementById('footer');
-                div.innerHTML = "loading next hour..."
+                div.innerHTML = "Loading next hour..."
                 addPhotos(nextHour)
             }
         }
@@ -249,15 +249,11 @@
         }
 
 
-        function updateEvent(autoSelect) {
-            console.log(document.config.event)
-            
-        }
 
         function updatePhotographer(autoSelect) {
             var p = document.photographers[document.config.label];
-            console.log(document.photographers);
-            console.log(document.config.label)
+            console.log('photographers',document.photographers);
+            console.log('label',document.config.label)
             document.getElementById('photographer-name').innerText = p['name']
             document.getElementById('photographer-location').innerText = p['location']
             document.getElementById('photographer-event').innerText = p['event']
@@ -388,7 +384,6 @@
             var division_template = document.getElementById('division-template');
             var division = division_template.cloneNode(true);
             var division_hour = division.getElementsByTagName('p');
-            console.log(hour)
             division_hour[0].innerHTML=hour+":00"
             container.appendChild(division);
         }
@@ -412,7 +407,6 @@
             var date = document.config.date;
             var hour = document.config.hour;
             var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
-            console.log(urlListCurrent);
             fetch(noCacheUrl(urlListCurrent)).then(
                 function (response) {
                     if (response.status == 200) {
@@ -427,21 +421,9 @@
                 }
             ).then(function (jsonResponse) {
                 var container = document.getElementById('photo-container');
-                // container.appendChild(photo);
-
-                
-
-                
-
-
-
                 container.innerHTML = '';
-                
-
                 var data = jsonResponse.data;
                 data.sort(sortByTime);
-
-                console.log(data)
                 addDivision(document.config.hour);
                 for (var i = 0; i < data.length; i++) {
                     var path = data[i]['name'];
@@ -475,7 +457,6 @@
             var date = document.config.date;
             // var hour = document.config.hour;
             var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
-            console.log(urlListCurrent);
             fetch(noCacheUrl(urlListCurrent)).then(
                 function (response) {
                     if (response.status == 200) {
@@ -554,7 +535,6 @@
                         }
                     ).then(function (jsonResponse) {
                         var data = jsonResponse.data;
-                        console.log(data);
                         const select = document.querySelector('#select-event');
                         select.options.length = 0;
                         for (const event in data) {
@@ -819,7 +799,6 @@
                 ).then(function (jsonResponse) {
                     var data = jsonResponse.data;
                     document.events = data
-                    console.log(data)
                     resolve("success")
                 })
                 }
@@ -857,7 +836,7 @@
                 if (paramsHour != null) {
                     document.config.hour = paramsHour
                 }
-                console.log(document.config)
+                console.log('document.config',document.config)
                 listPhotographers(false).then(listPhotos(false))
             })
         }
