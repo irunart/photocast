@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"> </script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> -->
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -19,6 +19,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+
 
     <meta property="og:image" content="https://iest.run/IEST-flag.jpg" />
     <meta property="og:title" content="耐力學社 Institute of Endurance Science and Technology" />
@@ -108,17 +109,17 @@
         <hr>
 
         <div id="date" class="row">
-            <div class="col-md-2">
+            <div class="s12 m2 l2 input-field">
                 <div>Select event below:</div>
-                <select class="form-control" id="select-event">
+                <select id="select-event">
                 </select>
             </div>
         </div>
 
         <div id="date" class="row">
-            <div class="col-md-2">
+            <div class="s12 m2 l2 input-field">
                 <div>Select photographer below:</div>
-                <select class="form-control" id="select-photographer">
+                <select id="select-photographer">
                 </select>
             </div>
         </div>
@@ -133,17 +134,17 @@
         </div>
 
         <div id="date" class="row">
-            <div class="col-md-2">
+            <div class="s12 m2 l2 input-field">
                 <div>Select date below:</div>
-                <select class="form-control" id="select-date">
+                <select id="select-date">
                 </select>
             </div>
         </div>
 
         <div id="hours" class="row">
-            <div class="col-md-2">
+            <div class="s12 m2 l2 input-field">
                 <div>Select hour below:</div>
-                <select class="form-control" id="select-hour">
+                <select  id="select-hour">
                 </select>
             </div>
         </div>
@@ -160,12 +161,12 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
 
-        // 初始化Modal
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('.modal');
-            var instances = M.Modal.init(elems, null);
+        $(document).ready(function(){
+            $('select').formSelect();
         });
 
         // 返回顶部
@@ -211,6 +212,7 @@
             } else {
                 const select = document.getElementById('select-hour');
                 select.options[select.selectedIndex + 1].selected = true;
+                $('select').formSelect();
                 addPhotos(nextHour)
             }
         }
@@ -647,6 +649,7 @@
                 const optionElement = select.options[i];
                 if (optionElement.value == event_value) {
                     optionElement.selected = true;
+                    $('select').formSelect();
                     break
                 }
             }
@@ -658,6 +661,7 @@
                 const optionElement = select.options[i];
                 if (optionElement.value == photographer_value) {
                     optionElement.selected = true;
+                    $('select').formSelect();
                     break
                 }
             }
@@ -669,6 +673,7 @@
                 const optionElement = select.options[i];
                 if (optionElement.value == date_value) {
                     optionElement.selected = true;
+                    $('select').formSelect();
                     break
                 }
             }
@@ -680,6 +685,7 @@
                 const optionElement = select.options[i];
                 if (optionElement.value == hour_value) {
                     optionElement.selected = true;
+                    $('select').formSelect();
                     break
                 }
             }
