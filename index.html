@@ -44,6 +44,12 @@
             display: none;
         }
 
+
+        #division-template{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
     </style>
 
 </head>
@@ -298,7 +304,6 @@
             const select = document.querySelector('#select-hour');
             select.options.length = 0;
             data = document.photographers[label]
-            console.log(data["available_time"],date)
             hours = data["available_time"][date]
             if(autoSelect){
                 if (hours.length != 0) {
@@ -762,7 +767,7 @@
         //     updateQueryString()// 焦点离开页面时执行的代码
         // };
 
-        (function () {
+        (async function () {
             document.config = {
                 event: "",
                 label: "",
@@ -772,7 +777,10 @@
             const queryString = location.search;
             const params = new URLSearchParams(queryString)
             // Promise.all([eventDateRename(), loadEventInfo()])
-            loadEventInfo().then(eventDateRename()).then(listEvents(false)).then(loadDefault(params));
+            await Promise.all([eventDateRename(), loadEventInfo()]);
+            await listEvents(false);
+            await loadDefault(params)
+            // loadEventInfo().then(eventDateRename()).then(listEvents(false)).then(loadDefault(params));
         })();
 
         function eventDateRename() {
