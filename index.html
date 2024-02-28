@@ -701,11 +701,13 @@
             const selectHour = document.querySelector('#select-hour');
             params.append('hour', selectHour.value)
 
-
             const newQueryString = params.toString();
-
-            history.pushState({}, '', `/photocast/?${newQueryString}`);
-            // history.pushState({}, '', `index.html?${newQueryString}`);
+            if (location.host=="127.0.0.1:5500"){
+                history.pushState({}, '', `index.html?${newQueryString}`);
+            }else{
+                history.pushState({}, '', `/photocast/?${newQueryString}`);
+            }
+            
 
         }
 
