@@ -86,9 +86,9 @@
             <div class="col s4 m3 l2" id="photo-template">
                 <div class="card">
                     <div class=" card-body">
-                        <p class="card-text">
+                        <!-- <p class="card-text">
                             card text
-                        </p>
+                        </p> -->
                         <a class="modal-trigger" href="#modal1">
                             <img src="{{photo.url}}" alt="" loading="lazy" class="card-photo">
                         </a>
@@ -98,7 +98,20 @@
             </div>
         </templates>
 
-        <hr>
+        <templates>
+
+
+            <div id="division-template">
+
+                <p id="division-hour"></p>
+                <hr>
+
+            </div>
+
+
+        </templates>
+
+
 
         <div id="date" class="row">
             <div class="s12 m2 l2 input-field">
@@ -140,8 +153,6 @@
                 </select>
             </div>
         </div>
-
-        <hr>
 
         <div class="row" id="photo-container">
         </div>
@@ -287,6 +298,7 @@
             const select = document.querySelector('#select-hour');
             select.options.length = 0;
             data = document.photographers[label]
+            console.log(data["available_time"],date)
             hours = data["available_time"][date]
             if(autoSelect){
                 if (hours.length != 0) {
@@ -332,15 +344,16 @@
             container.innerHTML = '';
         }
 
-        var template = document.getElementById('photo-template');
+        
         function addPhoto_element(path, time, thumbnailUrl, originalUrl) {
-            var photo = template.cloneNode(true);
+            var photo_template = document.getElementById('photo-template');
+            var photo = photo_template.cloneNode(true);
             var img = photo.getElementsByTagName('img');
             img[0].src = thumbnailUrl;
             img[0].setAttribute("data-src", originalUrl);
 
-            var p = photo.getElementsByTagName('p');
-            p[0].innerText = time;
+            // var p = photo.getElementsByTagName('p');
+            // p[0].innerText = time;
             return photo;
 
         }
@@ -359,6 +372,19 @@
 
             }
         }
+        function addDivision(hour){
+            var container = document.getElementById('photo-container');
+            var division_template = document.getElementById('division-template');
+            var division = division_template.cloneNode(true);
+            var division_hour = division.getElementsByTagName('p');
+            console.log(hour)
+            division_hour[0].innerHTML=hour+":00"
+            container.appendChild(division);
+        }
+
+
+
+
         function listPhotos(autoSelect) {
             if(autoSelect){
                 updateQueryString()
@@ -390,13 +416,22 @@
                 }
             ).then(function (jsonResponse) {
                 var container = document.getElementById('photo-container');
+                // container.appendChild(photo);
+
+                
+
+                
+
+
+
                 container.innerHTML = '';
+                
 
                 var data = jsonResponse.data;
                 data.sort(sortByTime);
 
                 console.log(data)
-
+                addDivision(document.config.hour);
                 for (var i = 0; i < data.length; i++) {
                     var path = data[i]['name'];
                     var time = data[i]['time'];
@@ -445,9 +480,9 @@
             ).then(function (jsonResponse) {
                 var container = document.getElementById('photo-container');
                 // container.innerHTML = '';
-                var template = document.getElementById('photo-template');
                 var data = jsonResponse.data;
                 data.sort(sortByTime);
+                addDivision(hour);
                 for (var i = 0; i < data.length; i++) {
                     var path = data[i]['name'];
                     var time = data[i]['time'];
@@ -457,7 +492,6 @@
                     container.appendChild(photo);
                 }
                 PhotoAddEventListener()
-                // template.remove();
             }).catch(function () {
                 (err) => {
                     var container = document.getElementById('photo-container');
@@ -737,8 +771,8 @@
             };
             const queryString = location.search;
             const params = new URLSearchParams(queryString)
-            Promise.all([eventDateRename(), loadEventInfo()])
-            .then(listEvents(false)).then(loadDefault(params));
+            // Promise.all([eventDateRename(), loadEventInfo()])
+            loadEventInfo().then(eventDateRename()).then(listEvents(false)).then(loadDefault(params));
         })();
 
         function eventDateRename() {
