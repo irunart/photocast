@@ -554,11 +554,11 @@
                         labelDefault = ''
                         for (var i = 0; i < data.length; i++) {
                             var event = data[i]['data']['event'];
+                            var label = data[i]['data']['label'];
+                            document.photographers[label] = data[i]['data'];
                             if (event == document.config.event) {
-                                var label = data[i]['data']['label'];
                                 if (labelDefault == '') labelDefault = label
                                 var name = data[i]['data']['name'];
-                                document.photographers[label] = data[i]['data'];
                                 var location = data[i]['data']['location'];
                                 const option = document.createElement('option');
                                 option.value = label;
@@ -575,19 +575,10 @@
                             selectPhotographerByValue(document.config.label)
                         }
                         updatePhotographer(autoSelect)
-                        
                         resolve('success')
                         
-                        
                     })
-
-
-
-
                 }
-
-
-
             )
             
         }
@@ -599,7 +590,6 @@
             // 获取选中的选项
             var options = selectHour.options;
             var selectedOption = options[selectHour.selectedIndex];
-
             // 获取选中的值
             var value = selectedOption.value;
             value = "" + value;
@@ -614,7 +604,6 @@
             // 获取选中的选项
             var options = selectDate.options;
             var selectedOption = options[selectDate.selectedIndex];
-
             // 获取选中的值
             label = document.config.label
             var value = selectedOption.value;
@@ -626,18 +615,13 @@
 
         var selectPhotographer = document.getElementById('select-photographer');
         selectPhotographer.addEventListener('change', selectPhotographerChangeHandle);
-
         function selectPhotographerChangeHandle() {
             // 获取选中的选项
             var options = selectPhotographer.options;
             var selectedOption = options[selectPhotographer.selectedIndex];
-
             var value = selectedOption.value;
             document.config.label = value
             updatePhotographer(true);
-            // updateDate()
-            // updateHour()
-            // updateQueryString()
         }
 
         var selectEvent = document.getElementById('select-event');
@@ -653,10 +637,6 @@
             var value = selectedOption.value;
             document.config.event = value
             listPhotographers(true)
-            // updatePhotographer();
-            // updateDate()
-            // updateHour()
-            // updateQueryString()
         }
 
 
@@ -711,7 +691,6 @@
             const params = new URLSearchParams()
 
 
-
             const selectEvent = document.querySelector('#select-event');
 
             params.append('event', selectEvent.value)
@@ -760,10 +739,8 @@
                     document.eventDateDic = data
                     resolve("success")
                 })
-
                 }
             )
-            
         }
         function loadDefault(params) {
             fetch(noCacheUrl(urlDefault)).then(
@@ -795,11 +772,8 @@
                 if (paramsHour != null) {
                     document.config.hour = paramsHour
                 }
-                
-                
                 console.log(document.config)
                 listPhotographers(false).then(listPhotos(false))
-                
             })
         }
 
@@ -814,5 +788,4 @@
 
         gtag('config', 'G-DNJ545YQJL');
     </script>
-
 </body>
