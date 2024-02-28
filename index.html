@@ -206,7 +206,10 @@
 
         function checkBottom() {
 
+            
+
             if (isScrolledToBottom()) {
+                
                 ScrolledToBottom();
             }
         }
@@ -228,6 +231,8 @@
                 const select = document.getElementById('select-hour');
                 select.options[select.selectedIndex + 1].selected = true;
                 $('select').formSelect();
+                var div = document.getElementById('footer');
+                div.innerHTML = "loading next hour..."
                 addPhotos(nextHour)
             }
         }
@@ -498,6 +503,8 @@
                     container.appendChild(photo);
                 }
                 PhotoAddEventListener()
+                var div = document.getElementById('footer');
+                div.innerHTML = "Scroll down to load more photos"
             }).catch(function () {
                 (err) => {
                     var container = document.getElementById('photo-container');
