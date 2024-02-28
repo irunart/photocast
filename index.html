@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"> </script>
 
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script> -->
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -64,14 +59,15 @@
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4>PHOTO</h4>
-                <p>Long press / right click to save photo.</p>
+                <p>Long press / right click to save photo.</p> 
                 <img src="" alt="" width="100%">
-                <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
+                <a href="" onclick="disclaimersHandle" id="disclaimers"> Disclaimers</a>
+                <!-- <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
 
                     Photocast is a platform to provide storage of pictures for trail runners.
                     Photocase might add, revmove or update the pictures from time to time.
                     For donwloading original photo, or removing your pictures from Photocast, please
-                    contact us: hi@iest.run .</p>
+                    contact us: hi@iest.run .</p> -->
             </div>
 
             <div class="modal-footer">
@@ -713,6 +709,17 @@
             }
             
 
+        }
+        document.getElementById('disclaimers').addEventListener('click', disclaimersHandle);
+
+        function disclaimersHandle(e){
+            e.preventDefault();
+            alert(`本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
+
+Photocast is a platform to provide storage of pictures for trail runners.
+Photocase might add, revmove or update the pictures from time to time.
+For donwloading original photo, or removing your pictures from Photocast, please
+contact us: hi@iest.run .`)
         }
 
         // window.onblur = () => {
