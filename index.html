@@ -45,11 +45,10 @@
         }
 
 
-        #division-template{
+        #division-template {
             margin-top: 20px;
             margin-bottom: 20px;
         }
-
     </style>
 
 </head>
@@ -65,7 +64,7 @@
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4>PHOTO</h4>
-                <p>Long press / right click to save photo.</p> 
+                <p>Long press / right click to save photo.</p>
                 <img src="" alt="" width="100%">
                 <a href="" id="disclaimers"> Disclaimers</a>
                 <!-- <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
@@ -155,7 +154,7 @@
         <div id="hours" class="row">
             <div class="s12 m2 l2 input-field">
                 <div>Select hour below:</div>
-                <select  id="select-hour">
+                <select id="select-hour">
                 </select>
             </div>
         </div>
@@ -171,14 +170,14 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.modal');
             var instances = M.Modal.init(elems, null);
         });
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             $('select').formSelect();
         });
 
@@ -206,10 +205,10 @@
 
         function checkBottom() {
 
-            
+
 
             if (isScrolledToBottom()) {
-                
+
                 ScrolledToBottom();
             }
         }
@@ -252,22 +251,22 @@
 
         function updatePhotographer(autoSelect) {
             var p = document.photographers[document.config.label];
-            console.log('photographers',document.photographers);
-            console.log('label',document.config.label)
+            console.log('photographers', document.photographers);
+            console.log('label', document.config.label)
             document.getElementById('photographer-name').innerText = p['name']
             document.getElementById('photographer-location').innerText = p['location']
             document.getElementById('photographer-event').innerText = p['event']
-            
+
             updateDate(autoSelect)
-            
+
         }
         function updateDate(autoSelect) {
             eventDate = []
 
             eventDateDic = document.eventDateDic[document.config.event]
 
-            if(eventDateDic==undefined){
-                eventDateDic={}
+            if (eventDateDic == undefined) {
+                eventDateDic = {}
             }
             photographers = document.photographers[document.config.label]
             for (const key in photographers["available_time"]) {
@@ -290,10 +289,10 @@
                 select.appendChild(option);
             }
 
-            if (autoSelect){
+            if (autoSelect) {
                 document.config.date = select.options[0].value
             }
-            
+
 
             selectDateByValue(document.config.date)
             updateHour(autoSelect)
@@ -307,13 +306,13 @@
             select.options.length = 0;
             data = document.photographers[label]
             hours = data["available_time"][date]
-            if(autoSelect){
+            if (autoSelect) {
                 if (hours.length != 0) {
-                    
+
                     hour = hours[0]
                     document.config.hour = hour
                     listPhotos(true)
-            }
+                }
             } else {
                 clearPhotos()
             }
@@ -351,7 +350,7 @@
             container.innerHTML = '';
         }
 
-        
+
         function addPhoto_element(path, time, thumbnailUrl, originalUrl) {
             var photo_template = document.getElementById('photo-template');
             var photo = photo_template.cloneNode(true);
@@ -379,12 +378,12 @@
 
             }
         }
-        function addDivision(hour){
+        function addDivision(hour) {
             var container = document.getElementById('photo-container');
             var division_template = document.getElementById('division-template');
             var division = division_template.cloneNode(true);
             var division_hour = division.getElementsByTagName('p');
-            division_hour[0].innerHTML=hour+":00"
+            division_hour[0].innerHTML = hour + ":00"
             container.appendChild(division);
         }
 
@@ -392,7 +391,7 @@
 
 
         function listPhotos(autoSelect) {
-            if(autoSelect){
+            if (autoSelect) {
                 updateQueryString()
             }
 
@@ -527,7 +526,7 @@
 
 
             return new Promise(
-                (resolve,reject)=>{
+                (resolve, reject) => {
 
                     fetch(noCacheUrl(urlEvents)).then(
                         function (response) {
@@ -539,23 +538,23 @@
                         select.options.length = 0;
                         for (const event in data) {
                             const option = document.createElement('option');
-                            option.setAttribute("data-icon",document.events[event]['event_icon_url'])
+                            option.setAttribute("data-icon", document.events[event]['event_icon_url'])
                             option.value = event;
                             option.text = event;
                             select.appendChild(option);
                         }
                         document.config.event = Object.keys(data)[0]
-                        
-                        if(autoSelect){
+
+                        if (autoSelect) {
                             listPhotographers(true)
                         }
                         resolve("success")
-                        
+
                     })
 
                 }
             )
-            
+
         }
 
 
@@ -564,7 +563,7 @@
 
 
             return new Promise(
-                (resolve,reject)=>{
+                (resolve, reject) => {
                     fetch(noCacheUrl(urlPhotographers)).then(
                         function (response) {
                             return response.json()
@@ -585,7 +584,7 @@
                                 var name = data[i]['data']['name'];
                                 var location = data[i]['data']['location'];
                                 const option = document.createElement('option');
-                                option.setAttribute("data-icon",data[i]['photographer_icon_url'])
+                                option.setAttribute("data-icon", data[i]['photographer_icon_url'])
                                 option.value = label;
                                 amount = CountPhotoAmount(label)
                                 option.text = name + "(" + amount + "张)";
@@ -593,19 +592,19 @@
                             }
 
                         }
-                        if (autoSelect){
+                        if (autoSelect) {
                             document.config.label = labelDefault
-                        }else{
+                        } else {
                             selectEventByValue(document.config.event)
                             selectPhotographerByValue(document.config.label)
                         }
                         updatePhotographer(autoSelect)
                         resolve('success')
-                        
+
                     })
                 }
             )
-            
+
         }
         // 绑定 change 事件
         var selectHour = document.getElementById('select-hour');
@@ -731,17 +730,17 @@
             params.append('hour', selectHour.value)
 
             const newQueryString = params.toString();
-            if (location.host=="127.0.0.1:5500"){
+            if (location.host == "127.0.0.1:5500") {
                 history.pushState({}, '', `index.html?${newQueryString}`);
-            }else{
+            } else {
                 history.pushState({}, '', `/photocast/?${newQueryString}`);
             }
-            
+
 
         }
         document.getElementById('disclaimers').addEventListener('click', disclaimersHandle);
 
-        function disclaimersHandle(e){
+        function disclaimersHandle(e) {
             e.preventDefault();
             alert(`本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
 
@@ -774,39 +773,39 @@
         function eventDateRename() {
 
             return new Promise(
-                (resolve,reject)=>{
-                fetch(noCacheUrl(urlEventDateRename)).then(
-                    function (response) {
-                        return response.json()
-                    }
-                ).then(function (jsonResponse) {
-                    var data = jsonResponse.data;
-                    document.eventDateDic = data
-                    resolve("success")
-                })
+                (resolve, reject) => {
+                    fetch(noCacheUrl(urlEventDateRename)).then(
+                        function (response) {
+                            return response.json()
+                        }
+                    ).then(function (jsonResponse) {
+                        var data = jsonResponse.data;
+                        document.eventDateDic = data
+                        resolve("success")
+                    })
                 }
             )
         }
 
-        function loadEventInfo(){
+        function loadEventInfo() {
 
             return new Promise(
-                (resolve,reject)=>{
-                fetch(noCacheUrl(urlEventDetail)).then(
-                    function (response) {
-                        return response.json()
-                    }
-                ).then(function (jsonResponse) {
-                    var data = jsonResponse.data;
-                    document.events = data
-                    resolve("success")
-                })
+                (resolve, reject) => {
+                    fetch(noCacheUrl(urlEventDetail)).then(
+                        function (response) {
+                            return response.json()
+                        }
+                    ).then(function (jsonResponse) {
+                        var data = jsonResponse.data;
+                        document.events = data
+                        resolve("success")
+                    })
                 }
             )
 
         }
         function loadDefault(params) {
-            
+
             fetch(noCacheUrl(urlDefault)).then(
                 function (response) {
                     return response.json()
@@ -836,7 +835,7 @@
                 if (paramsHour != null) {
                     document.config.hour = paramsHour
                 }
-                console.log('document.config',document.config)
+                console.log('document.config', document.config)
                 listPhotographers(false).then(listPhotos(false))
             })
         }
