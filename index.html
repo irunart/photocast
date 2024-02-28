@@ -205,6 +205,7 @@
         window.addEventListener("scroll", handleInfiniteScroll);
 
         function checkBottom() {
+
             if (isScrolledToBottom()) {
                 ScrolledToBottom();
             }
@@ -395,10 +396,10 @@
                 updateQueryString()
             }
 
-            M.toast({
-                html: `Refreshing...`,
-                classes: 'yellow darken-3',
-            })
+            // M.toast({
+            //     html: `Refreshing...`,
+            //     classes: 'yellow darken-3',
+            // })
             var div = document.getElementById('footer');
             div.innerHTML = "Scroll down to load more photos"
 
@@ -410,10 +411,10 @@
             fetch(noCacheUrl(urlListCurrent)).then(
                 function (response) {
                     if (response.status == 200) {
-                        M.toast({
-                            html: `Done!`,
-                            classes: 'green darken-3',
-                        })
+                        // M.toast({
+                        //     html: `Done!`,
+                        //     classes: 'green darken-3',
+                        // })
                         return response.json()
                     } else {
                         throw "error"
@@ -454,10 +455,10 @@
                 (err) => {
                     var container = document.getElementById('photo-container');
                     container.innerHTML = '';
-                    M.toast({
-                        html: `Fail...`,
-                        classes: 'red darken-3',
-                    })
+                    // M.toast({
+                    //     html: `Fail...`,
+                    //     classes: 'red darken-3',
+                    // })
                 }
             })
         }
@@ -473,10 +474,10 @@
             fetch(noCacheUrl(urlListCurrent)).then(
                 function (response) {
                     if (response.status == 200) {
-                        M.toast({
-                            html: `Done!`,
-                            classes: 'green darken-3',
-                        })
+                        // M.toast({
+                        //     html: `Done!`,
+                        //     classes: 'green darken-3',
+                        // })
                         return response.json()
                     } else {
                         throw "error"
@@ -501,10 +502,10 @@
                 (err) => {
                     var container = document.getElementById('photo-container');
                     container.innerHTML = '';
-                    M.toast({
-                        html: `Fail...`,
-                        classes: 'red darken-3',
-                    })
+                    // M.toast({
+                    //     html: `Fail...`,
+                    //     classes: 'red darken-3',
+                    // })
                 }
 
             })
