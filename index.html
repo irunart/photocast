@@ -672,9 +672,11 @@
                 if (optionElement.value == event_value) {
                     optionElement.selected = true;
                     $('select').formSelect();
-                    break
+                    return
                 }
             }
+            alertIllegalParam()
+            
         }
 
         function selectPhotographerByValue(photographer_value) {
@@ -684,9 +686,10 @@
                 if (optionElement.value == photographer_value) {
                     optionElement.selected = true;
                     $('select').formSelect();
-                    break
+                    return 
                 }
             }
+            alertIllegalParam()
         }
 
         function selectDateByValue(date_value) {
@@ -696,9 +699,10 @@
                 if (optionElement.value == date_value) {
                     optionElement.selected = true;
                     $('select').formSelect();
-                    break
+                    return 
                 }
             }
+            alertIllegalParam()
         }
 
         function selectHourByValue(hour_value) {
@@ -708,9 +712,14 @@
                 if (optionElement.value == hour_value) {
                     optionElement.selected = true;
                     $('select').formSelect();
-                    break
+                    return 
                 }
             }
+            alertIllegalParam()
+        }
+
+        function alertIllegalParam(){
+            alert("Illegal param,Please select manually")
         }
 
         function updateQueryString() {
@@ -814,12 +823,10 @@ For donwloading original photo, or removing your pictures from Photocast, please
                 document.config.label = jsonResponse.data['label']
                 document.config.date = jsonResponse.data['date']
                 document.config.hour = jsonResponse.data['hour']
-
                 paramsEvent = params.get('event')
                 if (paramsEvent != null) {
                     document.config.event = paramsEvent
                 }
-
                 paramsLabel = params.get('label')
                 if (paramsLabel != null) {
                     document.config.label = paramsLabel
@@ -829,10 +836,9 @@ For donwloading original photo, or removing your pictures from Photocast, please
                 if (paramsDate != null) {
                     document.config.date = paramsDate
                 }
-
                 paramsHour = params.get('hour')
                 if (paramsHour != null) {
-                    document.config.hour = paramsHour
+                    document.config.hour = paramsHour.padStart(2, "0");
                 }
                 console.log('document.config', document.config)
                 listPhotographers(false).then(listPhotos(false))
