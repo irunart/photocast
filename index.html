@@ -538,7 +538,9 @@
                         select.options.length = 0;
                         for (const event in data) {
                             const option = document.createElement('option');
-                            option.setAttribute("data-icon", document.events[event]['event_icon_url'])
+                            if (document.events[event]!=undefined){
+                                option.setAttribute("data-icon", document.events[event]['event_icon_url'])
+                            }
                             option.value = event;
                             option.text = event;
                             select.appendChild(option);
