@@ -30,6 +30,8 @@
     <style>
         #photo-container {
             max-width: 100%;
+            display: flex;
+            flex-wrap: wrap;
         }
 
         #photo-container img {
@@ -44,10 +46,14 @@
             display: none;
         }
 
-
-        #division-template {
+        #photo-container > .division {
+            flex: 1 1 100%;
             margin-top: 20px;
             margin-bottom: 20px;
+        }
+
+        #photo-container > .photo {
+            margin-left: 0;
         }
     </style>
 
@@ -88,7 +94,7 @@
         <templates>
 
 
-            <div class="col s4 m3 l2" id="photo-template">
+            <div class="col s4 m3 l2 photo" id="photo-template">
                 <div class="card hoverable ">
                     <div class="card-body">
                         <!-- <p class="card-text">
@@ -106,9 +112,9 @@
         <templates>
 
 
-            <div class="col s12 m12 l12" id="division-template">
+            <div class="col s12 m12 l12 division" id="division-template">
 
-                <p id="division-hour"></p>
+                <p></p>
                 <hr>
 
             </div>
@@ -354,6 +360,7 @@
         function addPhoto_element(path, time, thumbnailUrl, originalUrl) {
             var photo_template = document.getElementById('photo-template');
             var photo = photo_template.cloneNode(true);
+            photo.removeAttribute('id')
             var img = photo.getElementsByTagName('img');
             img[0].src = thumbnailUrl;
             img[0].setAttribute("data-src", originalUrl);
@@ -382,6 +389,7 @@
             var container = document.getElementById('photo-container');
             var division_template = document.getElementById('division-template');
             var division = division_template.cloneNode(true);
+            division.removeAttribute('id')
             var division_hour = division.getElementsByTagName('p');
             division_hour[0].innerHTML = hour + ":00"
             container.appendChild(division);
