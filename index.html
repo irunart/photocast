@@ -30,9 +30,19 @@
     <style>
         #photo-container {
             max-width: 100%;
-            display: flex;
-            flex-wrap: wrap;
+         
         }
+
+        .mansory {
+                columns: auto 12em;
+        }
+
+        @media only screen and (max-width: 500px) {
+            .mansory {
+                columns: 3 auto;
+            }
+        }
+        
 
         #photo-container img {
             max-width: 100%;
@@ -47,7 +57,7 @@
         }
 
         #photo-container > .division {
-            flex: 1 1 100%;
+            column-span: all;
             margin-top: 20px;
             margin-bottom: 20px;
         }
@@ -95,7 +105,7 @@
 
 
             <div class="col s4 m3 l2 photo" id="photo-template">
-                <div class="card hoverable ">
+                <div class="card hoverable " style="margin-top: 0;">
                     <div class="card-body">
                         <!-- <p class="card-text">
                             card text
@@ -165,7 +175,7 @@
             </div>
         </div>
 
-        <div class="row" id="photo-container">
+        <div id="photo-container" class="mansory">
         </div>
 
         <div class="row" style="height: 50px;">
