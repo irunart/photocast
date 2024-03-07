@@ -42,7 +42,6 @@
                 columns: 3 auto;
             }
         }
-        
 
         #photo-container img {
             max-width: 100%;
@@ -647,12 +646,15 @@
         function selectDateChangeHandle() {
             // 获取选中的选项
             var options = selectDate.options;
+            
             var selectedOption = options[selectDate.selectedIndex];
+            
             // 获取选中的值
             label = document.config.label
             var value = selectedOption.value;
             document.config.date = parseInt(value);
             updateHour(true)
+            $('select').formSelect();
             // listPhotos()
             // updateQueryString()
         }
@@ -666,6 +668,7 @@
             var value = selectedOption.value;
             document.config.label = value
             updatePhotographer(true);
+            $('select').formSelect();
         }
 
         var selectEvent = document.getElementById('select-event');
@@ -681,6 +684,7 @@
             var value = selectedOption.value;
             document.config.event = value
             listPhotographers(true)
+            $('select').formSelect();
         }
 
 
