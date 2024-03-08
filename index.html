@@ -744,6 +744,9 @@
 
         function alertIllegalParam(){
             alert("illegal param,please select manually.")
+            window.location.href = window.location.href.split('?')[0];
+
+            
         }
 
         function updateQueryString() {
