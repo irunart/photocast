@@ -34,7 +34,7 @@
         }
 
         .mansory {
-                columns: auto 12em;
+            columns: 7 auto;
         }
 
         @media only screen and (max-width: 500px) {
@@ -192,6 +192,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
+        const groupSize = window.innerWidth > 500 ? 49 : 30;
+
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.modal');
             var instances = M.Modal.init(elems, null);
@@ -410,13 +412,16 @@
 
             }
         }
-        function addDivision(hour) {
+        function addDivision(hourMinute) {
             var container = document.getElementById('photo-container');
             var division_template = document.getElementById('division-template');
             var division = division_template.cloneNode(true);
             division.removeAttribute('id')
             var division_hour = division.getElementsByTagName('p');
-            division_hour[0].innerHTML = hour + ":00"
+            if (hourMinute.length === 2) {
+                hourMinute += ":00";
+            }
+            division_hour[0].innerHTML = hourMinute;
             container.appendChild(division);
         }
 
@@ -464,6 +469,9 @@
                     photo = addPhoto_element(path, time, url, url)
 
                     container.appendChild(photo);
+                    if ((i + 1) % groupSize === 0) {
+                        addDivision(time.substring(0, 5));
+                    }
                 }
                 PhotoAddEventListener();
                 if (data.length < 30) {
@@ -514,6 +522,9 @@
                     // photo=addPhoto_element(photo,path,time,url)
                     photo = addPhoto_element(path, time, url, url)
                     container.appendChild(photo);
+                    if ((i + 1) % groupSize === 0) {
+                        addDivision(time.substring(0, 5));
+                    }
                 }
                 PhotoAddEventListener()
                 var div = document.getElementById('footer');
