@@ -74,6 +74,11 @@
         <button class="btn waves-effect waves-light" id="back-to-top" style="position:fixed;bottom:20px;right:20px">
             <i class="material-icons">arrow_upward</i>
         </button>
+
+
+        <button class="btn waves-effect waves-light" id="share" style="position:fixed;bottom:80px;right:20px">
+            <i class="material-icons">share</i>
+        </button>
         <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> -->
 
         <div id="modal1" class="modal modal-fixed-footer">
@@ -200,6 +205,17 @@
         const backToTop = document.querySelector('#back-to-top');
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+
+        const share = document.querySelector('#share');
+        share.addEventListener('click', () => {
+            const data = new ClipboardItem({ 'text/plain':  window.location.href });
+            navigator.clipboard.write(data).then(() => {
+                alert('Link copied to clipboard,You can paste it and send it to your friends');
+            }, () => {
+                alert('Your browser does not support this feature, please copy the link manually and send it to your friends');
+            });
         });
 
 
