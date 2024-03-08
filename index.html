@@ -211,7 +211,7 @@
         const share = document.querySelector('#share');
         share.addEventListener('click', () => {
             // const data = new ClipboardItem({ 'text/plain':  });
-            navigator.clipboard.write(window.location.href ).then(() => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
                 alert('Link copied to clipboard,You can paste it and send it to your friends');
             }, () => {
                 alert('Your browser does not support this feature, please copy the link manually and send it to your friends');
