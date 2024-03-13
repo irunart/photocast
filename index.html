@@ -60,6 +60,11 @@
                 width: calc((100% - 20px) / 3);
             }
         }
+
+        .card-photo {
+            min-height: 50px;
+            background-color: #eeeeeeaa;
+        }
     </style>
 
 </head>
@@ -203,6 +208,10 @@
             masonryInitialized = true;
         }
         const loadingImage = () => $phc.imagesLoaded().progress(() => $phc.masonry("layout"));
+        const addItemToMasonry = (item) => {
+            $phc.masonry("addItems", item);
+            $phc.masonry("layout");
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.modal');
@@ -433,7 +442,7 @@
             }
             division_hour[0].innerHTML = hourMinute;
             container.appendChild(division);
-            $phc.masonry('appended', division);
+            addItemToMasonry(division);
         }
 
 
@@ -481,7 +490,7 @@
                     photo = addPhoto_element(path, time, url, url)
 
                     container.appendChild(photo);
-                    $phc.masonry('appended', photo);
+                    addItemToMasonry(photo);
                 }
                 loadingImage();
                 PhotoAddEventListener();
@@ -533,7 +542,7 @@
                     // photo=addPhoto_element(photo,path,time,url)
                     photo = addPhoto_element(path, time, url, url)
                     container.appendChild(photo);
-                    $phc.masonry('appended', photo);
+                    addItemToMasonry(photo);
                 }
                 PhotoAddEventListener()
                 loadingImage();
