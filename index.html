@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"> </script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -30,17 +32,6 @@
     <style>
         #photo-container {
             max-width: 100%;
-         
-        }
-
-        .mansory {
-            columns: 7 auto;
-        }
-
-        @media only screen and (max-width: 500px) {
-            .mansory {
-                columns: 3 auto;
-            }
         }
 
         #photo-container img {
@@ -55,14 +46,19 @@
             display: none;
         }
 
-        #photo-container > .division {
-            column-span: all;
+        .division {
+            width: 100%;
             margin-top: 20px;
             margin-bottom: 20px;
         }
 
-        #photo-container > .photo {
-            margin-left: 0;
+        .photo {
+            width: calc((100% - 60px) / 7);
+        }
+        @media only screen and (max-width: 500px) {
+            .photo {
+                width: calc((100% - 20px) / 3);
+            }
         }
     </style>
 
@@ -108,16 +104,15 @@
         <templates>
 
 
-            <div class="col s4 m3 l2 photo" id="photo-template">
-                <div class="card hoverable " style="margin-top: 0;">
-                    <div class="card-body">
+            <div class="masonry-item photo" id="photo-template">
+                <div class="card hoverable" style="margin: 0 0 10px 0;">
+                    <div class="card-image">
                         <!-- <p class="card-text">
                             card text
                         </p> -->
                         <a class="modal-trigger" href="#modal1">
-                            <img src="{{photo.url}}" alt="" loading="lazy" class="card-photo">
+                            <img src="{{photo.url}}" alt="" loading="lazy" class="card-photo"  style="border-radius: 2px;">
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -126,7 +121,7 @@
         <templates>
 
 
-            <div class="col s12 m12 l12 division" id="division-template">
+            <div class="masonry-item division" id="division-template">
 
                 <p></p>
                 <hr>
@@ -179,7 +174,7 @@
             </div>
         </div>
 
-        <div id="photo-container" class="mansory">
+        <div id="photo-container" class="masonry">
         </div>
 
         <div class="row" style="height: 50px;">
@@ -189,10 +184,25 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
     <script>
-        const groupSize = window.innerWidth > 500 ? 49 : 30;
+        const masonryOptions = {
+            columnWidth: '.photo',
+            itemSelector: '.masonry-item',
+            percentPosition: true,
+            gutter: 10,
+            transitionDuration: 0,
+        };
+        let masonryInitialized = false;
+        const $phc = $('#photo-container');
+        const resetMasonry = () => {
+            if (masonryInitialized) {
+                $phc.masonry("destroy");
+            }
+            $phc.masonry(masonryOptions);
+            masonryInitialized = true;
+        }
+        const loadingImage = () => $phc.imagesLoaded().progress(() => $phc.masonry("layout"));
 
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.modal');
@@ -423,6 +433,7 @@
             }
             division_hour[0].innerHTML = hourMinute;
             container.appendChild(division);
+            $phc.masonry('appended', division);
         }
 
 
@@ -459,6 +470,7 @@
             ).then(function (jsonResponse) {
                 var container = document.getElementById('photo-container');
                 container.innerHTML = '';
+                resetMasonry();
                 var data = jsonResponse.data;
                 data.sort(sortByTime);
                 addDivision(document.config.hour);
@@ -469,10 +481,9 @@
                     photo = addPhoto_element(path, time, url, url)
 
                     container.appendChild(photo);
-                    if ((i + 1) % groupSize === 0) {
-                        addDivision(time.substring(0, 5));
-                    }
+                    $phc.masonry('appended', photo);
                 }
+                loadingImage();
                 PhotoAddEventListener();
                 if (data.length < 30) {
                     ScrolledToBottom()
@@ -522,11 +533,10 @@
                     // photo=addPhoto_element(photo,path,time,url)
                     photo = addPhoto_element(path, time, url, url)
                     container.appendChild(photo);
-                    if ((i + 1) % groupSize === 0) {
-                        addDivision(time.substring(0, 5));
-                    }
+                    $phc.masonry('appended', photo);
                 }
                 PhotoAddEventListener()
+                loadingImage();
                 var div = document.getElementById('footer');
                 div.innerHTML = "Scroll down to load more photos"
             }).catch(function () {
