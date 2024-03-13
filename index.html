@@ -269,7 +269,8 @@
             const scrollTop = document.documentElement.scrollTop;
             const clientHeight = document.documentElement.clientHeight;
             const scrollHeight = document.documentElement.scrollHeight;
-            return scrollTop + clientHeight >= scrollHeight;
+            // minus 150 to make it easier to trigger on mobile dynamic viewports;
+            return scrollTop + clientHeight >= scrollHeight - 150;
         }
 
         function ScrolledToBottom() {
