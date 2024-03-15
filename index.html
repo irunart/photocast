@@ -279,7 +279,10 @@
             if (nextHour == "last") {
                 var div = document.getElementById('footer');
                 div.innerHTML = "No more photos."
-            } else {
+            }else if(nextHour == "error" ){
+                // 
+            }
+            else {
                 const select = document.getElementById('select-hour');
                 select.options[select.selectedIndex + 1].selected = true;
                 $('select').formSelect();
@@ -291,9 +294,12 @@
 
         function getNextHour(hourNow) {
             const select = document.getElementById('select-hour');
-            options = select.options
-            if (options.selectedIndex != options.length - 1) {
-                return options[options.selectedIndex + 1].value
+
+            if (select.options.length==0){
+                return "error"
+            }
+            if (select.options.selectedIndex != select.options.length - 1) {
+                return select.options[select.options.selectedIndex + 1].value
             } else {
                 return "last"
             }
