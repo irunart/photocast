@@ -1,16 +1,55 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import * as _ from 'lodash-es'
 
+import { List, Image } from 'antd-mobile'
+
+import { getEventLists, } from "@/services/googleApis";
 
 
 const Home = () => {
 
+    // const location = useLocation();
+    // const params = useParams();
+    const navigate = useNavigate()
+
+    const [data, setData] = useState<string[]>([]);
+
+    const datasRef = useRef();
+
     // init 阶段
     useEffect(() => {
-
+        getEventLists().then((res) => {
+            datasRef.current = res;
+            console.log(res, 'res==')
+            setData(_.keys(res))
+        })
     }, [])
 
+    const goEventDetail = (name: string) => {
 
-    return <div>123</div>
+        navigate('/event/' + name, { state: { data: datasRef.current[name] } })
+    }
+
+
+    return <List>
+        {data.map(event => (
+            <List.Item
+                prefix={
+                    <Image
+                        src='https://iest.run/IEST-flag.jpg'
+                        style={{ borderRadius: 20 }}
+                        fit='cover'
+                        width={40}
+                        height={40}
+                    />
+                }
+                description={event + '赛事'}
+                key={event} onClick={() => goEventDetail(event)}>
+                {event}
+            </List.Item>
+        ))}
+    </List>
 }
 
 export default Home;
