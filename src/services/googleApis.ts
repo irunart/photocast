@@ -1,15 +1,18 @@
-import request from '@/utils/request';
+import request from "@/utils/request";
 
+const urlPhotographers = "/photographers.json";
+const urlEvents = "/events.json";
+const urlEventDateRename = "/event_date_rename.json";
+const urlEventDetail = "/event_detail.json";
+const urlDefault = "/defaults.json";
 
-  
+export const getEventLists = () => request.get(urlEvents);
 
-const urlPhotographers = '/photographers.json';
-const urlEvents = '/events.json';
-const urlEventDateRename = '/event_date_rename.json';
-const urlEventDetail = '/event_detail.json';
-const urlDefault = '/defaults.json';
+export const getPhotographers = () => request.get(urlPhotographers);
 
+export const getEventDateRename = () => request.get(urlEventDateRename);
 
-export const getEventLists = ()=>{
-    return request.get(urlEvents);
-}
+export const getEventDetail = () => request.get(urlEventDetail);
+
+// 默认 event
+export const getDefault = () => request.get(urlDefault);
