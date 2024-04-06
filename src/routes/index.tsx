@@ -10,7 +10,7 @@ import Home from '@/pages/Home';
 const router: RouteObject[] = [
     {
         path: '/',
-        element: <Navigate to='events' />,
+        element: <Navigate to='home' />,
     },
     {
         element: <AppLayout />,
