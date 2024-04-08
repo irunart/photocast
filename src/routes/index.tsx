@@ -16,7 +16,7 @@ function App() {
 				<Route path="/" element={<Navigate to="home" />} />
 				<Route element={<AppLayout />}>
 					<Route path="home" element={<Home />} />
-					<Route path="event/:event" element={<Event />} />
+					<Route path="event/:event?" element={<Event />} />
 				</Route>
 			</Routes>
 		</Router>

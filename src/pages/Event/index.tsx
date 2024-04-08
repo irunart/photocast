@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import { Input, Flex } from "antd";
 import { Image, ImageViewer, Popup, CheckList, CascadePicker, Grid, Card } from "antd-mobile";
 import { DownOutlined, MehOutlined, ClockCircleOutlined } from '@ant-design/icons'
@@ -34,10 +35,10 @@ const Home = () => {
 	//照片弹窗
 	const [imagePopVisible, setImagePopVisible] = useState(false)
 
-	if (!event) navigate("/home", { replace: true });
+
 
 	useEffect(() => {
-		if (!event) return;
+		if (!event) return navigate("/home", { replace: true });
 
 		// 获取摄影师列表
 		getPhotographers().then((res) => {
@@ -86,6 +87,7 @@ const Home = () => {
 			<p>current photo date time:</p>
 			<Input prefix={<ClockCircleOutlined />} value={currentDateTime.join('-')} onClick={() => setDateTimePopVisible(true)} placeholder="Select date and time" readOnly suffix={<DownOutlined />} />
 			<p></p>
+
 			<Grid columns={2} gap={8} >
 				{images.map((image, index) => (
 					<Grid.Item key={image.name} onClick={() => openImageViewer(index)}>
