@@ -3,8 +3,7 @@ import styles from './index.module.scss';
 const Footer = () => {
 
     return <div className={styles.footer}>
-        <p>Place holder of footer</p>
-        <p><a href="https://github.com/irunart/photocast">GitHub</a></p>
+        <p className={styles.github}><a href="https://github.com/irunart/photocast">GitHub.com</a></p>
     </div>
 }
 
