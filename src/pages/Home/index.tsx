@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
 
 import { List, Image } from "antd-mobile";
@@ -25,7 +25,7 @@ const Home = () => {
 	}, []);
 
 	const goEventDetail = (name: string) => {
-		navigate("/event/" + name, { state: { data: datasRef.current[name] } });
+		navigate("/event/" + name, { state: { data: datasRef.current?.[name] } });
 	};
 
 	//TODO: api接口 赛事详情,对应图片
