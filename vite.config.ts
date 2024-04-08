@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import postcsspxtoviewport from "postcss-px-to-viewport";
+
+// import postcsspxtoviewport from "postcss-px-to-viewport";
 // import proxy from './proxy';
 import path from "path";
 
