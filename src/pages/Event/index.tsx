@@ -129,7 +129,7 @@ const Home = () => {
 				</CheckList>
 			</Popup>
 			<CascadePicker
-				title='级联选择'
+				title='select date time'
 				options={grapherDateToCascadeOptions(grapher)}
 				visible={dateTimePopVisible}
 				onClose={() => setDateTimePopVisible(false)}
