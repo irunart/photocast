@@ -83,18 +83,17 @@ const Home = () => {
 		<div>
 			<p>current photographer below:</p>
 			<Input prefix={<MehOutlined />} value={grapher?.label} onClick={() => setGraperPopupVisible(true)} placeholder="Select a photographer" readOnly suffix={<DownOutlined />} />
-			<p>current photo date time</p>
+			<p>current photo date time:</p>
 			<Input prefix={<ClockCircleOutlined />} value={currentDateTime.join('-')} onClick={() => setDateTimePopVisible(true)} placeholder="Select date and time" readOnly suffix={<DownOutlined />} />
 			<p></p>
 			<Grid columns={2} gap={8} >
 				{images.map((image, index) => (
 					<Grid.Item key={image.name} onClick={() => openImageViewer(index)}>
 						<Image
-							lazy={true}
+							lazy
 							src={image?.url}
 							fit='cover'
 							style={{ borderRadius: 4 }}
-
 						/>
 
 					</Grid.Item>
