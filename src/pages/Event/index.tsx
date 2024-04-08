@@ -1,88 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Select } from 'antd';
-import { Image, Modal } from 'antd-mobile';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Select } from "antd";
+import { Image, Modal } from "antd-mobile";
 
-import { getPhotographers } from '@/services/googleApis';
-import { getEventPhotoGrapher } from './common';
+import { getPhotographers } from "@/services/googleApis";
+import { getEventPhotoGrapher } from "./common";
 
-import styles from './index.module.scss';
+import styles from "./index.module.scss";
 
 const Home = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { event } = useParams();
+	// const location = useLocation();
+	const navigate = useNavigate();
+	const { event } = useParams();
 
-  const [photoGraphers, setPhotoGraphers] = useState([]);
-  const [grapher, setGrapher] = useState(null);
-  const [images, setImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+	// 摄影师列表
+	const [photoGraphers, setPhotoGraphers] = useState([]);
+	// 当前摄影师
+	const [grapher, setGrapher] = useState(null);
 
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedHour, setSelectedHour] = useState(null);
+	const [images, setImages] = useState([]);
+	const [selectedImage, setSelectedImage] = useState(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
-  if (!event) navigate('/home', { replace: true });
+	const [selectedDate, setSelectedDate] = useState(null);
+	const [selectedHour, setSelectedHour] = useState(null);
 
-  useEffect(() => {
-    if (!event) return;
+	if (!event) navigate("/home", { replace: true });
 
-    getPhotographers().then(res => {
-      const grapherLists = getEventPhotoGrapher(res, event);
-      setGrapher(grapherLists[0]);
-      setPhotoGraphers(grapherLists);
-    });
-  }, [event]);
+	useEffect(() => {
+		if (!event) return;
 
-  useEffect(() => {
-    if (grapher && selectedDate && selectedHour !== null && grapher.value && selectedDate) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `https://storage.googleapis.com/photocast/config/${grapher.value}/${selectedDate}/${selectedHour}.json`
-          );
-          const data = await response.json();
-          setImages(data.data);
-        } catch (error) {
-          console.error('Error fetching images:', error);
-        }
-      };
+		// 获取摄影师列表
+		getPhotographers().then((res) => {
+			const grapherLists = getEventPhotoGrapher(res, event);
+			setGrapher(grapherLists[0]);
+			setPhotoGraphers(grapherLists);
+		});
+	}, [event]);
 
-      fetchData();
-    }
-  }, [grapher, selectedDate, selectedHour]);
+	useEffect(() => {
+		if (
+			grapher &&
+			selectedDate &&
+			selectedHour !== null &&
+			grapher.value &&
+			selectedDate
+		) {
+			const fetchData = async () => {
+				try {
+					const response = await fetch(
+						`https://storage.googleapis.com/photocast/config/${grapher.value}/${selectedDate}/${selectedHour}.json`
+					);
+					const data = await response.json();
+					setImages(data.data);
+				} catch (error) {
+					console.error("Error fetching images:", error);
+				}
+			};
 
-  const handlePhotoGrapherChange = nextGrapher => {
-    const selectedGrapher = photoGraphers.find(item => item.value === nextGrapher);
-    setGrapher(selectedGrapher);
+			fetchData();
+		}
+	}, [grapher, selectedDate, selectedHour]);
 
-    setSelectedDate(null); 
-    setSelectedHour(null);
-  };
+	const handlePhotoGrapherChange = (nextGrapher) => {
+		const selectedGrapher = photoGraphers.find(
+			(item) => item.value === nextGrapher
+		);
+		setGrapher(selectedGrapher);
 
-  const handleDateSelection = date => {
-    setSelectedDate(date);
-    setSelectedHour(null); 
-  };
+		setSelectedDate(null);
+		setSelectedHour(null);
+	};
 
-  const handleHourSelection = hour => {
-    setSelectedHour(hour);
-  };
+	const handleDateSelection = (date) => {
+		setSelectedDate(date);
+		setSelectedHour(null);
+	};
 
+	const handleHourSelection = (hour) => {
+		setSelectedHour(hour);
+	};
 
-  const handleImageClick = image => {
-    console.log('Image Path:', image.url); 
-    setSelectedImage(image);
-    openWebpageWithDisclaimer(image.url, 'Disclaimer');
-  };
+	const handleImageClick = (image) => {
+		console.log("Image Path:", image.url);
+		setSelectedImage(image);
+		openWebpageWithDisclaimer(image.url, "Disclaimer");
+	};
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
+	const handleModalClose = () => {
+		setIsModalOpen(false);
+	};
 
-  const openWebpageWithDisclaimer = (imageUrl, disclaimerText) => {
-    const newWindow = window.open('', '_blank');
-    newWindow.document.write(`
+	const openWebpageWithDisclaimer = (imageUrl, disclaimerText) => {
+		const newWindow = window.open("", "_blank");
+		newWindow.document.write(`
       <html>
         <head>
           <title>Image Viewer</title>
@@ -119,63 +130,78 @@ const Home = () => {
         </body>
       </html>
     `);
-    newWindow.document.close();
-  };
+		newWindow.document.close();
+	};
 
-  return (
-    <div>
-      <p>Select a photographer below:</p>
-      <Select className={styles.grapherOptions} onChange={handlePhotoGrapherChange} value={grapher?.value}>
-        {photoGraphers.map(item => (
-          <Select.Option key={item.value} value={item.value}>
-            <span>{item.label}</span>
-          </Select.Option>
-        ))}
-      </Select>
-      {grapher && (
-        <div>
-          <p>Selected photographer: {grapher.label}</p>
-          <div>
-            <p>Select a date:</p>
-            <Select onChange={handleDateSelection} value={selectedDate} style={{ width: 200 }}>
-              {Object.keys(grapher.available_time).map(date => (
-                <Select.Option key={date} value={date}>
-                  {date}
-                </Select.Option>
-              ))}
-            </Select>
-            {selectedDate && (
-              <div>
-                <p>Select an hour:</p>
-                <Select onChange={handleHourSelection} value={selectedHour} style={{ width: 200 }}>
-                  {grapher.available_time[selectedDate]?.map(hour => (
-                    <Select.Option key={hour} value={hour}>
-                      {hour}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
-            )}
-          </div>
-          <div className={styles.imageContainer}>
-            {images.map((image, index) => (
-              <div key={index} className={styles.imageWrapper}>
-                <Image
-                  src={image.url}
-                  alt={`Image ${index + 1}`}
-                  className={styles.image}
-                  onClick={() => handleImageClick(image)}
-                />
-              </div>
-            ))}
-            <Modal visible={isModalOpen} onClose={handleModalClose}>
-              <Image src={selectedImage?.url} alt="Selected Image" className={styles.modalImage} />
-            </Modal>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+	return (
+		<div>
+			<p>Select a photographer below:</p>
+			<Select
+				className={styles.grapherOptions}
+				onChange={handlePhotoGrapherChange}
+				value={grapher?.value}
+			>
+				{photoGraphers.map((item) => (
+					<Select.Option key={item.value} value={item.value}>
+						<span>{item.label}</span>
+					</Select.Option>
+				))}
+			</Select>
+			{grapher && (
+				<div>
+					<div>
+						<p>Select a date:</p>
+						<Select
+							onChange={handleDateSelection}
+							value={selectedDate}
+							style={{ width: 200 }}
+						>
+							{Object.keys(grapher.available_time).map((date) => (
+								<Select.Option key={date} value={date}>
+									{date}
+								</Select.Option>
+							))}
+						</Select>
+						{selectedDate && (
+							<div>
+								<p>Select an hour:</p>
+								<Select
+									onChange={handleHourSelection}
+									value={selectedHour}
+									style={{ width: 200 }}
+								>
+									{grapher.available_time[selectedDate]?.map((hour) => (
+										<Select.Option key={hour} value={hour}>
+											{hour}
+										</Select.Option>
+									))}
+								</Select>
+							</div>
+						)}
+					</div>
+					<div className={styles.imageContainer}>
+						{images.map((image, index) => (
+							<div key={index} className={styles.imageWrapper}>
+								<Image
+									src={image.url}
+									alt={`Image ${index + 1}`}
+									className={styles.image}
+									onClick={() => handleImageClick(image)}
+								/>
+							</div>
+						))}
+						<Modal visible={isModalOpen} onClose={handleModalClose}>
+							<Image
+								src={selectedImage?.url}
+								alt="Selected Image"
+								className={styles.modalImage}
+							/>
+						</Modal>
+					</div>
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default Home;
