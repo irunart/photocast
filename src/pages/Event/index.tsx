@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Select } from "antd";
-import { Image, Modal, ImageViewer } from "antd-mobile";
+import { useNavigate, useParams } from "react-router-dom";
+import { Input, Flex } from "antd";
+import { Image, ImageViewer, Popup, CheckList, CascadePicker, Grid, Card } from "antd-mobile";
+import { DownOutlined, MehOutlined, ClockCircleOutlined } from '@ant-design/icons'
 
-import { getPhotographers } from "@/services/googleApis";
-import { getEventPhotoGrapher } from "./common";
+import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
+import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 
 import styles from "./index.module.scss";
 
@@ -20,12 +21,14 @@ const Home = () => {
 	// 当前摄影师
 	const [grapher, setGrapher] = useState(null);
 
-	const [images, setImages] = useState([]);
-	const [selectedImage, setSelectedImage] = useState(null);
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [grapherPopupVisible, setGraperPopupVisible] = useState(false)
 
-	const [selectedDate, setSelectedDate] = useState(null);
-	const [selectedHour, setSelectedHour] = useState(null);
+	const [images, setImages] = useState([]);
+
+
+	const [currentDateTime, setCurrentDateTime] = useState([]);
+	const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
+	const [imagePopVisible, setImagePopVisible] = useState(false)
 
 	if (!event) navigate("/home", { replace: true });
 
@@ -35,173 +38,101 @@ const Home = () => {
 		// 获取摄影师列表
 		getPhotographers().then((res) => {
 			const grapherLists = getEventPhotoGrapher(res, event);
-			setGrapher(grapherLists[0]);
+			// setGrapher(grapherLists[0]);
+			initSetGrapher(grapherLists[0])
 			setPhotoGraphers(grapherLists);
 		});
 	}, [event]);
-
-	useEffect(() => {
-		if (
-			grapher &&
-			selectedDate &&
-			selectedHour !== null &&
-			grapher.value &&
-			selectedDate
-		) {
-			const fetchData = async () => {
-				try {
-					const response = await fetch(
-						`https://storage.googleapis.com/photocast/config/${grapher.value}/${selectedDate}/${selectedHour}.json`
-					);
-					const data = await response.json();
-					setImages(data.data);
-				} catch (error) {
-					console.error("Error fetching images:", error);
-				}
-			};
-
-			fetchData();
-		}
-	}, [grapher, selectedDate, selectedHour]);
 
 	const handlePhotoGrapherChange = (nextGrapher) => {
 		const selectedGrapher = photoGraphers.find(
 			(item) => item.value === nextGrapher
 		);
-		setGrapher(selectedGrapher);
-
-		setSelectedDate(null);
-		setSelectedHour(null);
+		initSetGrapher(selectedGrapher)
 	};
 
-	const handleDateSelection = (date) => {
-		setSelectedDate(date);
-		setSelectedHour(null);
-	};
+	// 选择摄影师 ，自动选择日期和时间
+	const initSetGrapher = grapher => {
+		const dates = Object.keys(grapher.available_time)
+		const hours = grapher.available_time[dates[0]]
 
-	const handleHourSelection = (hour) => {
-		setSelectedHour(hour);
-	};
+		setGrapher(grapher);
+		setCurrentDateTime([dates[0], hours[0]])
+	}
 
-	const handleImageClick = (image) => {
-		console.log("Image Path:", image.url);
-		setSelectedImage(image);
-		openWebpageWithDisclaimer(image.url, "Disclaimer");
-	};
+	useEffect(() => {
+		if (!grapher?.value) return;
+		getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(datas => {
+			setImages(datas)
+			console.log('datas', datas)
+		})
 
-	const handleModalClose = () => {
-		setIsModalOpen(false);
-	};
+	}, [currentDateTime])
 
-	const openWebpageWithDisclaimer = (imageUrl, disclaimerText) => {
-		const newWindow = window.open("", "_blank");
-		newWindow.document.write(`
-      <html>
-        <head>
-          <title>Image Viewer</title>
-          <style>
-            body {
-              margin: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-              background-color: #efefef;
-            }
-            .container {
-              max-width: 80%;
-              text-align: center;
-            }
-            .image {
-              max-width: 100%;
-              max-height: 80vh;
-              margin-bottom: 20px;
-            }
-            .disclaimer {
-              font-size: 18px;
-              color: #333;
-              margin-bottom: 20px;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <img class="image" src="${imageUrl}" alt="Original Image">
-            <div class="disclaimer">${disclaimerText}</div>
-          </div>
-        </body>
-      </html>
-    `);
-		newWindow.document.close();
-	};
 
 	return (
 		<div>
-			<p>Select a photographer below:</p>
-			<Select
-				className={styles.grapherOptions}
-				onChange={handlePhotoGrapherChange}
-				value={grapher?.value}
-			>
-				{photoGraphers.map((item) => (
-					<Select.Option key={item.value} value={item.value}>
-						<span>{item.label}</span>
-					</Select.Option>
+			<p>current photographer below:</p>
+			<Input prefix={<MehOutlined />} value={grapher?.label} onClick={() => setGraperPopupVisible(true)} placeholder="Select a photographer" readOnly suffix={<DownOutlined />} />
+			<p>current photo date time</p>
+			<Input prefix={<ClockCircleOutlined />} value={currentDateTime.join('-')} onClick={() => setDateTimePopVisible(true)} placeholder="Select date and time" readOnly suffix={<DownOutlined />} />
+			<p></p>
+			<Grid columns={2} gap={8} >
+				{images.map((image, index) => (
+					<Grid.Item key={image.name} onClick={() => setImagePopVisible(true)}>
+						<Image
+							lazy={true}
+							src={image?.url}
+							fit='cover'
+							style={{ borderRadius: 4 }}
+
+						/>
+
+					</Grid.Item>
 				))}
-			</Select>
-			{grapher && (
-				<div>
-					<div>
-						<p>Select a date:</p>
-						<Select
-							onChange={handleDateSelection}
-							value={selectedDate}
-							style={{ width: 200 }}
-						>
-							{Object.keys(grapher.available_time).map((date) => (
-								<Select.Option key={date} value={date}>
-									{date}
-								</Select.Option>
-							))}
-						</Select>
-						{selectedDate && (
-							<div>
-								<p>Select an hour:</p>
-								<Select
-									onChange={handleHourSelection}
-									value={selectedHour}
-									style={{ width: 200 }}
-								>
-									{grapher.available_time[selectedDate]?.map((hour) => (
-										<Select.Option key={hour} value={hour}>
-											{hour}
-										</Select.Option>
-									))}
-								</Select>
-							</div>
-						)}
-					</div>
-					<div className={styles.imageContainer}>
-						{images.map((image, index) => (
-							<div key={index} className={styles.imageWrapper}>
+			</Grid>
+			<Popup
+				visible={grapherPopupVisible}
+				onMaskClick={() => setGraperPopupVisible(false)}
+				destroyOnClose
+			>
+				<p className="text-center">   Select a photographer below:</p>
+				<CheckList
+					defaultValue={grapher?.value ? [grapher.value] : []}
+					onChange={val => {
+						handlePhotoGrapherChange(val[0])
+						setGraperPopupVisible(false)
+					}}
+				>
+					{photoGraphers.map(item => (
+						<CheckList.Item key={item?.value} value={item?.value} className={styles.photoGraperItem}>
+							<Flex align="center">
 								<Image
-									src={image.url}
-									alt={`Image ${index + 1}`}
-									className={styles.image}
-									onClick={() => handleImageClick(image)}
+									src={item?.photographer_icon_url}
+									width={40}
+									height={40}
+									fit='cover'
+									style={{ borderRadius: 4 }}
 								/>
-							</div>
-						))}
-						<Modal visible={isModalOpen} onClose={handleModalClose}>
-							<Image
-								src={selectedImage?.url}
-								alt="Selected Image"
-								className={styles.modalImage}
-							/>
-						</Modal>
-					</div>
-				</div>
-			)}
+								<span>&nbsp;{item?.label}</span>
+							</Flex>
+						</CheckList.Item>
+					))}
+				</CheckList>
+			</Popup>
+			<CascadePicker
+				title='级联选择'
+				options={grapherDateToCascadeOptions(grapher)}
+				visible={dateTimePopVisible}
+				onClose={() => setDateTimePopVisible(false)}
+				onConfirm={(val) => setCurrentDateTime(val)}
+			/>
+			<ImageViewer.Multi
+				images={images.map(i => i.url)}
+				visible={imagePopVisible}
+				defaultIndex={1}
+				onClose={() => setImagePopVisible(false)}
+			/>
 		</div>
 	);
 };

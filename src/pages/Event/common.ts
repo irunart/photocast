@@ -34,3 +34,18 @@ export function countPhotoAmount(
 	}
 	return count;
 }
+
+export function grapherDateToCascadeOptions(grapher) {
+	if (!grapher) return [];
+	const { available_time = [] } = grapher;
+	return Object.keys(available_time).map((date) => {
+		return {
+			label: date,
+			value: date,
+			children: available_time[date].map((hour) => ({
+				label: hour,
+				value: hour,
+			})),
+		};
+	}, []);
+}
