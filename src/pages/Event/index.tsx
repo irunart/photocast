@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Input, Flex } from "antd";
@@ -8,8 +8,6 @@ import {
 	Popup,
 	CheckList,
 	CascadePicker,
-	Grid,
-	Card,
 } from "antd-mobile";
 import {
 	DownOutlined,
@@ -19,6 +17,9 @@ import {
 
 import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
+
+import Masonry from "@/components/Masonry";
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 import styles from "./index.module.scss";
 
@@ -114,19 +115,19 @@ const Home = () => {
 			/>
 			<p></p>
 
-			<Grid columns={2} gap={8}>
-				{images.map((image, index) => (
-					<Grid.Item key={image.name} onClick={() => openImageViewer(index)}>
-						<Image
-							height="300px" // lazy 需要
+			<Masonry column={3} gap={8} items={
+				images.map((image, index) => (
+					<div key={image.name} onClick={() => openImageViewer(index)}>
+						<ResponsiveImage
+							minHeight={150}
 							lazy
 							src={image?.url}
 							fit="cover"
 							style={{ borderRadius: 4 }}
 						/>
-					</Grid.Item>
-				))}
-			</Grid>
+					</div>
+				))
+			}/>
 			<Popup
 				visible={grapherPopupVisible}
 				onMaskClick={() => setGraperPopupVisible(false)}
