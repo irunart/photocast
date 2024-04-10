@@ -17,6 +17,7 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = (props) => {
       backgroundColor: "var(--adm-color-fill-content)"
     }}
     onLoad={(e) => {
+      onLoad?.(e);
       const img = e.target as HTMLImageElement;
       setTimeout(() => setMinHeight(img.getBoundingClientRect()?.height), 0);
     }}
