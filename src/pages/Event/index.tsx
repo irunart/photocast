@@ -115,7 +115,7 @@ const Home = () => {
 			/>
 			<p></p>
 
-			<Masonry column={3} gap={8} items={
+			<Masonry column={3} gap={8} initailHeight={150} items={
 				images.map((image, index) => (
 					<div key={image.name} onClick={() => openImageViewer(index)}>
 						<ResponsiveImage
