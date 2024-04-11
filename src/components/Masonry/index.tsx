@@ -9,6 +9,10 @@ export interface MasonryProps {
   style?: CSSProperties;
 }
 
+const pxUnitToNumber = (val: string) => {
+  return Number(val.replace('px', ''));
+};
+
 export const Masonry: React.FC<MasonryProps> = (props) => {
   const {items, column, gap = 8, style, initailHeight = 150} = props;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,15 +24,16 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
     const heights = Array.from({length: column}, () => 0);
     containerRef.current.childNodes.forEach((child) => {
       const element = child as HTMLElement;
-      if (element.clientHeight === 0 || element.dataset.class === 'column-break') {
+      const elementHeight = pxUnitToNumber(window.getComputedStyle(element).height);
+      if (elementHeight === 0 || element.dataset.class === 'column-break') {
         return;
       }
       const minHeight = Math.min(...heights);
-      const minColumn = heights.findIndex(h => h === minHeight);
+      const minColumn = heights.indexOf(minHeight);
       element.style.order = `${minColumn + 1}`;
-      heights[minColumn] += element.clientHeight + gap;
+      heights[minColumn] += elementHeight + gap;
     })
-    flushSync(() => setMaxHeight(Math.max(...heights)));
+    flushSync(() => setMaxHeight(Math.ceil(Math.max(...heights))));
   }, [column, gap, items])
 
   useEffect(() => {
