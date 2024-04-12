@@ -6,21 +6,20 @@ import { List, Image } from "antd-mobile";
 
 import { getEventLists } from "@/services/googleApis";
 
+import type { IEventLists } from "./type";
+
 const Home = () => {
-	// const location = useLocation();
-	// const params = useParams();
 	const navigate = useNavigate();
 
 	const [data, setData] = useState<string[]>([]);
 
-	const datasRef = useRef();
+	const datasRef = useRef<IEventLists>();
 
 	// init 阶段
 	useEffect(() => {
-		getEventLists().then((res) => {
-			datasRef.current = res;
-			console.log(res, "res==");
-			setData(_.keys(res));
+		getEventLists().then((res: CommonResponse<IEventLists>) => {
+			datasRef.current = res.data;
+			setData(_.keys(res.data));
 		});
 	}, []);
 

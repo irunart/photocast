@@ -9,6 +9,7 @@ import {
 	CheckList,
 	CascadePicker,
 } from "antd-mobile";
+import type { MultiImageViewerRef } from "antd-mobile";
 import {
 	DownOutlined,
 	MehOutlined,
@@ -16,6 +17,9 @@ import {
 } from "@ant-design/icons";
 
 import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
+
+import type { IData, IPhotographer, IImage } from "./type";
+
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 
 import Masonry from "@/components/Masonry";
@@ -23,26 +27,27 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 
 import styles from "./index.module.scss";
 
-// TODO: ImageViewer.Multi 用来展示图片
-
-const Home = () => {
+const Home: React.FC = () => {
 	// const location = useLocation();
 	const navigate = useNavigate();
 	const { event } = useParams();
-	const imageViewerRefs = useRef();
+	const imageViewerRefs = useRef<MultiImageViewerRef>(null);
 
 	// 摄影师列表
-	const [photoGraphers, setPhotoGraphers] = useState([]);
+	const [photoGraphers, setPhotoGraphers] = useState<IPhotographer[]>([]);
 	// 当前摄影师
-	const [grapher, setGrapher] = useState(null);
+	const [grapher, setGrapher] = useState<IPhotographer>();
 	// 选择摄影师弹窗
 	const [grapherPopupVisible, setGraperPopupVisible] = useState(false);
 
 	// 照片列表
-	const [images, setImages] = useState([]);
+	const [images, setImages] = useState<IImage[]>([]);
 
 	// 当前[日期, 小时]
-	const [currentDateTime, setCurrentDateTime] = useState([]);
+	const [currentDateTime, setCurrentDateTime] = useState<[string, string]>([
+		"",
+		"",
+	]);
 	// 选择日期时间弹窗
 	const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
 	//照片弹窗
@@ -52,23 +57,23 @@ const Home = () => {
 		if (!event) return navigate("/home", { replace: true });
 
 		// 获取摄影师列表
-		getPhotographers().then((res) => {
-			const grapherLists = getEventPhotoGrapher(res, event);
+		getPhotographers().then((res: CommonResponse<IData[]>) => {
+			const grapherLists = getEventPhotoGrapher(res.data, event);
 			// setGrapher(grapherLists[0]);
 			initSetGrapher(grapherLists[0]);
 			setPhotoGraphers(grapherLists);
 		});
 	}, [event]);
 
-	const handlePhotoGrapherChange = (nextGrapher) => {
+	const handlePhotoGrapherChange = (nextGrapher: string) => {
 		const selectedGrapher = photoGraphers.find(
 			(item) => item.value === nextGrapher
 		);
-		initSetGrapher(selectedGrapher);
+		initSetGrapher(selectedGrapher as IPhotographer);
 	};
 
 	// 选择摄影师 ，自动选择日期和时间
-	const initSetGrapher = (grapher) => {
+	const initSetGrapher = (grapher: IPhotographer) => {
 		const dates = Object.keys(grapher.available_time);
 		const hours = grapher.available_time[dates[0]];
 
@@ -76,9 +81,9 @@ const Home = () => {
 		setCurrentDateTime([dates[0], hours[0]]);
 	};
 
-	const openImageViewer = (index) => {
+	const openImageViewer = (index: number) => {
 		setImagePopVisible(true);
-		imageViewerRefs.current.swipeTo(index);
+		imageViewerRefs.current?.swipeTo(index);
 	};
 
 	useEffect(() => {
@@ -87,9 +92,8 @@ const Home = () => {
 			grapher?.value,
 			currentDateTime[0],
 			currentDateTime[1]
-		).then((datas) => {
-			setImages(datas);
-			console.log("datas", datas);
+		).then((res: CommonResponse<IImage[]>) => {
+			setImages(res.data);
 		});
 	}, [currentDateTime]);
 
@@ -115,8 +119,11 @@ const Home = () => {
 			/>
 			<p></p>
 
-			<Masonry column={3} gap={8} initailHeight={150} items={
-				images.map((image, index) => (
+			<Masonry
+				column={3}
+				gap={8}
+				initailHeight={150}
+				items={images.map((image, index) => (
 					<div key={image.name} onClick={() => openImageViewer(index)}>
 						<ResponsiveImage
 							minHeight={150}
@@ -126,8 +133,8 @@ const Home = () => {
 							style={{ borderRadius: 4 }}
 						/>
 					</div>
-				))
-			}/>
+				))}
+			/>
 			<Popup
 				visible={grapherPopupVisible}
 				onMaskClick={() => setGraperPopupVisible(false)}
@@ -137,14 +144,14 @@ const Home = () => {
 				<CheckList
 					defaultValue={grapher?.value ? [grapher.value] : []}
 					onChange={(val) => {
-						handlePhotoGrapherChange(val[0]);
+						handlePhotoGrapherChange(val[0] as string);
 						setGraperPopupVisible(false);
 					}}
 				>
 					{photoGraphers.map((item) => (
 						<CheckList.Item
 							key={item?.value}
-							value={item?.value}
+							value={item?.value as string}
 							className={styles.photoGraperItem}
 						>
 							<Flex align="center">
@@ -166,7 +173,7 @@ const Home = () => {
 				options={grapherDateToCascadeOptions(grapher)}
 				visible={dateTimePopVisible}
 				onClose={() => setDateTimePopVisible(false)}
-				onConfirm={(val) => setCurrentDateTime(val)}
+				onConfirm={(val) => setCurrentDateTime(val as [string, string])}
 			/>
 			<ImageViewer.Multi
 				ref={imageViewerRefs}
