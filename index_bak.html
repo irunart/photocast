@@ -1,939 +1,863 @@
 <!doctype html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+  <meta property="og:image" content="https://iest.run/IEST-flag.jpg" />
+  <meta property="og:title" content="耐力學社 Institute of Endurance Science and Technology" />
+  <meta property="og:description" content="Empower ultra runners with endurance science and information technology" />
+  <meta property="og:url" content="https://iest.run" />
+  <meta property="og:image:alt" content="Flag of Institute of Endurance Science and Technology" />
+  <meta name="twitter:title" content="耐力學社 Institute of Endurance Science and Technology" />
+  <meta name="twitter:description" content="Empower ultra runners with endurance science and information technology" />
+  <meta name="twitter:url" content="https://iest.run/IEST-flag.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="thumbnail" content="https://iest.run/IEST-flag.jpg" />
 
+  <style>
+    #photo-container {
+      max-width: 100%;
+    }
 
-    <meta property="og:image" content="https://iest.run/IEST-flag.jpg" />
-    <meta property="og:title" content="耐力學社 Institute of Endurance Science and Technology" />
-    <meta property="og:description" content="Empower ultra runners with endurance science and information technology" />
-    <meta property="og:url" content="https://iest.run" />
-    <meta property="og:image:alt" content="Flag of Institute of Endurance Science and Technology" />
-    <meta name="twitter:title" content="耐力學社 Institute of Endurance Science and Technology">
-    <meta name="twitter:description" content="Empower ultra runners with endurance science and information technology">
-    <meta name="twitter:url" content="https://iest.run/IEST-flag.jpg">
-    <meta name="twitter:card" content="summary">
-    <meta name="thumbnail" content="https://iest.run/IEST-flag.jpg" />
+    #photo-container img {
+      max-width: 100%;
+    }
 
-    <style>
-        #photo-container {
-            max-width: 100%;
-        }
+    #rendered-image img {
+      max-width: 100%;
+    }
 
-        #photo-container img {
-            max-width: 100%;
-        }
+    templates {
+      display: none;
+    }
 
-        #rendered-image img {
-            max-width: 100%;
-        }
+    .division {
+      width: 100%;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
 
-        templates {
-            display: none;
-        }
+    .photo {
+      width: calc((100% - 60px) / 7);
+    }
+    @media only screen and (max-width: 500px) {
+      .photo {
+        width: calc((100% - 20px) / 3);
+      }
+    }
 
-        .division {
-            width: 100%;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .photo {
-            width: calc((100% - 60px) / 7);
-        }
-        @media only screen and (max-width: 500px) {
-            .photo {
-                width: calc((100% - 20px) / 3);
-            }
-        }
-
-        .card-photo {
-            min-height: 50px;
-            background-color: #eeeeeeaa;
-        }
-    </style>
-
+    .card-photo {
+      min-height: 50px;
+      background-color: #eeeeeeaa;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <button class="btn waves-effect waves-light" id="back-to-top" style="position: fixed; bottom: 20px; right: 20px">
+      <i class="material-icons">arrow_upward</i>
+    </button>
 
-    <div class="container">
-        <button class="btn waves-effect waves-light" id="back-to-top" style="position:fixed;bottom:20px;right:20px">
-            <i class="material-icons">arrow_upward</i>
-        </button>
+    <button class="btn waves-effect waves-light" id="share" style="position: fixed; bottom: 80px; right: 20px">
+      <i class="material-icons">share</i>
+    </button>
+    <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> -->
 
-
-        <button class="btn waves-effect waves-light" id="share" style="position:fixed;bottom:80px;right:20px">
-            <i class="material-icons">share</i>
-        </button>
-        <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> -->
-
-        <div id="modal1" class="modal modal-fixed-footer">
-            <div class="modal-content">
-                <h4>PHOTO</h4>
-                <p>Long press / right click to save photo.</p>
-                <img src="" alt="" width="100%">
-                <a href="" id="disclaimers"> Disclaimers</a>
-                <!-- <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
+    <div id="modal1" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>PHOTO</h4>
+        <p>Long press / right click to save photo.</p>
+        <img src="" alt="" width="100%" />
+        <a href="" id="disclaimers"> Disclaimers</a>
+        <!-- <p>本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
 
                     Photocast is a platform to provide storage of pictures for trail runners.
                     Photocase might add, revmove or update the pictures from time to time.
                     For donwloading original photo, or removing your pictures from Photocast, please
                     contact us: hi@iest.run .</p> -->
-            </div>
+      </div>
 
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Exit</a>
-            </div>
-        </div>
-
-        <h1> PhotoCast</h1>
-        <div>
-            A runners-for-runners photo system by <a href="https://iest.run">iest.run</a>.
-        </div>
-
-        <templates>
-
-
-            <div class="masonry-item photo" id="photo-template">
-                <div class="card hoverable" style="margin: 0 0 10px 0;">
-                    <div class="card-image">
-                        <!-- <p class="card-text">
-                            card text
-                        </p> -->
-                        <a class="modal-trigger" href="#modal1">
-                            <img src="{{photo.url}}" alt="" loading="lazy" class="card-photo"  style="border-radius: 2px;">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </templates>
-
-        <templates>
-
-
-            <div class="masonry-item division" id="division-template">
-
-                <p></p>
-                <hr>
-
-            </div>
-
-
-        </templates>
-
-
-
-        <div id="date" class="row">
-            <div class="s12 m2 l2 input-field">
-                <div>Select event below:</div>
-                <select id="select-event">
-                </select>
-            </div>
-        </div>
-
-        <div id="date" class="row">
-            <div class="s12 m2 l2 input-field">
-                <div>Select photographer below:</div>
-                <select id="select-photographer">
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <label for="">Current Photographer:</label><br>
-                Name: <div id="photographer-name" class="chip"></div>
-                Location:<div id="photographer-location" class="chip"></div>
-                Event: <div id="photographer-event" class="chip"></div>
-            </div>
-        </div>
-
-        <div id="date" class="row">
-            <div class="s12 m2 l2 input-field">
-                <div>Select date below:</div>
-                <select id="select-date">
-                </select>
-            </div>
-        </div>
-
-        <div id="hours" class="row">
-            <div class="s12 m2 l2 input-field">
-                <div>Select hour below:</div>
-                <select id="select-hour">
-                </select>
-            </div>
-        </div>
-
-        <div id="photo-container" class="masonry">
-        </div>
-
-        <div class="row" style="height: 50px;">
-            <div style="text-align: center; vertical-align: middle;" id="footer">
-                Scroll down to display photos in the next hour.
-            </div>
-        </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Exit</a>
+      </div>
     </div>
 
-    
-    <script>
-        const masonryOptions = {
-            columnWidth: '.photo',
-            itemSelector: '.masonry-item',
-            percentPosition: true,
-            gutter: 10,
-            transitionDuration: 0,
-        };
-        let masonryInitialized = false;
-        const $phc = $('#photo-container');
-        const resetMasonry = () => {
-            if (masonryInitialized) {
-                $phc.masonry("destroy");
-            }
-            $phc.masonry(masonryOptions);
-            masonryInitialized = true;
-        }
-        const loadingImage = () => $phc.imagesLoaded().progress(() => $phc.masonry("layout"));
-        const addItemToMasonry = (item) => {
-            $phc.masonry("addItems", item);
-            $phc.masonry("layout");
-        }
+    <h1>PhotoCast</h1>
+    <div>A runners-for-runners photo system by <a href="https://iest.run">iest.run</a>.</div>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('.modal');
-            var instances = M.Modal.init(elems, null);
+    <templates>
+      <div class="masonry-item photo" id="photo-template">
+        <div class="card hoverable" style="margin: 0 0 10px 0">
+          <div class="card-image">
+            <!-- <p class="card-text">
+                            card text
+                        </p> -->
+            <a class="modal-trigger" href="#modal1">
+              <img src="{{photo.url}}" alt="" loading="lazy" class="card-photo" style="border-radius: 2px" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </templates>
+
+    <templates>
+      <div class="masonry-item division" id="division-template">
+        <p></p>
+        <hr />
+      </div>
+    </templates>
+
+    <div id="date" class="row">
+      <div class="s12 m2 l2 input-field">
+        <div>Select event below:</div>
+        <select id="select-event"></select>
+      </div>
+    </div>
+
+    <div id="date" class="row">
+      <div class="s12 m2 l2 input-field">
+        <div>Select photographer below:</div>
+        <select id="select-photographer"></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label for="">Current Photographer:</label><br />
+        Name:
+        <div id="photographer-name" class="chip"></div>
+        Location:
+        <div id="photographer-location" class="chip"></div>
+        Event:
+        <div id="photographer-event" class="chip"></div>
+      </div>
+    </div>
+
+    <div id="date" class="row">
+      <div class="s12 m2 l2 input-field">
+        <div>Select date below:</div>
+        <select id="select-date"></select>
+      </div>
+    </div>
+
+    <div id="hours" class="row">
+      <div class="s12 m2 l2 input-field">
+        <div>Select hour below:</div>
+        <select id="select-hour"></select>
+      </div>
+    </div>
+
+    <div id="photo-container" class="masonry"></div>
+
+    <div class="row" style="height: 50px">
+      <div style="text-align: center; vertical-align: middle" id="footer">
+        Scroll down to display photos in the next hour.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const masonryOptions = {
+      columnWidth: ".photo",
+      itemSelector: ".masonry-item",
+      percentPosition: true,
+      gutter: 10,
+      transitionDuration: 0,
+    };
+    let masonryInitialized = false;
+    const $phc = $("#photo-container");
+    const resetMasonry = () => {
+      if (masonryInitialized) {
+        $phc.masonry("destroy");
+      }
+      $phc.masonry(masonryOptions);
+      masonryInitialized = true;
+    };
+    const loadingImage = () => $phc.imagesLoaded().progress(() => $phc.masonry("layout"));
+    const addItemToMasonry = (item) => {
+      $phc.masonry("addItems", item);
+      $phc.masonry("layout");
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var elems = document.querySelectorAll(".modal");
+      var instances = M.Modal.init(elems, null);
+    });
+
+    $(document).ready(function () {
+      $("select").formSelect();
+    });
+
+    // 返回顶部
+    const backToTop = document.querySelector("#back-to-top");
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    const share = document.querySelector("#share");
+    share.addEventListener("click", () => {
+      // const data = new ClipboardItem({ 'text/plain':  });
+      navigator.clipboard.writeText(window.location.href).then(
+        () => {
+          alert("Link copied to clipboard,You can paste it and send it to your friends");
+        },
+        () => {
+          alert(
+            "Your browser does not support this feature, please copy the link manually and send it to your friends"
+          );
+        }
+      );
+    });
+
+    // var urlListCurrent = 'https://storage.googleapis.com/photocast/config/current.json';
+    var urlPhotographers = "https://storage.googleapis.com/photocast/config/photographers.json";
+    var urlEvents = "https://storage.googleapis.com/photocast/config/events.json";
+    var urlEventDateRename = "https://storage.googleapis.com/photocast/config/event_date_rename.json";
+    var urlEventDetail = "https://storage.googleapis.com/photocast/config/event_detail.json";
+    var urlDefault = "https://storage.googleapis.com/photocast/config/defaults.json";
+    function noCacheUrl(url) {
+      var newUrl = url + "?" + Math.random();
+      return newUrl;
+    }
+    // 使用 `lodash` 中的 `throttle` 函数来限制 `handleInfiniteScroll` 函数的执行频率
+    const handleInfiniteScroll = _.throttle(checkBottom, 2000);
+
+    window.addEventListener("scroll", handleInfiniteScroll);
+
+    function checkBottom() {
+      if (isScrolledToBottom()) {
+        ScrolledToBottom();
+      }
+    }
+
+    function isScrolledToBottom() {
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+      // minus 150 to make it easier to trigger on mobile dynamic viewports;
+      return scrollTop + clientHeight >= scrollHeight - 150;
+    }
+
+    function ScrolledToBottom() {
+      nextHour = getNextHour(document.config.hour);
+      if (nextHour == "last") {
+        var div = document.getElementById("footer");
+        div.innerHTML = "No more photos.";
+      } else if (nextHour == "error") {
+        //
+      } else {
+        const select = document.getElementById("select-hour");
+        select.options[select.selectedIndex + 1].selected = true;
+        $("select").formSelect();
+        var div = document.getElementById("footer");
+        div.innerHTML = "Loading next hour...";
+        addPhotos(nextHour);
+      }
+    }
+
+    function getNextHour(hourNow) {
+      const select = document.getElementById("select-hour");
+
+      if (select.options.length == 0) {
+        return "error";
+      }
+      if (select.options.selectedIndex != select.options.length - 1) {
+        return select.options[select.options.selectedIndex + 1].value;
+      } else {
+        return "last";
+      }
+    }
+
+    function updatePhotographer(autoSelect) {
+      var p = document.photographers[document.config.label];
+      console.log("photographers", document.photographers);
+      console.log("label", document.config.label);
+      document.getElementById("photographer-name").innerText = p["name"];
+      document.getElementById("photographer-location").innerText = p["location"];
+      document.getElementById("photographer-event").innerText = p["event"];
+
+      updateDate(autoSelect);
+    }
+    function updateDate(autoSelect) {
+      eventDate = [];
+
+      eventDateDic = document.eventDateDic[document.config.event];
+
+      if (eventDateDic == undefined) {
+        eventDateDic = {};
+      }
+      photographers = document.photographers[document.config.label];
+      for (const key in photographers["available_time"]) {
+        if (key in eventDateDic) {
+          eventDate.push({ event: eventDateDic[key], date: key });
+        } else {
+          eventDate.push({ event: key, date: key });
+        }
+      }
+
+      const select = document.querySelector("#select-date");
+      select.options.length = 0;
+
+      for (const i of eventDate) {
+        const option = document.createElement("option");
+        option.value = i.date;
+
+        amount = CountPhotoAmount(document.config.label, i.date);
+        option.text = i.event + "(" + amount + "张)";
+        select.appendChild(option);
+      }
+
+      if (autoSelect) {
+        document.config.date = select.options[0].value;
+      }
+
+      selectDateByValue(document.config.date);
+      updateHour(autoSelect);
+    }
+
+    function updateHour(autoSelect) {
+      label = document.config.label;
+      date = document.config.date;
+      const select = document.querySelector("#select-hour");
+      select.options.length = 0;
+      data = document.photographers[label];
+      hours = data["available_time"][date];
+      if (autoSelect) {
+        if (hours.length != 0) {
+          hour = hours[0];
+          document.config.hour = hour;
+          listPhotos(true);
+        }
+      } else {
+        // clearPhotos()
+      }
+      for (const hour of hours) {
+        const option = document.createElement("option");
+        option.value = hour;
+        amount = CountPhotoAmount(label, parseInt(date), hour);
+        hour_text = parseInt(hour) + "(" + amount + "张)";
+        option.text = hour_text;
+        select.appendChild(option);
+      }
+
+      selectHourByValue(document.config.hour);
+    }
+
+    function sortByTime(a, b) {
+      var aTime = a.time;
+      var bTime = b.time;
+      // 比较两个元素的 `time` 属性的值
+      if (aTime < bTime) {
+        return -1;
+      } else if (aTime > bTime) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+
+    function clearPhotos() {
+      var container = document.getElementById("photo-container");
+      container.innerHTML = "";
+    }
+
+    function addPhoto_element(path, time, thumbnailUrl, originalUrl) {
+      var photo_template = document.getElementById("photo-template");
+      var photo = photo_template.cloneNode(true);
+      photo.removeAttribute("id");
+      var img = photo.getElementsByTagName("img");
+      img[0].src = thumbnailUrl;
+      img[0].setAttribute("data-src", originalUrl);
+
+      // var p = photo.getElementsByTagName('p');
+      // p[0].innerText = time;
+      return photo;
+    }
+    function PhotoAddEventListener() {
+      var imgs = document.getElementsByClassName("card-photo");
+      for (var i = 0; i < imgs.length; i++) {
+        img = imgs[i];
+        img.addEventListener("click", function (img) {
+          img = img.target;
+          var url = img.getAttribute("data-src");
+          var div = document.getElementById("modal1");
+          var img = div.getElementsByTagName("img");
+          img[0].src = url;
         });
+      }
+    }
+    function addDivision(hourMinute) {
+      var container = document.getElementById("photo-container");
+      var division_template = document.getElementById("division-template");
+      var division = division_template.cloneNode(true);
+      division.removeAttribute("id");
+      var division_hour = division.getElementsByTagName("p");
+      if (hourMinute.length === 2) {
+        hourMinute += ":00";
+      }
+      division_hour[0].innerHTML = hourMinute;
+      container.appendChild(division);
+      addItemToMasonry(division);
+    }
 
-        $(document).ready(function () {
-            $('select').formSelect();
-        });
+    function listPhotos(autoSelect) {
+      if (autoSelect) {
+        updateQueryString();
+      }
 
-        // 返回顶部
-        const backToTop = document.querySelector('#back-to-top');
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+      // M.toast({
+      //     html: `Refreshing...`,
+      //     classes: 'yellow darken-3',
+      // })
+      var div = document.getElementById("footer");
+      div.innerHTML = "Scroll down to load more photos";
 
-
-        const share = document.querySelector('#share');
-        share.addEventListener('click', () => {
-            // const data = new ClipboardItem({ 'text/plain':  });
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('Link copied to clipboard,You can paste it and send it to your friends');
-            }, () => {
-                alert('Your browser does not support this feature, please copy the link manually and send it to your friends');
-            });
-        });
-
-
-        // var urlListCurrent = 'https://storage.googleapis.com/photocast/config/current.json';
-        var urlPhotographers = 'https://storage.googleapis.com/photocast/config/photographers.json';
-        var urlEvents = 'https://storage.googleapis.com/photocast/config/events.json';
-        var urlEventDateRename = 'https://storage.googleapis.com/photocast/config/event_date_rename.json';
-        var urlEventDetail = 'https://storage.googleapis.com/photocast/config/event_detail.json';
-        var urlDefault = 'https://storage.googleapis.com/photocast/config/defaults.json';
-        function noCacheUrl(url) {
-            var newUrl = url + '?' + Math.random();
-            return newUrl;
-        }
-        // 使用 `lodash` 中的 `throttle` 函数来限制 `handleInfiniteScroll` 函数的执行频率
-        const handleInfiniteScroll = _.throttle(checkBottom, 2000);
-
-        window.addEventListener("scroll", handleInfiniteScroll);
-
-        function checkBottom() {
-
-
-
-            if (isScrolledToBottom()) {
-
-                ScrolledToBottom();
-            }
-        }
-
-        function isScrolledToBottom() {
-            const scrollTop = document.documentElement.scrollTop;
-            const clientHeight = document.documentElement.clientHeight;
-            const scrollHeight = document.documentElement.scrollHeight;
-            // minus 150 to make it easier to trigger on mobile dynamic viewports;
-            return scrollTop + clientHeight >= scrollHeight - 150;
-        }
-
-        function ScrolledToBottom() {
-
-            nextHour = getNextHour(document.config.hour)
-            if (nextHour == "last") {
-                var div = document.getElementById('footer');
-                div.innerHTML = "No more photos."
-            }else if(nextHour == "error" ){
-                // 
-            }
-            else {
-                const select = document.getElementById('select-hour');
-                select.options[select.selectedIndex + 1].selected = true;
-                $('select').formSelect();
-                var div = document.getElementById('footer');
-                div.innerHTML = "Loading next hour..."
-                addPhotos(nextHour)
-            }
-        }
-
-        function getNextHour(hourNow) {
-            const select = document.getElementById('select-hour');
-
-            if (select.options.length==0){
-                return "error"
-            }
-            if (select.options.selectedIndex != select.options.length - 1) {
-                return select.options[select.options.selectedIndex + 1].value
-            } else {
-                return "last"
-            }
-
-        }
-
-
-
-        function updatePhotographer(autoSelect) {
-            var p = document.photographers[document.config.label];
-            console.log('photographers', document.photographers);
-            console.log('label', document.config.label)
-            document.getElementById('photographer-name').innerText = p['name']
-            document.getElementById('photographer-location').innerText = p['location']
-            document.getElementById('photographer-event').innerText = p['event']
-
-            updateDate(autoSelect)
-
-        }
-        function updateDate(autoSelect) {
-            eventDate = []
-
-            eventDateDic = document.eventDateDic[document.config.event]
-
-            if (eventDateDic == undefined) {
-                eventDateDic = {}
-            }
-            photographers = document.photographers[document.config.label]
-            for (const key in photographers["available_time"]) {
-                if (key in eventDateDic) {
-                    eventDate.push({ "event": eventDateDic[key], "date": key })
-                } else {
-                    eventDate.push({ "event": key, "date": key })
-                }
-            }
-
-            const select = document.querySelector('#select-date');
-            select.options.length = 0;
-
-            for (const i of eventDate) {
-                const option = document.createElement('option');
-                option.value = i.date;
-
-                amount = CountPhotoAmount(document.config.label, i.date)
-                option.text = i.event + "(" + amount + "张)";
-                select.appendChild(option);
-            }
-
-            if (autoSelect) {
-                document.config.date = select.options[0].value
-            }
-
-
-            selectDateByValue(document.config.date)
-            updateHour(autoSelect)
-
-        }
-
-        function updateHour(autoSelect) {
-            label = document.config.label
-            date = document.config.date
-            const select = document.querySelector('#select-hour');
-            select.options.length = 0;
-            data = document.photographers[label]
-            hours = data["available_time"][date]
-            if (autoSelect) {
-                if (hours.length != 0) {
-
-                    hour = hours[0]
-                    document.config.hour = hour
-                    listPhotos(true)
-                }
-            } else {
-                // clearPhotos()
-            }
-            for (const hour of hours) {
-                const option = document.createElement('option');
-                option.value = hour;
-                amount = CountPhotoAmount(label, parseInt(date), hour)
-                hour_text = parseInt(hour) + "(" + amount + "张)"
-                option.text = hour_text;
-                select.appendChild(option);
-            }
-
-            selectHourByValue(document.config.hour)
-
-        }
-
-
-
-
-        function sortByTime(a, b) {
-            var aTime = a.time;
-            var bTime = b.time;
-            // 比较两个元素的 `time` 属性的值
-            if (aTime < bTime) {
-                return -1;
-            } else if (aTime > bTime) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        function clearPhotos() {
-            var container = document.getElementById('photo-container');
-            container.innerHTML = '';
-        }
-
-
-        function addPhoto_element(path, time, thumbnailUrl, originalUrl) {
-            var photo_template = document.getElementById('photo-template');
-            var photo = photo_template.cloneNode(true);
-            photo.removeAttribute('id')
-            var img = photo.getElementsByTagName('img');
-            img[0].src = thumbnailUrl;
-            img[0].setAttribute("data-src", originalUrl);
-
-            // var p = photo.getElementsByTagName('p');
-            // p[0].innerText = time;
-            return photo;
-
-        }
-        function PhotoAddEventListener() {
-            var imgs = document.getElementsByClassName('card-photo');
-            for (var i = 0; i < imgs.length; i++) {
-                img = imgs[i]
-                img.addEventListener('click', function (img) {
-                    img = img.target
-                    var url = img.getAttribute('data-src');
-                    var div = document.getElementById('modal1');
-                    var img = div.getElementsByTagName('img');
-                    img[0].src = url
-
-                })
-
-            }
-        }
-        function addDivision(hourMinute) {
-            var container = document.getElementById('photo-container');
-            var division_template = document.getElementById('division-template');
-            var division = division_template.cloneNode(true);
-            division.removeAttribute('id')
-            var division_hour = division.getElementsByTagName('p');
-            if (hourMinute.length === 2) {
-                hourMinute += ":00";
-            }
-            division_hour[0].innerHTML = hourMinute;
-            container.appendChild(division);
-            addItemToMasonry(division);
-        }
-
-
-
-
-        function listPhotos(autoSelect) {
-            if (autoSelect) {
-                updateQueryString()
-            }
-
+      var label = document.config.label;
+      var date = document.config.date;
+      var hour = document.config.hour;
+      var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
+      fetch(noCacheUrl(urlListCurrent))
+        .then(function (response) {
+          if (response.status == 200) {
             // M.toast({
-            //     html: `Refreshing...`,
-            //     classes: 'yellow darken-3',
+            //     html: `Done!`,
+            //     classes: 'green darken-3',
             // })
-            var div = document.getElementById('footer');
-            div.innerHTML = "Scroll down to load more photos"
+            return response.json();
+          } else {
+            throw "error";
+          }
+        })
+        .then(function (jsonResponse) {
+          var container = document.getElementById("photo-container");
+          container.innerHTML = "";
+          resetMasonry();
+          var data = jsonResponse.data;
+          data.sort(sortByTime);
+          addDivision(document.config.hour);
+          for (var i = 0; i < data.length; i++) {
+            var path = data[i]["name"];
+            var time = data[i]["time"];
+            var url = data[i]["url"];
+            photo = addPhoto_element(path, time, url, url);
 
-            var label = document.config.label;
-            var date = document.config.date;
-            var hour = document.config.hour;
-            var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
-            fetch(noCacheUrl(urlListCurrent)).then(
-                function (response) {
-                    if (response.status == 200) {
-                        // M.toast({
-                        //     html: `Done!`,
-                        //     classes: 'green darken-3',
-                        // })
-                        return response.json()
-                    } else {
-                        throw "error"
-                    }
-                }
-            ).then(function (jsonResponse) {
-                var container = document.getElementById('photo-container');
-                container.innerHTML = '';
-                resetMasonry();
-                var data = jsonResponse.data;
-                data.sort(sortByTime);
-                addDivision(document.config.hour);
-                for (var i = 0; i < data.length; i++) {
-                    var path = data[i]['name'];
-                    var time = data[i]['time'];
-                    var url = data[i]['url'];
-                    photo = addPhoto_element(path, time, url, url)
+            container.appendChild(photo);
+            addItemToMasonry(photo);
+          }
+          loadingImage();
+          PhotoAddEventListener();
+          if (data.length < 30) {
+            ScrolledToBottom();
+          }
+          // template.remove();
+        })
+        .catch(function () {
+          (err) => {
+            var container = document.getElementById("photo-container");
+            container.innerHTML = "";
+            // M.toast({
+            //     html: `Fail...`,
+            //     classes: 'red darken-3',
+            // })
+          };
+        });
+    }
 
-                    container.appendChild(photo);
-                    addItemToMasonry(photo);
-                }
-                loadingImage();
-                PhotoAddEventListener();
-                if (data.length < 30) {
-                    ScrolledToBottom()
-                }
-                // template.remove();
-            }).catch(function () {
-                (err) => {
-                    var container = document.getElementById('photo-container');
-                    container.innerHTML = '';
-                    // M.toast({
-                    //     html: `Fail...`,
-                    //     classes: 'red darken-3',
-                    // })
-                }
-            })
+    function addPhotos(hour) {
+      updateQueryString();
+      var label = document.config.label;
+      var date = document.config.date;
+      // var hour = document.config.hour;
+      var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
+      fetch(noCacheUrl(urlListCurrent))
+        .then(function (response) {
+          if (response.status == 200) {
+            // M.toast({
+            //     html: `Done!`,
+            //     classes: 'green darken-3',
+            // })
+            return response.json();
+          } else {
+            throw "error";
+          }
+        })
+        .then(function (jsonResponse) {
+          var container = document.getElementById("photo-container");
+          // container.innerHTML = '';
+          var data = jsonResponse.data;
+          data.sort(sortByTime);
+          addDivision(hour);
+          for (var i = 0; i < data.length; i++) {
+            var path = data[i]["name"];
+            var time = data[i]["time"];
+            var url = data[i]["url"];
+            // photo=addPhoto_element(photo,path,time,url)
+            photo = addPhoto_element(path, time, url, url);
+            container.appendChild(photo);
+            addItemToMasonry(photo);
+          }
+          PhotoAddEventListener();
+          loadingImage();
+          var div = document.getElementById("footer");
+          div.innerHTML = "Scroll down to load more photos";
+        })
+        .catch(function () {
+          (err) => {
+            var container = document.getElementById("photo-container");
+            container.innerHTML = "";
+            // M.toast({
+            //     html: `Fail...`,
+            //     classes: 'red darken-3',
+            // })
+          };
+        });
+    }
+
+    function CountPhotoAmount(label, date = undefined, hour = undefined) {
+      photographer = document.photographers[label];
+      if (hour != undefined) {
+        return photographer["stats"][date][hour];
+      } else if (date != undefined) {
+        count = 0;
+        for (const key in photographer["stats"][date]) {
+          count += photographer["stats"][date][key];
         }
-
-        function addPhotos(hour) {
-
-            updateQueryString()
-            var label = document.config.label;
-            var date = document.config.date;
-            // var hour = document.config.hour;
-            var urlListCurrent = `https://storage.googleapis.com/photocast/config/${label}/${date}/${hour}.json`;
-            fetch(noCacheUrl(urlListCurrent)).then(
-                function (response) {
-                    if (response.status == 200) {
-                        // M.toast({
-                        //     html: `Done!`,
-                        //     classes: 'green darken-3',
-                        // })
-                        return response.json()
-                    } else {
-                        throw "error"
-                    }
-                }
-            ).then(function (jsonResponse) {
-                var container = document.getElementById('photo-container');
-                // container.innerHTML = '';
-                var data = jsonResponse.data;
-                data.sort(sortByTime);
-                addDivision(hour);
-                for (var i = 0; i < data.length; i++) {
-                    var path = data[i]['name'];
-                    var time = data[i]['time'];
-                    var url = data[i]['url'];
-                    // photo=addPhoto_element(photo,path,time,url)
-                    photo = addPhoto_element(path, time, url, url)
-                    container.appendChild(photo);
-                    addItemToMasonry(photo);
-                }
-                PhotoAddEventListener()
-                loadingImage();
-                var div = document.getElementById('footer');
-                div.innerHTML = "Scroll down to load more photos"
-            }).catch(function () {
-                (err) => {
-                    var container = document.getElementById('photo-container');
-                    container.innerHTML = '';
-                    // M.toast({
-                    //     html: `Fail...`,
-                    //     classes: 'red darken-3',
-                    // })
-                }
-
-            })
+        return count;
+      } else {
+        count = 0;
+        for (const date in photographer["stats"]) {
+          for (const key in photographer["stats"][date]) {
+            count += photographer["stats"][date][key];
+          }
         }
+        return count;
+      }
+    }
 
-        function CountPhotoAmount(label, date = undefined, hour = undefined) {
-            photographer = document.photographers[label]
-            if (hour != undefined) {
+    function listEvents(autoSelect) {
+      return new Promise((resolve, reject) => {
+        fetch(noCacheUrl(urlEvents))
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonResponse) {
+            var data = jsonResponse.data;
+            const select = document.querySelector("#select-event");
+            select.options.length = 0;
+            for (const event in data) {
+              const option = document.createElement("option");
+              if (document.events[event] != undefined) {
+                option.setAttribute("data-icon", document.events[event]["event_icon_url"]);
+              }
+              option.value = event;
+              option.text = event;
+              select.appendChild(option);
+            }
+            document.config.event = Object.keys(data)[0];
 
-                return photographer['stats'][date][hour]
-            } else if (date != undefined) {
-                count = 0
-                for (const key in photographer['stats'][date]) {
-                    count += photographer['stats'][date][key]
-                }
-                return count
+            if (autoSelect) {
+              listPhotographers(true);
+            }
+            resolve("success");
+          });
+      });
+    }
+
+    function listPhotographers(autoSelect) {
+      return new Promise((resolve, reject) => {
+        fetch(noCacheUrl(urlPhotographers))
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonResponse) {
+            var data = jsonResponse.data;
+            document.photographers = {};
+
+            const select = document.querySelector("#select-photographer");
+            select.options.length = 0;
+            labelDefault = "";
+            for (var i = 0; i < data.length; i++) {
+              var event = data[i]["data"]["event"];
+              var label = data[i]["data"]["label"];
+              document.photographers[label] = data[i]["data"];
+              if (event == document.config.event) {
+                if (labelDefault == "") labelDefault = label;
+                var name = data[i]["data"]["name"];
+                var location = data[i]["data"]["location"];
+                const option = document.createElement("option");
+                option.setAttribute("data-icon", data[i]["photographer_icon_url"]);
+                option.value = label;
+                amount = CountPhotoAmount(label);
+                option.text = name + "(" + amount + "张)";
+                select.appendChild(option);
+              }
+            }
+            if (autoSelect) {
+              document.config.label = labelDefault;
             } else {
-                count = 0
-                for (const date in photographer['stats']) {
-                    for (const key in photographer['stats'][date]) {
-                        count += photographer['stats'][date][key]
-                    }
-                }
-                return count
+              selectEventByValue(document.config.event);
+              selectPhotographerByValue(document.config.label);
             }
+            updatePhotographer(autoSelect);
+            resolve("success");
+          });
+      });
+    }
+    // 绑定 change 事件
+    var selectHour = document.getElementById("select-hour");
+    selectHour.addEventListener("change", selectHourChangeHandle);
 
+    function selectHourChangeHandle() {
+      // 获取选中的选项
+      var options = selectHour.options;
+      var selectedOption = options[selectHour.selectedIndex];
+      // 获取选中的值
+      var value = selectedOption.value;
+      value = "" + value;
+      document.config.hour = value.padStart(2, "0");
+      listPhotos(true);
+      // updateQueryString()
+    }
+
+    var selectDate = document.getElementById("select-date");
+    selectDate.addEventListener("change", selectDateChangeHandle);
+    function selectDateChangeHandle() {
+      // 获取选中的选项
+      var options = selectDate.options;
+
+      var selectedOption = options[selectDate.selectedIndex];
+
+      // 获取选中的值
+      label = document.config.label;
+      var value = selectedOption.value;
+      document.config.date = parseInt(value);
+      updateHour(true);
+      $("select").formSelect();
+      // listPhotos()
+      // updateQueryString()
+    }
+
+    var selectPhotographer = document.getElementById("select-photographer");
+    selectPhotographer.addEventListener("change", selectPhotographerChangeHandle);
+    function selectPhotographerChangeHandle() {
+      // 获取选中的选项
+      var options = selectPhotographer.options;
+      var selectedOption = options[selectPhotographer.selectedIndex];
+      var value = selectedOption.value;
+      document.config.label = value;
+      updatePhotographer(true);
+      $("select").formSelect();
+    }
+
+    var selectEvent = document.getElementById("select-event");
+    selectEvent.addEventListener("change", selectEventChangeHandle);
+
+    function selectEventChangeHandle() {
+      // 获取选中的选项
+      var options = selectEvent.options;
+      var selectedOption = options[selectEvent.selectedIndex];
+
+      // 获取选中的值
+
+      var value = selectedOption.value;
+      document.config.event = value;
+      listPhotographers(true);
+      $("select").formSelect();
+    }
+
+    // const select = document.querySelector('#select-event');
+    function selectEventByValue(event_value) {
+      const select = document.querySelector("#select-event");
+      for (let i = 0; i < select.options.length; i++) {
+        const optionElement = select.options[i];
+        if (optionElement.value == event_value) {
+          optionElement.selected = true;
+          $("select").formSelect();
+          return;
         }
+      }
+      alertIllegalParam();
+    }
 
-
-        function listEvents(autoSelect) {
-
-
-            return new Promise(
-                (resolve, reject) => {
-
-                    fetch(noCacheUrl(urlEvents)).then(
-                        function (response) {
-                            return response.json()
-                        }
-                    ).then(function (jsonResponse) {
-                        var data = jsonResponse.data;
-                        const select = document.querySelector('#select-event');
-                        select.options.length = 0;
-                        for (const event in data) {
-                            const option = document.createElement('option');
-                            if (document.events[event]!=undefined){
-                                option.setAttribute("data-icon", document.events[event]['event_icon_url'])
-                            }
-                            option.value = event;
-                            option.text = event;
-                            select.appendChild(option);
-                        }
-                        document.config.event = Object.keys(data)[0]
-
-                        if (autoSelect) {
-                            listPhotographers(true)
-                        }
-                        resolve("success")
-
-                    })
-
-                }
-            )
-
+    function selectPhotographerByValue(photographer_value) {
+      const select = document.querySelector("#select-photographer");
+      for (let i = 0; i < select.options.length; i++) {
+        const optionElement = select.options[i];
+        if (optionElement.value == photographer_value) {
+          optionElement.selected = true;
+          $("select").formSelect();
+          return;
         }
+      }
+      alertIllegalParam();
+    }
 
-
-        function listPhotographers(autoSelect) {
-
-
-
-            return new Promise(
-                (resolve, reject) => {
-                    fetch(noCacheUrl(urlPhotographers)).then(
-                        function (response) {
-                            return response.json()
-                        }
-                    ).then(function (jsonResponse) {
-                        var data = jsonResponse.data;
-                        document.photographers = {}
-
-                        const select = document.querySelector('#select-photographer');
-                        select.options.length = 0;
-                        labelDefault = ''
-                        for (var i = 0; i < data.length; i++) {
-                            var event = data[i]['data']['event'];
-                            var label = data[i]['data']['label'];
-                            document.photographers[label] = data[i]['data'];
-                            if (event == document.config.event) {
-                                if (labelDefault == '') labelDefault = label
-                                var name = data[i]['data']['name'];
-                                var location = data[i]['data']['location'];
-                                const option = document.createElement('option');
-                                option.setAttribute("data-icon", data[i]['photographer_icon_url'])
-                                option.value = label;
-                                amount = CountPhotoAmount(label)
-                                option.text = name + "(" + amount + "张)";
-                                select.appendChild(option);
-                            }
-
-                        }
-                        if (autoSelect) {
-                            document.config.label = labelDefault
-                        } else {
-                            selectEventByValue(document.config.event)
-                            selectPhotographerByValue(document.config.label)
-                        }
-                        updatePhotographer(autoSelect)
-                        resolve('success')
-
-                    })
-                }
-            )
-
+    function selectDateByValue(date_value) {
+      const select = document.querySelector("#select-date");
+      for (let i = 0; i < select.options.length; i++) {
+        const optionElement = select.options[i];
+        if (optionElement.value == date_value) {
+          optionElement.selected = true;
+          $("select").formSelect();
+          return;
         }
-        // 绑定 change 事件
-        var selectHour = document.getElementById('select-hour');
-        selectHour.addEventListener('change', selectHourChangeHandle);
+      }
+      alertIllegalParam();
+    }
 
-        function selectHourChangeHandle() {
-            // 获取选中的选项
-            var options = selectHour.options;
-            var selectedOption = options[selectHour.selectedIndex];
-            // 获取选中的值
-            var value = selectedOption.value;
-            value = "" + value;
-            document.config.hour = value.padStart(2, "0");
-            listPhotos(true)
-            // updateQueryString()
+    function selectHourByValue(hour_value) {
+      const select = document.querySelector("#select-hour");
+      for (let i = 0; i < select.options.length; i++) {
+        const optionElement = select.options[i];
+        if (optionElement.value == hour_value) {
+          optionElement.selected = true;
+          $("select").formSelect();
+          return;
         }
+      }
+      alertIllegalParam();
+    }
 
-        var selectDate = document.getElementById('select-date');
-        selectDate.addEventListener('change', selectDateChangeHandle);
-        function selectDateChangeHandle() {
-            // 获取选中的选项
-            var options = selectDate.options;
-            
-            var selectedOption = options[selectDate.selectedIndex];
-            
-            // 获取选中的值
-            label = document.config.label
-            var value = selectedOption.value;
-            document.config.date = parseInt(value);
-            updateHour(true)
-            $('select').formSelect();
-            // listPhotos()
-            // updateQueryString()
-        }
+    function alertIllegalParam() {
+      alert("illegal param,please select manually.");
+      window.location.href = window.location.href.split("?")[0];
+    }
 
-        var selectPhotographer = document.getElementById('select-photographer');
-        selectPhotographer.addEventListener('change', selectPhotographerChangeHandle);
-        function selectPhotographerChangeHandle() {
-            // 获取选中的选项
-            var options = selectPhotographer.options;
-            var selectedOption = options[selectPhotographer.selectedIndex];
-            var value = selectedOption.value;
-            document.config.label = value
-            updatePhotographer(true);
-            $('select').formSelect();
-        }
+    function updateQueryString() {
+      const queryString = location.search;
+      const params = new URLSearchParams();
 
-        var selectEvent = document.getElementById('select-event');
-        selectEvent.addEventListener('change', selectEventChangeHandle);
+      const selectEvent = document.querySelector("#select-event");
 
-        function selectEventChangeHandle() {
-            // 获取选中的选项
-            var options = selectEvent.options;
-            var selectedOption = options[selectEvent.selectedIndex];
+      params.append("event", selectEvent.value);
+      const selectLabel = document.querySelector("#select-photographer");
+      params.append("label", selectLabel.value);
+      const selectDate = document.querySelector("#select-date");
+      params.append("date", selectDate.value);
+      const selectHour = document.querySelector("#select-hour");
+      params.append("hour", selectHour.value);
 
-            // 获取选中的值
+      const newQueryString = params.toString();
+      if (location.host == "127.0.0.1:5500") {
+        history.pushState({}, "", `index.html?${newQueryString}`);
+      } else {
+        history.pushState({}, "", `/photocast/?${newQueryString}`);
+      }
+    }
+    document.getElementById("disclaimers").addEventListener("click", disclaimersHandle);
 
-            var value = selectedOption.value;
-            document.config.event = value
-            listPhotographers(true)
-            $('select').formSelect();
-        }
-
-
-        // const select = document.querySelector('#select-event');
-        function selectEventByValue(event_value) {
-            const select = document.querySelector('#select-event');
-            for (let i = 0; i < select.options.length; i++) {
-                const optionElement = select.options[i];
-                if (optionElement.value == event_value) {
-                    optionElement.selected = true;
-                    $('select').formSelect();
-                    return
-                }
-            }
-            alertIllegalParam()
-            
-        }
-
-        function selectPhotographerByValue(photographer_value) {
-            const select = document.querySelector('#select-photographer');
-            for (let i = 0; i < select.options.length; i++) {
-                const optionElement = select.options[i];
-                if (optionElement.value == photographer_value) {
-                    optionElement.selected = true;
-                    $('select').formSelect();
-                    return 
-                }
-            }
-            alertIllegalParam()
-        }
-
-        function selectDateByValue(date_value) {
-            const select = document.querySelector('#select-date');
-            for (let i = 0; i < select.options.length; i++) {
-                const optionElement = select.options[i];
-                if (optionElement.value == date_value) {
-                    optionElement.selected = true;
-                    $('select').formSelect();
-                    return 
-                }
-            }
-            alertIllegalParam()
-        }
-
-        function selectHourByValue(hour_value) {
-            const select = document.querySelector('#select-hour');
-            for (let i = 0; i < select.options.length; i++) {
-                const optionElement = select.options[i];
-                if (optionElement.value == hour_value) {
-                    optionElement.selected = true;
-                    $('select').formSelect();
-                    return 
-                }
-            }
-            alertIllegalParam()
-        }
-
-        function alertIllegalParam(){
-            alert("illegal param,please select manually.")
-            window.location.href = window.location.href.split('?')[0];
-
-            
-        }
-
-        function updateQueryString() {
-
-            const queryString = location.search;
-            const params = new URLSearchParams()
-
-
-            const selectEvent = document.querySelector('#select-event');
-
-            params.append('event', selectEvent.value)
-            const selectLabel = document.querySelector('#select-photographer');
-            params.append('label', selectLabel.value)
-            const selectDate = document.querySelector('#select-date');
-            params.append('date', selectDate.value)
-            const selectHour = document.querySelector('#select-hour');
-            params.append('hour', selectHour.value)
-
-            const newQueryString = params.toString();
-            if (location.host == "127.0.0.1:5500") {
-                history.pushState({}, '', `index.html?${newQueryString}`);
-            } else {
-                history.pushState({}, '', `/photocast/?${newQueryString}`);
-            }
-
-
-        }
-        document.getElementById('disclaimers').addEventListener('click', disclaimersHandle);
-
-        function disclaimersHandle(e) {
-            e.preventDefault();
-            alert(`本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
+    function disclaimersHandle(e) {
+      e.preventDefault();
+      alert(`本網頁僅為參賽者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。如有需要下載個人的完整圖片文件，或希望從本網頁移除，請與我們聯絡: hi@iest.run
 
 Photocast is a platform to provide storage of pictures for trail runners.
 Photocast might add, revmove or update the pictures from time to time.
-For donwloading original photo, or removing your pictures from Photocast, please contact us: hi@iest.run`)
-        }
+For donwloading original photo, or removing your pictures from Photocast, please contact us: hi@iest.run`);
+    }
 
-        // window.onblur = () => {
-        //     updateQueryString()// 焦点离开页面时执行的代码
-        // };
+    // window.onblur = () => {
+    //     updateQueryString()// 焦点离开页面时执行的代码
+    // };
 
-        (async function () {
-            document.config = {
-                event: "",
-                label: "",
-                date: "",
-                hour: ""
-            };
-            const queryString = location.search;
-            const params = new URLSearchParams(queryString)
-            // Promise.all([eventDateRename(), loadEventInfo()])
-            await Promise.all([eventDateRename(), loadEventInfo()]);
-            await listEvents(false);
-            await loadDefault(params)
-            // loadEventInfo().then(eventDateRename()).then(listEvents(false)).then(loadDefault(params));
-        })();
+    (async function () {
+      document.config = {
+        event: "",
+        label: "",
+        date: "",
+        hour: "",
+      };
+      const queryString = location.search;
+      const params = new URLSearchParams(queryString);
+      // Promise.all([eventDateRename(), loadEventInfo()])
+      await Promise.all([eventDateRename(), loadEventInfo()]);
+      await listEvents(false);
+      await loadDefault(params);
+      // loadEventInfo().then(eventDateRename()).then(listEvents(false)).then(loadDefault(params));
+    })();
 
-        function eventDateRename() {
+    function eventDateRename() {
+      return new Promise((resolve, reject) => {
+        fetch(noCacheUrl(urlEventDateRename))
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonResponse) {
+            var data = jsonResponse.data;
+            document.eventDateDic = data;
+            resolve("success");
+          });
+      });
+    }
 
-            return new Promise(
-                (resolve, reject) => {
-                    fetch(noCacheUrl(urlEventDateRename)).then(
-                        function (response) {
-                            return response.json()
-                        }
-                    ).then(function (jsonResponse) {
-                        var data = jsonResponse.data;
-                        document.eventDateDic = data
-                        resolve("success")
-                    })
-                }
-            )
-        }
+    function loadEventInfo() {
+      return new Promise((resolve, reject) => {
+        fetch(noCacheUrl(urlEventDetail))
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonResponse) {
+            var data = jsonResponse.data;
+            document.events = data;
+            resolve("success");
+          });
+      });
+    }
+    function loadDefault(params) {
+      fetch(noCacheUrl(urlDefault))
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          document.config.event = jsonResponse.data["event"];
+          document.config.label = jsonResponse.data["label"];
+          document.config.date = jsonResponse.data["date"];
+          document.config.hour = jsonResponse.data["hour"];
+          paramsEvent = params.get("event");
+          if (paramsEvent != null) {
+            document.config.event = paramsEvent;
+          }
+          paramsLabel = params.get("label");
+          if (paramsLabel != null) {
+            document.config.label = paramsLabel;
+          }
 
-        function loadEventInfo() {
+          paramsDate = params.get("date");
+          if (paramsDate != null) {
+            document.config.date = paramsDate;
+          }
+          paramsHour = params.get("hour");
+          if (paramsHour != null) {
+            document.config.hour = paramsHour.padStart(2, "0");
+          }
+          console.log("document.config", document.config);
+          listPhotographers(false).then(listPhotos(false));
+        });
+    }
+  </script>
 
-            return new Promise(
-                (resolve, reject) => {
-                    fetch(noCacheUrl(urlEventDetail)).then(
-                        function (response) {
-                            return response.json()
-                        }
-                    ).then(function (jsonResponse) {
-                        var data = jsonResponse.data;
-                        document.events = data
-                        resolve("success")
-                    })
-                }
-            )
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNJ545YQJL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-        }
-        function loadDefault(params) {
-
-            fetch(noCacheUrl(urlDefault)).then(
-                function (response) {
-                    return response.json()
-                }
-            ).then(function (jsonResponse) {
-                document.config.event = jsonResponse.data['event']
-                document.config.label = jsonResponse.data['label']
-                document.config.date = jsonResponse.data['date']
-                document.config.hour = jsonResponse.data['hour']
-                paramsEvent = params.get('event')
-                if (paramsEvent != null) {
-                    document.config.event = paramsEvent
-                }
-                paramsLabel = params.get('label')
-                if (paramsLabel != null) {
-                    document.config.label = paramsLabel
-                }
-
-                paramsDate = params.get('date')
-                if (paramsDate != null) {
-                    document.config.date = paramsDate
-                }
-                paramsHour = params.get('hour')
-                if (paramsHour != null) {
-                    document.config.hour = paramsHour.padStart(2, "0");
-                }
-                console.log('document.config', document.config)
-                listPhotographers(false).then(listPhotos(false))
-            })
-        }
-
-    </script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNJ545YQJL"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-DNJ545YQJL');
-    </script>
+    gtag("config", "G-DNJ545YQJL");
+  </script>
 </body>
