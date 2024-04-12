@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { message } from "antd";
 
 const baseUrl = "https://storage.googleapis.com/photocast/config/";
@@ -19,7 +19,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
 	(res) => {
 		const { data } = res || {};
-		return data?.data || data;
+		return data;
 	},
 	(error) => {
 		if (error.response.status === 401) {
