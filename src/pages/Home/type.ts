@@ -1,8 +1,8 @@
 export interface IEventLists {
-	[event: string]: IEventDetail[];
+  [event: string]: IEventDetail[];
 }
 interface IEventDetail {
-	label: string;
-	evnet: string;
-	name: string;
+  label: string;
+  evnet: string;
+  name: string;
 }

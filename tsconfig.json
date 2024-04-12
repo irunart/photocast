@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "module": "ESNext",    
+    "module": "ESNext",
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -25,8 +25,7 @@
     "paths": {
       "@/*": ["src/*"]
     }
-
   },
-  "include": ["src","typings"],
+  "include": ["src", "typings"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

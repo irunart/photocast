@@ -10,39 +10,39 @@ export interface MasonryProps {
 }
 
 const pxUnitToNumber = (val: string) => {
-  return Number(val.replace('px', ''));
+  return Number(val.replace("px", ""));
 };
 
 export const Masonry: React.FC<MasonryProps> = (props) => {
-  const {items, column, gap = 8, style, initailHeight = 150} = props;
+  const { items, column, gap = 8, style, initailHeight = 150 } = props;
   const containerRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState((initailHeight + gap) * ((items.length + column - 1) / column))
+  const [maxHeight, setMaxHeight] = useState((initailHeight + gap) * ((items.length + column - 1) / column));
   const reLayout = useCallback(() => {
     if (!containerRef.current) {
       return;
     }
-    const heights = Array.from({length: column}, () => 0);
+    const heights = Array.from({ length: column }, () => 0);
     containerRef.current.childNodes.forEach((child) => {
       const element = child as HTMLElement;
       const elementHeight = pxUnitToNumber(window.getComputedStyle(element).height);
-      if (elementHeight === 0 || element.dataset.class === 'column-break') {
+      if (elementHeight === 0 || element.dataset.class === "column-break") {
         return;
       }
       const minHeight = Math.min(...heights);
       const minColumn = heights.indexOf(minHeight);
       element.style.order = `${minColumn + 1}`;
       heights[minColumn] += elementHeight + gap;
-    })
+    });
     flushSync(() => setMaxHeight(Math.ceil(Math.max(...heights))));
-  }, [column, gap, items])
+  }, [column, gap, items]);
 
   useEffect(() => {
     const observer = new ResizeObserver(reLayout);
     if (containerRef.current) {
-      containerRef.current.childNodes.forEach((child) => observer.observe(child as HTMLElement))
+      containerRef.current.childNodes.forEach((child) => observer.observe(child as HTMLElement));
     }
     return () => observer.disconnect();
-  }, [reLayout])
+  }, [reLayout]);
 
   return (
     <div
@@ -60,21 +60,31 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
       }}
     >
       {items.map((item, idx) => (
-        <div key={idx} style={{
-          margin: `0 ${gap}px ${gap}px 0`,
-          width: `calc((100% - ${(column-1) * gap}px) / ${column})`,
-          order: idx % column + 1,
-        }}>{item}</div>
+        <div
+          key={idx}
+          style={{
+            margin: `0 ${gap}px ${gap}px 0`,
+            width: `calc((100% - ${(column - 1) * gap}px) / ${column})`,
+            order: (idx % column) + 1,
+          }}
+        >
+          {item}
+        </div>
       ))}
-      {Array.from({length: column}).map((_, idx) => (
-        <span key={`break-${idx}`} data-class="column-break" style={{
-          flexBasis: '100%',
-          width: 0,
-          padding: 0,
-          order: idx + 1,
-        }} />))}
+      {Array.from({ length: column }).map((_, idx) => (
+        <span
+          key={`break-${idx}`}
+          data-class="column-break"
+          style={{
+            flexBasis: "100%",
+            width: 0,
+            padding: 0,
+            order: idx + 1,
+          }}
+        />
+      ))}
     </div>
-  )
-}
+  );
+};
 
 export default Masonry;

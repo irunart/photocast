@@ -17,8 +17,5 @@ export const getEventDetail = () => request.get(urlEventDetail);
 // 默认 event
 export const getDefault = () => request.get(urlDefault);
 
-export const getPhotoDateHourData = (
-	photoGrapher: string,
-	date: string,
-	hour: string
-) => request.get(`/${photoGrapher}/${date}/${hour}.json`);
+export const getPhotoDateHourData = (photoGrapher: string, date: string, hour: string) =>
+  request.get(`/${photoGrapher}/${date}/${hour}.json`);
