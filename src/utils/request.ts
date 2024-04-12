@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from "axios";
 import { message } from "antd";
+import axios from "axios";
 
 const baseUrl = "https://storage.googleapis.com/photocast/config/";
 
