@@ -2,16 +2,17 @@ import * as _ from "lodash-es";
 
 import type { IPhotographer, IData } from "./type";
 
-export const getEventPhotoGrapher = (datas: IData[], event: string) =>
-  _.chain(datas)
-    .map((item) => ({
-      ...item.data,
-      label: `${item.data.name}(${countPhotoAmount(item.data)}张)`,
-      photographer_icon_url: item.photographer_icon_url,
-      value: item.data.label,
-    }))
-    .filter({ event })
-    .value();
+export const getEventPhotoGrapher = (datas: IData[], event: string) => {
+  // 扁平数据
+  const flatDatas = _.map(datas, (item) => ({
+    ...item.data,
+    label: `${item.data.name}(${countPhotoAmount(item.data)}张)`,
+    photographer_icon_url: item.photographer_icon_url,
+    value: item.data.label,
+  }));
+
+  return _.filter(flatDatas, { event });
+};
 
 export function countPhotoAmount(photographer: IPhotographer, date?: string, hour?: string) {
   let count = 0;
