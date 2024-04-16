@@ -6,6 +6,7 @@ import { Image, ImageViewer, Popup, CheckList, CascadePicker } from "antd-mobile
 import type { MultiImageViewerRef } from "antd-mobile";
 import { DownOutlined, MehOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import * as _ from "lodash-es";
+import { useDrag } from "@use-gesture/react";
 
 import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
 
@@ -106,6 +107,16 @@ const Home: React.FC = () => {
     window.history.pushState({}, "", newUrl);
   };
 
+  const bindSwipeUp = useDrag(
+    ({ swipe: [_, my], down }) => {
+      // 设置一个上滑关闭的阈值，这里假设为100px
+      if (my > 30 && !down) {
+        setImagePopVisible(false);
+      }
+    },
+    { axis: "y" }
+  );
+
   return (
     <div>
       <p>current photographer below:</p>
@@ -171,13 +182,15 @@ const Home: React.FC = () => {
         onClose={() => setDateTimePopVisible(false)}
         onConfirm={(val) => setCurrentDateTime(val as [string, string])}
       />
-      <ImageViewer.Multi
-        ref={imageViewerRefs}
-        images={images.map((i) => i.url)}
-        visible={imagePopVisible}
-        defaultIndex={1}
-        onClose={() => setImagePopVisible(false)}
-      />
+      <div {...bindSwipeUp()}>
+        <ImageViewer.Multi
+          ref={imageViewerRefs}
+          images={images.map((i) => i.url)}
+          visible={imagePopVisible}
+          defaultIndex={1}
+          onClose={() => setImagePopVisible(false)}
+        />
+      </div>
     </div>
   );
 };
