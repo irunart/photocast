@@ -18,3 +18,8 @@
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
 }
+
+.photographers {
+  max-height: 400px;
+  overflow-y: scroll;
+}

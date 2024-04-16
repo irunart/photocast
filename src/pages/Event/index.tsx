@@ -146,6 +146,7 @@ const Home: React.FC = () => {
             handlePhotoGrapherChange(val[0] as string);
             setGraperPopupVisible(false);
           }}
+          className={styles.photographers}
         >
           {photoGraphers.map((item) => (
             <CheckList.Item key={item?.value} value={item?.value as string} className={styles.photoGraperItem}>
