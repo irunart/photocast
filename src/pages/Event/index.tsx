@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import { Input, Flex } from "antd";
 import { Image, ImageViewer, Popup, CheckList, CascadePicker } from "antd-mobile";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { DownOutlined, MehOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import * as _ from "lodash-es";
 
 import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
 
@@ -18,57 +19,57 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import styles from "./index.module.scss";
 
 const Home: React.FC = () => {
-  // const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const { event } = useParams();
+  const searchParams = new URLSearchParams(location.search);
+
   const imageViewerRefs = useRef<MultiImageViewerRef>(null);
-
-  // 摄影师列表
   const [photoGraphers, setPhotoGraphers] = useState<IPhotographer[]>([]);
-  // 当前摄影师
   const [grapher, setGrapher] = useState<IPhotographer>();
-  // 选择摄影师弹窗
   const [grapherPopupVisible, setGraperPopupVisible] = useState(false);
-
-  // 照片列表
   const [images, setImages] = useState<IImage[]>([]);
-
-  // 当前[日期, 小时]
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
-  // 选择日期时间弹窗
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
-  //照片弹窗
   const [imagePopVisible, setImagePopVisible] = useState(false);
 
+  // page start
   useEffect(() => {
     if (!event) return navigate("/home", { replace: true });
 
-    // 获取摄影师列表
     getPhotographers().then((res: CommonResponse<IData[]>) => {
       const grapherLists = getEventPhotoGrapher(res.data, event);
-      // setGrapher(grapherLists[0]);
-      initSetGrapher(grapherLists[0]);
+      const photoGrapherFromSearch = _.find(grapherLists, ["value", searchParams.get("photographer")]);
+      const timesFromSearch = searchParams.get("time")?.split("-");
+      const currentGrapher = photoGrapherFromSearch || grapherLists[0];
+      const currentTime = getGrapherAvaliableTime(currentGrapher, timesFromSearch?.[0], timesFromSearch?.[1]);
+
+      setCurrentDateTime(currentTime);
       setPhotoGraphers(grapherLists);
+      setGrapher(currentGrapher);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
-  const handlePhotoGrapherChange = (nextGrapher: string) => {
-    const selectedGrapher = photoGraphers.find((item) => item.value === nextGrapher);
-    initSetGrapher(selectedGrapher as IPhotographer);
-  };
+  /**
+   * Retrieves the available time for a photographer.
+   *
+   * @param grapher - The photographer object.
+   * @param date - The selected date (optional).
+   * @param time - The selected time (optional).
+   *
+   * @returns An array containing the selected date and time, or the first available date and time.
+   */
+  const getGrapherAvaliableTime = (grapher: IPhotographer, date?: string, time?: string): [string, string] => {
+    const dates: string[] = Object.keys(grapher.available_time);
 
-  // 选择摄影师 ，自动选择日期和时间
-  const initSetGrapher = (grapher: IPhotographer) => {
-    const dates = Object.keys(grapher.available_time);
-    const hours = grapher.available_time[dates[0]];
+    if (date && dates.includes(date)) {
+      const hours: string[] = grapher.available_time[date];
+      const hour: string = time && hours.includes(time) ? time : hours[0];
+      return [date, hour];
+    }
 
-    setGrapher(grapher);
-    setCurrentDateTime([dates[0], hours[0]]);
-  };
-
-  const openImageViewer = (index: number) => {
-    setImagePopVisible(true);
-    imageViewerRefs.current?.swipeTo(index);
+    return [dates[0], grapher.available_time[dates[0]][0]];
   };
 
   useEffect(() => {
@@ -78,7 +79,32 @@ const Home: React.FC = () => {
         setImages(res.data);
       }
     );
+    stateToUrl();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDateTime]);
+
+  // 选择摄影师
+  const handlePhotoGrapherChange = (nextGrapher: string) => {
+    const selectedGrapher = photoGraphers.find((item) => item.value === nextGrapher);
+    const currentGrapherTime = getGrapherAvaliableTime(selectedGrapher as IPhotographer, undefined, undefined);
+
+    setGrapher(selectedGrapher as IPhotographer);
+    setCurrentDateTime(currentGrapherTime);
+  };
+
+  const openImageViewer = (index: number) => {
+    setImagePopVisible(true);
+    imageViewerRefs.current?.swipeTo(index);
+  };
+
+  // TODO: 抽离组件外部
+  const stateToUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("photographer", grapher?.value as string);
+    params.set("time", currentDateTime.join("-"));
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.pushState({}, "", newUrl);
+  };
 
   return (
     <div>
