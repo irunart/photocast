@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { Input, Flex } from "antd";
-import { Image, ImageViewer, Popup, CheckList, CascadePicker } from "antd-mobile";
+import { ClockCircleOutlined, DownOutlined, MehOutlined } from "@ant-design/icons";
+import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
-import { DownOutlined, MehOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
 import * as _ from "lodash-es";
 
-import { getPhotographers, getPhotoDateHourData } from "@/services/googleApis";
+import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
 
-import type { IData, IPhotographer, IImage } from "./type";
+import type { IData, IImage, IPhotographer } from "./type";
 
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 
@@ -19,10 +19,9 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import styles from "./index.module.scss";
 
 const Home: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { event } = useParams();
-  const searchParams = new URLSearchParams(location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const imageViewerRefs = useRef<MultiImageViewerRef>(null);
   const [photoGraphers, setPhotoGraphers] = useState<IPhotographer[]>([]);
@@ -99,11 +98,11 @@ const Home: React.FC = () => {
 
   // TODO: 抽离组件外部
   const stateToUrl = () => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("photographer", grapher?.value as string);
-    params.set("time", currentDateTime.join("-"));
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.pushState({}, "", newUrl);
+    setSearchParams((params) => ({
+      ...params,
+      photographer: grapher?.value as string,
+      time: currentDateTime.join("-"),
+    }));
   };
 
   return (
