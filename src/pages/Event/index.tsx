@@ -98,11 +98,14 @@ const Home: React.FC = () => {
 
   // TODO: 抽离组件外部
   const stateToUrl = () => {
-    setSearchParams((params) => ({
-      ...params,
-      photographer: grapher?.value as string,
-      time: currentDateTime.join("-"),
-    }));
+    setSearchParams(
+      (params) => ({
+        ...params,
+        photographer: grapher?.value as string,
+        time: currentDateTime.join("-"),
+      }),
+      { replace: true }
+    );
   };
 
   return (
