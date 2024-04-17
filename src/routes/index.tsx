@@ -1,12 +1,14 @@
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "@/components/layouts/AppLayout";
 import Event from "@/pages/Event";
 import Home from "@/pages/Home";
 
+import { QueryRouter as Router } from "./QueryRouter";
+
 function App() {
   return (
-    <Router basename={`${import.meta.env.PC_BASE ?? "/"}`}>
+    <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
         <Route element={<AppLayout />}>
