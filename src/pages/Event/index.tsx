@@ -38,6 +38,9 @@ const Home: React.FC = () => {
 
     getPhotographers().then((res: CommonResponse<IData[]>) => {
       const grapherLists = getEventPhotoGrapher(res.data, event);
+
+      if (grapherLists.length === 0) return navigate("/home", { replace: true });
+
       const photoGrapherFromSearch = _.find(grapherLists, ["value", searchParams.get("photographer")]);
       const timesFromSearch = searchParams.get("time")?.split("-");
       const currentGrapher = photoGrapherFromSearch || grapherLists[0];
