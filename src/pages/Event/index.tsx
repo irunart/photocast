@@ -136,7 +136,7 @@ const Home: React.FC = () => {
         initailHeight={150}
         items={images.map((image, index) => (
           <div key={image.name} onClick={() => openImageViewer(index)}>
-            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" style={{ borderRadius: 4 }} />
+            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
           </div>
         ))}
       />
@@ -153,13 +153,7 @@ const Home: React.FC = () => {
           {photoGraphers.map((item) => (
             <CheckList.Item key={item?.value} value={item?.value as string} className={styles.photoGraperItem}>
               <Flex align="center">
-                <Image
-                  src={item?.photographer_icon_url}
-                  width={40}
-                  height={40}
-                  fit="cover"
-                  style={{ borderRadius: 4 }}
-                />
+                <Image src={item?.photographer_icon_url} width={40} height={40} fit="cover" />
                 <span>&nbsp;{item?.label}</span>
               </Flex>
             </CheckList.Item>
