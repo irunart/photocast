@@ -15,6 +15,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/event/:event?" element={<Event />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );

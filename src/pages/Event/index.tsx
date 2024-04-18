@@ -100,7 +100,7 @@ const Home: React.FC = () => {
   const stateToUrl = () => {
     setSearchParams(
       (params) => ({
-        ...params,
+        ...Object.fromEntries(params),
         photographer: grapher?.value as string,
         time: currentDateTime.join("-"),
       }),
