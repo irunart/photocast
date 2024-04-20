@@ -4,7 +4,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ClockCircleOutlined, DownOutlined, MehOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
-import { CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
+import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
 import * as _ from "lodash-es";
 
 import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
@@ -73,6 +73,37 @@ const Home: React.FC = () => {
 
     return [dates[0], grapher.available_time[dates[0]][0]];
   };
+
+  const navGrapherAvaliableTime = (
+    grapher: IPhotographer,
+    [date, time]: [string, string],
+    action: "prev" | "next"
+  ): [string, string] | undefined => {
+    const dates: string[] = Object.keys(grapher.available_time);
+    const dateIndex = dates.indexOf(date);
+    let times = grapher.available_time[dates[dateIndex]];
+    const timeIndex = times.indexOf(time);
+    let targetTimeIndex = action === "prev" ? timeIndex - 1 : timeIndex + 1;
+    if (targetTimeIndex >= 0 && targetTimeIndex < times.length) {
+      return [date, times[targetTimeIndex]];
+    }
+    let targetDateIndex = dateIndex;
+    while (true) {
+      targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
+      if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
+        return;
+      }
+      times = grapher.available_time[dates[targetDateIndex]];
+      console.log(grapher.available_time, dates, targetDateIndex);
+      if (times.length) {
+        targetTimeIndex = action === "prev" ? times.length - 1 : 0;
+        return [dates[targetDateIndex], times[targetTimeIndex]];
+      }
+    }
+  };
+
+  const prevTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "prev");
+  const nextTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "next");
 
   useEffect(() => {
     if (!grapher?.value) return;
@@ -145,6 +176,30 @@ const Home: React.FC = () => {
           </div>
         ))}
       />
+      <div className={styles.timeNavButtons}>
+        {(prevTime && (
+          <Button
+            size="large"
+            onClick={() => {
+              scrollTo({ top: 0, behavior: "smooth" });
+              setCurrentDateTime(prevTime);
+            }}
+          >
+            Prev Time
+          </Button>
+        )) || <div />}
+        {(nextTime && (
+          <Button
+            size="large"
+            onClick={() => {
+              scrollTo({ top: 0, behavior: "smooth" });
+              setCurrentDateTime(nextTime);
+            }}
+          >
+            Next Time
+          </Button>
+        )) || <div />}
+      </div>
       <Popup visible={grapherPopupVisible} onMaskClick={() => setGraperPopupVisible(false)} destroyOnClose>
         <p className="text-center"> Select a photographer below:</p>
         <CheckList
@@ -169,6 +224,7 @@ const Home: React.FC = () => {
         title="select date time"
         options={grapherDateToCascadeOptions(grapher)}
         visible={dateTimePopVisible}
+        value={currentDateTime}
         onClose={() => setDateTimePopVisible(false)}
         onConfirm={(val) => setCurrentDateTime(val as [string, string])}
       />

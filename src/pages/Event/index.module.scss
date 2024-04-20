@@ -23,3 +23,14 @@
   max-height: 400px;
   overflow-y: scroll;
 }
+
+.timeNavButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > * {
+    width: calc(50% - 5px);
+    max-width: 300px;
+  }
+}
