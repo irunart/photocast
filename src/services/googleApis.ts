@@ -6,16 +6,18 @@ const urlEventDateRename = "/event_date_rename.json";
 const urlEventDetail = "/event_detail.json";
 const urlDefault = "/defaults.json";
 
-export const getEventLists = () => request.get(urlEvents);
+const withNounce = (url: string) => `${url}?${Math.random()}`;
 
-export const getPhotographers = () => request.get(urlPhotographers);
+export const getEventLists = () => request.get(withNounce(urlEvents));
 
-export const getEventDateRename = () => request.get(urlEventDateRename);
+export const getPhotographers = () => request.get(withNounce(urlPhotographers));
 
-export const getEventDetail = () => request.get(urlEventDetail);
+export const getEventDateRename = () => request.get(withNounce(urlEventDateRename));
+
+export const getEventDetail = () => request.get(withNounce(urlEventDetail));
 
 // 默认 event
-export const getDefault = () => request.get(urlDefault);
+export const getDefault = () => request.get(withNounce(urlDefault));
 
 export const getPhotoDateHourData = (photoGrapher: string, date: string, hour: string) =>
-  request.get(`/${photoGrapher}/${date}/${hour}.json`);
+  request.get(withNounce(`/${photoGrapher}/${date}/${hour}.json`));
