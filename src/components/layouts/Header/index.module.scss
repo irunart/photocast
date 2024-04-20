@@ -1,0 +1,15 @@
+.title {
+  color: var(--adm-color-text);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.summary {
+  display: inline-block;
+  color: #777;
+  margin: 10px 0;
+  font-size: 0.9em;
+  & a {
+    color: #777;
+  }
+}
