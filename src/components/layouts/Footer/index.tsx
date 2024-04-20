@@ -1,5 +1,5 @@
 import { FloatButton, message } from "antd";
-import { ShareAltOutlined } from "@ant-design/icons";
+import { GithubOutlined, ShareAltOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
 const Footer: React.FC = () => {
@@ -21,9 +21,11 @@ const Footer: React.FC = () => {
     <div className={styles.footer}>
       {contextHolder}
       <p className={styles.github}>
-        <a href="https://github.com/irunart/photocast">GitHub.com</a>
+        <a href="https://github.com/irunart/photocast">
+          <GithubOutlined />
+        </a>
       </p>
-      <FloatButton.Group>
+      <FloatButton.Group style={{ bottom: 120 }}>
         <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
         <FloatButton.BackTop />
       </FloatButton.Group>

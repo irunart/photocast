@@ -3,5 +3,8 @@
 
   .github {
     text-align: right;
+    & a {
+      color: #000;
+    }
   }
 }
