@@ -114,23 +114,25 @@ const Home: React.FC = () => {
   return (
     <div>
       <p>current photographer below:</p>
-      <Input
-        prefix={<MehOutlined />}
-        value={grapher?.label}
-        onClick={() => setGraperPopupVisible(true)}
-        placeholder="Select a photographer"
-        readOnly
-        suffix={<DownOutlined />}
-      />
+      <div onClick={() => setGraperPopupVisible(true)}>
+        <Input
+          prefix={<MehOutlined />}
+          value={grapher?.label}
+          placeholder="Select a photographer"
+          readOnly
+          suffix={<DownOutlined />}
+        />
+      </div>
       <p>current photo date time:</p>
-      <Input
-        prefix={<ClockCircleOutlined />}
-        value={currentDateTime.join("-")}
-        onClick={() => setDateTimePopVisible(true)}
-        placeholder="Select date and time"
-        readOnly
-        suffix={<DownOutlined />}
-      />
+      <div onClick={() => setDateTimePopVisible(true)}>
+        <Input
+          prefix={<ClockCircleOutlined />}
+          value={currentDateTime.join("-")}
+          placeholder="Select date and time"
+          readOnly
+          suffix={<DownOutlined />}
+        />
+      </div>
       <p></p>
 
       <Masonry
