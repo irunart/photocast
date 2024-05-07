@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { ClockCircleOutlined, DownOutlined, MehOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, DownOutlined, TeamOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
@@ -147,7 +147,7 @@ const Home: React.FC = () => {
       <p>current photographer below:</p>
       <div onClick={() => setGraperPopupVisible(true)}>
         <Input
-          prefix={<MehOutlined />}
+          prefix={<TeamOutlined />}
           value={grapher?.label}
           placeholder="Select a photographer"
           readOnly
