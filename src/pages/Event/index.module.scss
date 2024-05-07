@@ -1,0 +1,36 @@
+.grapherOptions {
+  width: 100%;
+  height: 40px;
+}
+
+.imageContainer {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 350px) {
+  .imageContainer {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+.photographers {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.timeNavButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > * {
+    width: calc(50% - 5px);
+    max-width: 300px;
+  }
+}

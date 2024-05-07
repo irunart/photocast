@@ -1,0 +1,10 @@
+.footer {
+  margin: 10px 0;
+
+  .github {
+    text-align: right;
+    & a {
+      color: #000;
+    }
+  }
+}
