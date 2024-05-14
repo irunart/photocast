@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
           src="https://docs.google.com/forms/d/e/1FAIpQLSdwCyjuEJt9TUUNDnRzUuJ8wYbHg9RHNQwaCKxbNu9QeCaO3A/viewform?embedded=true"
           width="100%"
           height="400"
-          frameborder="0"
+          style={{ border: "none" }}
         >
           正在加载…
         </iframe>
