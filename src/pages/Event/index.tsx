@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { ClockCircleOutlined, DownOutlined, TeamOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, DownOutlined, LeftOutlined, RightOutlined, TeamOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
@@ -194,7 +194,8 @@ const Event: React.FC = () => {
               setCurrentDateTime(prevTime);
             }}
           >
-            Prev Time
+            <LeftOutlined style={{ marginRight: 20 }} />
+            Earlier
           </Button>
         )) || <div />}
         {(nextTime && (
@@ -205,7 +206,8 @@ const Event: React.FC = () => {
               setCurrentDateTime(nextTime);
             }}
           >
-            Next Time
+            Newer
+            <RightOutlined style={{ marginLeft: 20 }} />
           </Button>
         )) || <div />}
       </div>
