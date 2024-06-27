@@ -1,7 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { ClockCircleOutlined, DownOutlined, LeftOutlined, RightOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  DownOutlined,
+  LeftOutlined,
+  RightOutlined,
+  SyncOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
@@ -60,6 +67,21 @@ const Event: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const refreshToLatest = useCallback(() => {
+    if (!grapher || !grapher.value) {
+      return;
+    }
+    setCurrentDateTime(getGrapherAvaliableTime(grapher));
+  }, [grapher, currentDateTime]);
+
+  useEffect(() => {
+    if (autoRefresh) {
+      const t = setInterval(refreshToLatest, 60000);
+      return () => clearInterval(t);
+    }
+  }, [autoRefresh]);
+
   /**
    * Retrieves the available time for a photographer.
    *
@@ -103,7 +125,6 @@ const Event: React.FC = () => {
         return;
       }
       times = grapher.available_time[dates[targetDateIndex]];
-      console.log(grapher.available_time, dates, targetDateIndex);
       if (times.length) {
         targetTimeIndex = action === "prev" ? times.length - 1 : 0;
         return [dates[targetDateIndex], times[targetTimeIndex]];
@@ -113,6 +134,11 @@ const Event: React.FC = () => {
 
   const prevTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "prev");
   const nextTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "next");
+  const navTime = useCallback((t: [string, string]) => {
+    scrollTo({ top: 0, behavior: "smooth" });
+    setAutoRefresh(false);
+    setCurrentDateTime(t);
+  }, []);
 
   useEffect(() => {
     if (!grapher?.value) return;
@@ -164,14 +190,25 @@ const Event: React.FC = () => {
         />
       </div>
       <p>current photo date time:</p>
-      <div onClick={() => setDateTimePopVisible(true)}>
-        <Input
-          prefix={<ClockCircleOutlined />}
-          value={currentDateTime.join("-")}
-          placeholder="Select date and time"
-          readOnly
-          suffix={<DownOutlined />}
-        />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div onClick={() => setDateTimePopVisible(true)} style={{ flex: 1 }}>
+          <Input
+            prefix={<ClockCircleOutlined />}
+            value={currentDateTime.join("-")}
+            placeholder="Select date and time"
+            readOnly
+            suffix={<DownOutlined />}
+          />
+        </div>
+        <Button
+          size="small"
+          color={autoRefresh ? "primary" : "default"}
+          style={{ borderColor: "#d9d9d9", width: 157, marginLeft: 5 }}
+          onClick={() => setAutoRefresh(!autoRefresh)}
+        >
+          <SyncOutlined spin={autoRefresh} style={{ marginRight: 5 }} />
+          Auto Refresh
+        </Button>
       </div>
       <p></p>
 
@@ -187,25 +224,13 @@ const Event: React.FC = () => {
       />
       <div className={styles.timeNavButtons}>
         {(prevTime && (
-          <Button
-            size="large"
-            onClick={() => {
-              scrollTo({ top: 0, behavior: "smooth" });
-              setCurrentDateTime(prevTime);
-            }}
-          >
+          <Button size="large" onClick={() => navTime(prevTime)}>
             <LeftOutlined style={{ marginRight: 20 }} />
             Earlier
           </Button>
         )) || <div />}
         {(nextTime && (
-          <Button
-            size="large"
-            onClick={() => {
-              scrollTo({ top: 0, behavior: "smooth" });
-              setCurrentDateTime(nextTime);
-            }}
-          >
+          <Button size="large" onClick={() => navTime(nextTime)}>
             Newer
             <RightOutlined style={{ marginLeft: 20 }} />
           </Button>
