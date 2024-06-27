@@ -18,6 +18,13 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 
 import styles from "./index.module.scss";
 
+const latestFirstPhoto = (a: IImage, b: IImage) => {
+  if (a.date !== b.date) {
+    return b.date.localeCompare(a.date);
+  }
+  return b.time.localeCompare(a.time);
+};
+
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { event } = useParams();
@@ -70,8 +77,10 @@ const Home: React.FC = () => {
       const hour: string = time && hours.includes(time) ? time : hours[0];
       return [date, hour];
     }
-
-    return [dates[0], grapher.available_time[dates[0]][0]];
+    const latestDate = dates[dates.length - 1];
+    const availableTime = grapher.available_time[latestDate];
+    const latestTime = availableTime[availableTime.length - 1];
+    return [latestDate, latestTime];
   };
 
   const navGrapherAvaliableTime = (
@@ -109,7 +118,7 @@ const Home: React.FC = () => {
     if (!grapher?.value) return;
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
-        setImages(res.data);
+        setImages(res.data.toSorted(latestFirstPhoto));
       }
     );
     stateToUrl();
