@@ -25,7 +25,7 @@ const latestFirstPhoto = (a: IImage, b: IImage) => {
   return b.time.localeCompare(a.time);
 };
 
-const Home: React.FC = () => {
+const Event: React.FC = () => {
   const navigate = useNavigate();
   const { event } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -248,4 +248,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Event;
