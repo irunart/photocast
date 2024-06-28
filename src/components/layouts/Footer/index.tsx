@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
         width={640} // Set the width of the modal
       >
         <iframe
-          src="https://docs.google.com/forms/d/e/1FAIpQLSdwCyjuEJt9TUUNDnRzUuJ8wYbHg9RHNQwaCKxbNu9QeCaO3A/viewform?embedded=true"
+          src="https://forms.gle/A8ohKa6i5ffssTQ9A?embedded=true"
           width="100%"
           height="400"
           style={{ border: "none" }}
