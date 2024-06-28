@@ -1,12 +1,12 @@
 import * as _ from "lodash-es";
 
-import type { IPhotographer, IData } from "./type";
+import type { IData, IPhotographer } from "./type";
 
 export const getEventPhotoGrapher = (datas: IData[], event: string) => {
   // 扁平数据
   const flatDatas = _.map(datas, (item) => ({
     ...item.data,
-    label: `${item.data.name}(${countPhotoAmount(item.data)}张)`,
+    label: `${item.data.name}${item.data.location === "N/A" ? "" : " @" + item.data.location}(${countPhotoAmount(item.data)}张)`,
     photographer_icon_url: item.photographer_icon_url,
     value: item.data.label,
   }));
