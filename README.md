@@ -28,10 +28,16 @@ https://tailwind.nodejs.cn/docs/configuration
 https://ant-design.antgroup.com/components/form-cn
 https://mobile.ant.design/zh/components/button
 
-# 04-08
+# Changelog
 
-DONE:
+### 2024-08-07
 
+1. A
+2. B
+
+### 2024-04-08
+
+Done:
 1. 选择时间和日期
 2. 展示图片，并且点击图片可以弹窗滑动
 
