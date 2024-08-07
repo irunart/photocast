@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
-// import { sortBy } from 'lodash-es';
-
 import { Grid, Card, Image } from "antd-mobile";
 
 // import { getEventLists } from "@/services/googleApis";
@@ -20,9 +18,13 @@ const Home = () => {
   // init 阶段
   useEffect(() => {
     getEventDetail().then((res: CommonResponse<IEventLists>) => {
-      _.sortBy(res.data, ["date_start"], ["asc"]);
+      const sortedEventLists = Object.entries(res.data).reduce((acc, [key, value]) => {
+        acc[key] = _.sortBy(value, "date_start");
+        return acc;
+      }, {} as IEventLists);
 
-      // dataRef.current.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      console.log(sortedEventLists);
+      res.data = sortedEventLists;
 
       setData(_.keys(res.data));
     });
@@ -37,7 +39,7 @@ const Home = () => {
     <Grid columns={3} gap={8}>
       {data.map((event) => (
         <Grid.Item onClick={() => goEventDetail(event)} key={event}>
-          <Card title={event + "赛事"}>
+          <Card title={event}>
             <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
           </Card>
         </Grid.Item>
