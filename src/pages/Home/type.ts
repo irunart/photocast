@@ -1,10 +1,8 @@
 export interface IEventLists {
-  [event: string]: IEventDetail[];
+  [event: string]: IEventDetail;
 }
-interface IEventDetail {
-  // label: string;
+export interface IEventDetail {
   event: string;
-  name: string;
   category: string;
   country: string;
   city: string;

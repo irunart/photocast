@@ -6,27 +6,21 @@ import { Grid, Card, Image } from "antd-mobile";
 // import { getEventLists } from "@/services/googleApis";
 import { getEventDetail } from "@/services/googleApis";
 
-import type { IEventLists } from "./type";
+import type { IEventLists, IEventDetail } from "./type";
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const [data, setData] = useState<string[]>([]);
+  const [data, setData] = useState<IEventDetail[]>([]);
 
   const dataRef = useRef<IEventLists>();
 
   // init 阶段
   useEffect(() => {
     getEventDetail().then((res: CommonResponse<IEventLists>) => {
-      const sortedEventLists = Object.entries(res.data).reduce((acc, [key, value]) => {
-        acc[key] = _.sortBy(value, "date_start");
-        return acc;
-      }, {} as IEventLists);
-
-      console.log(sortedEventLists);
-      res.data = sortedEventLists;
-
-      setData(_.keys(res.data));
+      let values = _.values(res.data);
+      values = _.sortBy(values, ["date_start"]).reverse();
+      setData(values);
     });
   }, []);
 
@@ -37,9 +31,9 @@ const Home = () => {
   //TODO: api接口 赛事详情,对应图片
   return (
     <Grid columns={3} gap={8}>
-      {data.map((event) => (
-        <Grid.Item onClick={() => goEventDetail(event)} key={event}>
-          <Card title={event}>
+      {data.map((item) => (
+        <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
+          <Card title={item.event}>
             <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
           </Card>
         </Grid.Item>
