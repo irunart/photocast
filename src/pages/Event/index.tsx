@@ -11,12 +11,12 @@ import {
 } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
-import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup } from "antd-mobile";
+import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup, Tag, Space } from "antd-mobile";
 import * as _ from "lodash-es";
 
 import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
 
-import type { IData, IImage, IPhotographer } from "./type";
+import type { IData, IImage, IPhotographer, IEventDetail } from "./type";
 
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 
@@ -35,6 +35,17 @@ const latestFirstPhoto = (a: IImage, b: IImage) => {
 const Event: React.FC = () => {
   const navigate = useNavigate();
   const { event } = useParams();
+  const [eventInfo, setEventInfo] = useState<IEventDetail>({
+    event: "",
+    category: "",
+    country: "",
+    city: "",
+    location: "",
+    date_start: "",
+    date_end: "",
+    event_icon_url: "",
+    website: "",
+  });
   const [searchParams, setSearchParams] = useSearchParams();
 
   const imageViewerRefs = useRef<MultiImageViewerRef>(null);
@@ -64,6 +75,13 @@ const Event: React.FC = () => {
       setPhotoGraphers(grapherLists);
       setGrapher(currentGrapher);
     });
+
+    const EventsData = JSON.parse(sessionStorage.getItem("EventsData") as string);
+    if (EventsData) {
+      console.log(EventsData[event]);
+      setEventInfo(EventsData[event]);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
@@ -177,8 +195,31 @@ const Event: React.FC = () => {
     );
   };
 
+  const renderFooter = (image: string, index: number) => {
+    return (
+      <div className={styles.footer}>
+        <div
+          className={styles.footerButton}
+          // onClick={() => {
+          //   console.log('Loading...')
+          // }}
+        >
+          Swipe left and right to switch photos
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
+      <Space>
+        <Tag color="#2db7f5">{eventInfo.event}</Tag>
+        <Tag color="#87d068">{eventInfo.city}</Tag>
+        <Tag color="#108ee9">{eventInfo.category}</Tag>
+      </Space>
+      <br />
+      <a href={eventInfo.website}>赛事官网</a>
+
       <p>current photographer below:</p>
       <div onClick={() => setGraperPopupVisible(true)}>
         <Input
@@ -226,12 +267,12 @@ const Event: React.FC = () => {
         {(prevTime && (
           <Button size="large" onClick={() => navTime(prevTime)}>
             <LeftOutlined style={{ marginRight: 20 }} />
-            Earlier
+            Pre
           </Button>
         )) || <div />}
         {(nextTime && (
           <Button size="large" onClick={() => navTime(nextTime)}>
-            Newer
+            Next
             <RightOutlined style={{ marginLeft: 20 }} />
           </Button>
         )) || <div />}
@@ -270,6 +311,7 @@ const Event: React.FC = () => {
         visible={imagePopVisible}
         defaultIndex={1}
         onClose={() => setImagePopVisible(false)}
+        renderFooter={renderFooter}
       />
     </div>
   );

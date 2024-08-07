@@ -1,3 +1,14 @@
+export interface IEventDetail {
+  event: string;
+  category: string;
+  country: string;
+  city: string;
+  location: string;
+  date_start: string;
+  date_end: string;
+  event_icon_url: string;
+  website: string;
+}
 export interface IData {
   data: IPhotographer;
   photographer_icon_url: string;

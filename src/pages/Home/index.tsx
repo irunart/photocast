@@ -21,6 +21,8 @@ const Home = () => {
       let values = _.values(res.data);
       values = _.sortBy(values, ["date_start"]).reverse();
       setData(values);
+
+      sessionStorage.setItem("EventsData", JSON.stringify(res.data));
     });
   }, []);
 
@@ -35,6 +37,7 @@ const Home = () => {
         <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
           <Card title={item.event}>
             <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
+            {item.date_start}-{item.date_end}
           </Card>
         </Grid.Item>
       ))}
