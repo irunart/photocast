@@ -80,8 +80,6 @@ const Event: React.FC = () => {
     if (EventsData) {
       setEventInfo(EventsData[event]);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
 
   const [autoRefresh, setAutoRefresh] = useState(false);
@@ -162,7 +160,11 @@ const Event: React.FC = () => {
     if (!grapher?.value) return;
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
-        setImages(res.data.toSorted(latestFirstPhoto));
+        if (autoRefresh) {
+          setImages(res.data.toSorted(latestFirstPhoto));
+        } else {
+          setImages(res.data.toSorted(latestFirstPhoto).reverse());
+        }
       }
     );
     stateToUrl();
