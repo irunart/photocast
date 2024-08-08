@@ -32,8 +32,10 @@ https://mobile.ant.design/zh/components/button
 
 ### 2024-08-07
 
-1. A
-2. B
+1. 打开大图后能添加提示可以左右滑动浏览，否则用户不容易察觉可以左右滑动看，例如添加左右箭头
+2. 赛事列表布局优化：1）列表转网格，responsiveness；2）改为按 date_start 倒序，最新的赛事在上面；3）支持按照 category、city 做 filter
+3. 赛事列表布页。赛事详情添加：赛事 Icon，赛事基本信息，如时间等。event_detail.json
+4. Event 页面优化：显示 Event 的基本信息。
 
 ### 2024-04-08
 
