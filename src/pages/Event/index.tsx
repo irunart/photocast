@@ -136,6 +136,7 @@ const Event: React.FC = () => {
       return [date, times[targetTimeIndex]];
     }
     let targetDateIndex = dateIndex;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
       if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
@@ -194,7 +195,8 @@ const Event: React.FC = () => {
     );
   };
 
-  const renderFooter = (image: string, index: number) => {
+  // image: string, index: number
+  const renderFooter = () => {
     return (
       <div className={styles.footer}>
         <div

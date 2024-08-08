@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
-import { Grid, Card, Image, Picker, Button, Space, Tag, Ellipsis } from "antd-mobile";
+import { Grid, Card, Image, Picker, Button, Space, Tag, Divider } from "antd-mobile";
 
 import { getEventDetail } from "@/services/googleApis";
 
@@ -21,6 +21,8 @@ const Home = () => {
   // const basicColumnSelected=[String,String]
   const [citySelected, setCitySelected] = useState<string>("All");
   const [categorySelected, setCategorySelected] = useState<string>("All");
+  const [eventCount, setEventCount] = useState<number>(0);
+
   const basicColumns = [
     [{ label: "Hong Kong", value: "Hong Kong" }],
     [{ label: "IEST Training", value: "IEST Training" }],
@@ -36,6 +38,7 @@ const Home = () => {
       values = _.sortBy(values, ["date_start"]).reverse();
       setEventDetails(values);
       setEventDetailsFiltered(values);
+      setEventCount(values.length);
       const cites = values.map((item) => item.city);
       const categories = values.map((item) => item.category);
       const uniqueCites = ["All", ...new Set(cites)];
@@ -58,14 +61,20 @@ const Home = () => {
 
   const filterEvents = (city: string, category: string) => {
     if (city != "All" && category != "All") {
-      console.log(EventDetails.filter((event) => event.city == city));
-      setEventDetailsFiltered(EventDetails.filter((event) => event.city == city && event.category == category));
+      const res = EventDetails.filter((event) => event.city == city && event.category == category);
+      setEventDetailsFiltered(res);
+      setEventCount(res.length);
     } else if (city != "All" && category == "All") {
-      setEventDetailsFiltered(EventDetails.filter((event) => event.city == city));
+      const res = EventDetails.filter((event) => event.city == city);
+      setEventDetailsFiltered(res);
+      setEventCount(res.length);
     } else if (city == "All" && category != "All") {
-      setEventDetailsFiltered(EventDetails.filter((event) => event.category == category));
+      const res = EventDetails.filter((event) => event.category == category);
+      setEventDetailsFiltered(res);
+      setEventCount(res.length);
     } else {
       setEventDetailsFiltered(EventDetails);
+      setEventCount(EventDetails.length);
     }
   };
 
@@ -86,7 +95,7 @@ const Home = () => {
         }}
         style={{ touchAction: "pan-y" }}
       >
-        {(items, { open }) => {
+        {(_items, { open }) => {
           return (
             <div>
               <Button onClick={open}>filter</Button>
@@ -94,18 +103,25 @@ const Home = () => {
                 ? '未选择'
                 : 
                 } */}
+
               <Space>
-                <Tag color="#2db7f5" round>
-                  {citySelected}
-                </Tag>
-                <Tag color="#87d068" round>
-                  {categorySelected}
-                </Tag>
+                <span title="click to cancel this filter">
+                  <Tag color="#2db7f5" round>
+                    {citySelected}
+                  </Tag>
+                </span>
+                <span title="click to cancel this filter">
+                  <Tag color="#87d068" round>
+                    {categorySelected}
+                  </Tag>
+                </span>
+                <span></span>
               </Space>
             </div>
           );
         }}
       </Picker>
+      <Divider>There are {eventCount} results</Divider>
       <Grid columns={3} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
