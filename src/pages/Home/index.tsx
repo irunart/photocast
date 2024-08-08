@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
-import { Grid, Card, Image, Picker, Button, Space, Tag } from "antd-mobile";
+import { Grid, Card, Image, Picker, Button, Space, Tag, Ellipsis } from "antd-mobile";
 
-// import { getEventLists } from "@/services/googleApis";
 import { getEventDetail } from "@/services/googleApis";
 
 import type { IEventLists, IEventDetail } from "./type";
@@ -96,8 +95,12 @@ const Home = () => {
                 : 
                 } */}
               <Space>
-                <Tag color="#2db7f5">{citySelected}</Tag>
-                <Tag color="#87d068">{categorySelected}</Tag>
+                <Tag color="#2db7f5" round>
+                  {citySelected}
+                </Tag>
+                <Tag color="#87d068" round>
+                  {categorySelected}
+                </Tag>
               </Space>
             </div>
           );
@@ -106,10 +109,16 @@ const Home = () => {
       <Grid columns={3} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
-            <Card title={item.event}>
-              <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
-              {item.date_start}➡️{item.date_end}
-            </Card>
+            <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
+              <Card title={<div style={{ fontWeight: "normal", height: "30px" }}>{item.event}</div>}>
+                <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
+                <span>
+                  <Tag color="#108ee9"> {item.date_start}</Tag>
+                  <Tag color="#172068">to</Tag>
+                  <Tag color="#108ee9"> {item.date_end}</Tag>
+                </span>
+              </Card>
+            </div>
           </Grid.Item>
         ))}
       </Grid>

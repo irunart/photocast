@@ -78,7 +78,6 @@ const Event: React.FC = () => {
 
     const EventsData = JSON.parse(sessionStorage.getItem("EventsData") as string);
     if (EventsData) {
-      console.log(EventsData[event]);
       setEventInfo(EventsData[event]);
     }
 
