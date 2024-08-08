@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import {
   ClockCircleOutlined,
@@ -11,7 +13,18 @@ import {
 } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
-import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup, Tag, Space, Divider } from "antd-mobile";
+import {
+  Button,
+  CascadePicker,
+  CheckList,
+  Image,
+  ImageViewer,
+  Popup,
+  Tag,
+  Space,
+  Divider,
+  DotLoading,
+} from "antd-mobile";
 import * as _ from "lodash-es";
 
 import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
@@ -46,6 +59,7 @@ const Event: React.FC = () => {
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
   const [imagePopVisible, setImagePopVisible] = useState(false);
+  const [isImagePush, setIsImagePush] = useState(false);
 
   // page start
   useEffect(() => {
@@ -108,7 +122,6 @@ const Event: React.FC = () => {
     const availableTime = grapher.available_time[latestDate];
     // const latestTime = availableTime[availableTime.length - 1];
     const latestTime = autoRefresh ? availableTime[availableTime.length - 1] : availableTime[0];
-
     return [latestDate, latestTime];
   };
 
@@ -143,7 +156,7 @@ const Event: React.FC = () => {
   const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
   const navTime = useCallback((t: [string, string]) => {
-    scrollTo({ top: 0, behavior: "smooth" });
+    // scrollTo({ top: 0, behavior: "smooth" });
     setAutoRefresh(false);
     setCurrentDateTime(t);
   }, []);
@@ -152,15 +165,32 @@ const Event: React.FC = () => {
     if (!grapher?.value) return;
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
-        if (autoRefresh) {
-          setImages(res.data.toSorted(latestFirstPhoto));
+        const dataSorted = res.data.toSorted(latestFirstPhoto);
+        let img;
+        if (isImagePush) {
+          img = images.concat(res.data.toSorted(latestFirstPhoto).reverse());
+          const hour = img[img.length - 1].hour;
+          const date = img[img.length - 1].date;
+          const second = img[img.length - 1].second;
+          const time = img[img.length - 1].time;
+          const minute = img[img.length - 1].minute;
+          const divider = {
+            name: "divider",
+            hour: hour,
+            date: date,
+            second: second,
+            time: time,
+            minute: minute,
+          } as IImage;
+          img.push(divider);
         } else {
-          setImages(res.data.toSorted(latestFirstPhoto).reverse());
+          img = autoRefresh ? dataSorted : dataSorted.reverse();
         }
+
+        setImages(img);
       }
     );
     stateToUrl();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDateTime]);
 
   // 选择摄影师
@@ -246,18 +276,35 @@ const Event: React.FC = () => {
           Auto Refresh
         </Button>
       </div>
-      <Divider>分割线</Divider>
-
-      <Masonry
-        column={3}
-        gap={8}
-        initailHeight={150}
-        items={images.map((image, index) => (
-          <div key={image.name} onClick={() => openImageViewer(index)}>
-            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
-          </div>
-        ))}
-      />
+      <Divider>...</Divider>
+      <InfiniteScroll
+        dataLength={images.length}
+        next={() => {
+          setIsImagePush(true);
+          navTime(nextTime as [string, string]);
+        }}
+        hasMore={nextTime != undefined}
+        loader={<DotLoading color="primary" />}
+        pullDownToRefreshThreshold={50}
+        endMessage={<Divider>No more photos</Divider>}
+      >
+        <Masonry
+          column={3}
+          gap={8}
+          initailHeight={150}
+          items={images.map((image, index) =>
+            image.name == "divider" ? (
+              <Divider>
+                ⬇️{image.hour}:{image.minute}⬇️
+              </Divider>
+            ) : (
+              <div key={image.name} onClick={() => openImageViewer(index)}>
+                <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+              </div>
+            )
+          )}
+        />
+      </InfiniteScroll>
 
       <div className={styles.timeNavButtons}>
         {(prevTime && (
@@ -304,7 +351,7 @@ const Event: React.FC = () => {
       />
       <ImageViewer.Multi
         ref={imageViewerRefs}
-        images={images.map((i) => i.url)}
+        images={images.map((i) => i.url as string)}
         visible={imagePopVisible}
         defaultIndex={1}
         onClose={() => setImagePopVisible(false)}

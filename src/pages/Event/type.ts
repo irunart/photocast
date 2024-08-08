@@ -32,5 +32,5 @@ export interface IImage {
   hour: string;
   minute: string;
   second: string;
-  url: string;
+  url?: string;
 }

@@ -34,6 +34,7 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
       heights[minColumn] += elementHeight + gap;
     });
     flushSync(() => setMaxHeight(Math.ceil(Math.max(...heights))));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [column, gap, items]);
 
   useEffect(() => {
