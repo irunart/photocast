@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
-import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup, Tag, Space } from "antd-mobile";
+import { Button, CascadePicker, CheckList, Image, ImageViewer, Popup, Tag, Space, Divider } from "antd-mobile";
 import * as _ from "lodash-es";
 
 import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
@@ -49,9 +49,9 @@ const Event: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const imageViewerRefs = useRef<MultiImageViewerRef>(null);
-  const [photoGraphers, setPhotoGraphers] = useState<IPhotographer[]>([]);
+  const [photographers, setPhotographers] = useState<IPhotographer[]>([]);
   const [grapher, setGrapher] = useState<IPhotographer>();
-  const [grapherPopupVisible, setGraperPopupVisible] = useState(false);
+  const [grapherPopupVisible, setGrapherPopupVisible] = useState(false);
   const [images, setImages] = useState<IImage[]>([]);
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
@@ -69,10 +69,10 @@ const Event: React.FC = () => {
       const photoGrapherFromSearch = _.find(grapherLists, ["value", searchParams.get("photographer")]);
       const timesFromSearch = searchParams.get("time")?.split("-");
       const currentGrapher = photoGrapherFromSearch || grapherLists[0];
-      const currentTime = getGrapherAvaliableTime(currentGrapher, timesFromSearch?.[0], timesFromSearch?.[1]);
+      const currentTime = getGrapherAvailableTime(currentGrapher, timesFromSearch?.[0], timesFromSearch?.[1]);
 
       setCurrentDateTime(currentTime);
-      setPhotoGraphers(grapherLists);
+      setPhotographers(grapherLists);
       setGrapher(currentGrapher);
     });
 
@@ -87,7 +87,7 @@ const Event: React.FC = () => {
     if (!grapher || !grapher.value) {
       return;
     }
-    setCurrentDateTime(getGrapherAvaliableTime(grapher));
+    setCurrentDateTime(getGrapherAvailableTime(grapher));
   }, [grapher, currentDateTime]);
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const Event: React.FC = () => {
    *
    * @returns An array containing the selected date and time, or the first available date and time.
    */
-  const getGrapherAvaliableTime = (grapher: IPhotographer, date?: string, time?: string): [string, string] => {
+  const getGrapherAvailableTime = (grapher: IPhotographer, date?: string, time?: string): [string, string] => {
     const dates: string[] = Object.keys(grapher.available_time);
 
     if (date && dates.includes(date)) {
@@ -116,11 +116,12 @@ const Event: React.FC = () => {
     }
     const latestDate = dates[dates.length - 1];
     const availableTime = grapher.available_time[latestDate];
-    const latestTime = availableTime[availableTime.length - 1];
+    // const latestTime = availableTime[availableTime.length - 1];
+    const latestTime = availableTime[0];
     return [latestDate, latestTime];
   };
 
-  const navGrapherAvaliableTime = (
+  const navGrapherAvailableTime = (
     grapher: IPhotographer,
     [date, time]: [string, string],
     action: "prev" | "next"
@@ -148,8 +149,8 @@ const Event: React.FC = () => {
     }
   };
 
-  const prevTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "prev");
-  const nextTime = grapher && navGrapherAvaliableTime(grapher, currentDateTime, "next");
+  const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
+  const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
   const navTime = useCallback((t: [string, string]) => {
     scrollTo({ top: 0, behavior: "smooth" });
     setAutoRefresh(false);
@@ -173,8 +174,8 @@ const Event: React.FC = () => {
 
   // 选择摄影师
   const handlePhotoGrapherChange = (nextGrapher: string) => {
-    const selectedGrapher = photoGraphers.find((item) => item.value === nextGrapher);
-    const currentGrapherTime = getGrapherAvaliableTime(selectedGrapher as IPhotographer, undefined, undefined);
+    const selectedGrapher = photographers.find((item) => item.value === nextGrapher);
+    const currentGrapherTime = getGrapherAvailableTime(selectedGrapher as IPhotographer, undefined, undefined);
 
     setGrapher(selectedGrapher as IPhotographer);
     setCurrentDateTime(currentGrapherTime);
@@ -224,7 +225,7 @@ const Event: React.FC = () => {
       <a href={eventInfo.website}>赛事官网</a>
 
       <p>current photographer below:</p>
-      <div onClick={() => setGraperPopupVisible(true)}>
+      <div onClick={() => setGrapherPopupVisible(true)}>
         <Input
           prefix={<TeamOutlined />}
           value={grapher?.label}
@@ -254,7 +255,7 @@ const Event: React.FC = () => {
           Auto Refresh
         </Button>
       </div>
-      <p></p>
+      <Divider>分割线</Divider>
 
       <Masonry
         column={3}
@@ -266,6 +267,7 @@ const Event: React.FC = () => {
           </div>
         ))}
       />
+
       <div className={styles.timeNavButtons}>
         {(prevTime && (
           <Button size="large" onClick={() => navTime(prevTime)}>
@@ -280,17 +282,18 @@ const Event: React.FC = () => {
           </Button>
         )) || <div />}
       </div>
-      <Popup visible={grapherPopupVisible} onMaskClick={() => setGraperPopupVisible(false)} destroyOnClose>
+
+      <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
         <p className="text-center"> Select a photographer below:</p>
         <CheckList
           defaultValue={grapher?.value ? [grapher.value] : []}
           onChange={(val) => {
             handlePhotoGrapherChange(val[0] as string);
-            setGraperPopupVisible(false);
+            setGrapherPopupVisible(false);
           }}
           className={styles.photographers}
         >
-          {photoGraphers.map((item) => (
+          {photographers.map((item) => (
             <CheckList.Item key={item?.value} value={item?.value as string} className={styles.photoGraperItem}>
               <Flex align="center">
                 <Image src={item?.photographer_icon_url} width={40} height={40} fit="cover" />
