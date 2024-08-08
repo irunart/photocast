@@ -35,17 +35,7 @@ const latestFirstPhoto = (a: IImage, b: IImage) => {
 const Event: React.FC = () => {
   const navigate = useNavigate();
   const { event } = useParams();
-  const [eventInfo, setEventInfo] = useState<IEventDetail>({
-    event: "",
-    category: "",
-    country: "",
-    city: "",
-    location: "",
-    date_start: "",
-    date_end: "",
-    event_icon_url: "",
-    website: "",
-  });
+  const [eventInfo, setEventInfo] = useState<IEventDetail>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const imageViewerRefs = useRef<MultiImageViewerRef>(null);
@@ -117,7 +107,8 @@ const Event: React.FC = () => {
     const latestDate = dates[dates.length - 1];
     const availableTime = grapher.available_time[latestDate];
     // const latestTime = availableTime[availableTime.length - 1];
-    const latestTime = availableTime[0];
+    const latestTime = autoRefresh ? availableTime[availableTime.length - 1] : availableTime[0];
+
     return [latestDate, latestTime];
   };
 
@@ -175,7 +166,7 @@ const Event: React.FC = () => {
   // 选择摄影师
   const handlePhotoGrapherChange = (nextGrapher: string) => {
     const selectedGrapher = photographers.find((item) => item.value === nextGrapher);
-    const currentGrapherTime = getGrapherAvailableTime(selectedGrapher as IPhotographer, undefined, undefined);
+    const currentGrapherTime = getGrapherAvailableTime(selectedGrapher as IPhotographer);
 
     setGrapher(selectedGrapher as IPhotographer);
     setCurrentDateTime(currentGrapherTime);
@@ -217,12 +208,12 @@ const Event: React.FC = () => {
   return (
     <div>
       <Space>
-        <Tag color="#2db7f5">{eventInfo.event}</Tag>
-        <Tag color="#87d068">{eventInfo.city}</Tag>
-        <Tag color="#108ee9">{eventInfo.category}</Tag>
+        <Tag color="#2db7f5">{eventInfo?.event}</Tag>
+        <Tag color="#87d068">{eventInfo?.city}</Tag>
+        <Tag color="#108ee9">{eventInfo?.category}</Tag>
       </Space>
       <br />
-      <a href={eventInfo.website}>赛事官网</a>
+      <a href={eventInfo?.website}>赛事官网</a>
 
       <p>current photographer below:</p>
       <div onClick={() => setGrapherPopupVisible(true)}>
