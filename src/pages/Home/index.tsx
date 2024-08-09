@@ -122,26 +122,24 @@ const Home = () => {
         }}
       </Picker>
       <Divider>There are {eventCount} results</Divider>
-      <Grid columns={3} gap={8}>
+      <Grid columns={2} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
             <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
               <Card
                 title={
-                  <Space>
-                    <span style={{ fontWeight: "normal", height: "30px" }}>{item.event}</span>
+                  <div style={{ height: "40px" }}>
+                    <div>{item.event}</div>
                     <Tag>{item.category}</Tag>
-                  </Space>
+                  </div>
                 }
               >
                 <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
-                <Space>
-                  <Tag color="#108ee9">
-                    {" "}
-                    {item.date_start}-{item.date_end}
-                  </Tag>
-                  <Tag color="#87d068"> {item.city}</Tag>
-                </Space>
+
+                <Tag color="#108ee9">
+                  {item.date_start}-{item.date_end}
+                </Tag>
+                <Tag color="#87d068"> {item.city}</Tag>
               </Card>
             </div>
           </Grid.Item>
