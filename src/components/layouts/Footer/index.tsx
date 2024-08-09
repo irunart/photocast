@@ -3,7 +3,7 @@ import { FloatButton, message, Modal } from "antd";
 
 import { Divider, Space } from "antd-mobile";
 
-import { GithubOutlined, ShareAltOutlined, CommentOutlined } from "@ant-design/icons";
+import { ShareAltOutlined, CommentOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
 const Footer: React.FC = () => {
@@ -33,22 +33,6 @@ const Footer: React.FC = () => {
 
   return (
     <>
-      <Divider>
-        <Space>
-          <span>
-            Powered by <a href="https://RunArt.net">RunArt.net</a>
-          </span>
-          |
-          <span>
-            Operated by <a>iest.run</a>
-          </span>
-          |
-          <span>
-            <a href="/About/">About</a>
-          </span>
-        </Space>
-      </Divider>
-
       <Modal
         title="Feedback Form"
         open={modalVisible}
@@ -67,11 +51,21 @@ const Footer: React.FC = () => {
       </Modal>
       <div className={styles.footer}>
         {contextHolder}
-        <p className={styles.github}>
-          <a href="https://github.com/irunart/photocast">
-            <GithubOutlined />
-          </a>
-        </p>
+        <Divider>
+          <Space>
+            <span>
+              Powered by <a href="https://RunArt.net">RunArt.net</a>
+            </span>
+            |
+            <span>
+              Operated by <a href="https://iest.run">iest.run</a>
+            </span>
+            |
+            <span>
+              <a href="https://github.com/irunart/photocast">About</a>
+            </span>
+          </Space>
+        </Divider>
         <FloatButton.Group style={{ bottom: 120 }}>
           <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
           <FloatButton icon={<CommentOutlined />} onClick={openForm} />
