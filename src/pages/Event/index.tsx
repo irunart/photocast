@@ -3,14 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import {
-  ClockCircleOutlined,
-  DownOutlined,
-  LeftOutlined,
-  RightOutlined,
-  SyncOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import {
@@ -159,7 +152,7 @@ const Event: React.FC = () => {
     }
   };
 
-  const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
+  // const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
 
   const nextPhotos = () => {
@@ -370,6 +363,7 @@ const Event: React.FC = () => {
         />
       </InfiniteScroll>
 
+      {/*
       <div className={styles.timeNavButtons}>
         {(prevTime && (
           <Button size="large" onClick={() => navTime(prevTime)}>
@@ -384,6 +378,7 @@ const Event: React.FC = () => {
           </Button>
         )) || <div />}
       </div>
+      */}
 
       <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
         <p className="text-center"> Select a photographer below:</p>
