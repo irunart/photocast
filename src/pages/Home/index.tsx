@@ -126,13 +126,22 @@ const Home = () => {
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
             <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
-              <Card title={<div style={{ fontWeight: "normal", height: "30px" }}>{item.event}</div>}>
+              <Card
+                title={
+                  <Space>
+                    <span style={{ fontWeight: "normal", height: "30px" }}>{item.event}</span>
+                    <Tag>{item.category}</Tag>
+                  </Space>
+                }
+              >
                 <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
-                <span>
-                  <Tag color="#108ee9"> {item.date_start}</Tag>
-                  <Tag color="#172068">to</Tag>
-                  <Tag color="#108ee9"> {item.date_end}</Tag>
-                </span>
+                <Space>
+                  <Tag color="#108ee9">
+                    {" "}
+                    {item.date_start}-{item.date_end}
+                  </Tag>
+                  <Tag color="#87d068"> {item.city}</Tag>
+                </Space>
               </Card>
             </div>
           </Grid.Item>

@@ -185,7 +185,6 @@ const Event: React.FC = () => {
         time: dataSorted[0].time,
         minute: dataSorted[0].minute,
       } as IImage;
-      dataSorted;
 
       dataSorted = dataSorted.concat(divider);
       dataSorted = images.concat(dataSorted);
@@ -203,7 +202,7 @@ const Event: React.FC = () => {
     if (!grapher?.value) return;
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
-        let dataSorted = res.data.toSorted(latestFirstPhoto);
+        let dataSorted = res.data.toSorted(latestFirstPhoto).reverse();
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
           const r = dataSorted.slice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
           console.log(111, dataSorted.length, r.length);
@@ -221,10 +220,9 @@ const Event: React.FC = () => {
             minute: "00",
           } as IImage;
           img = images.concat(divider);
-          img = img.concat(res.data.toSorted(latestFirstPhoto).reverse());
-          // img.push(divider);
+          img = img.concat(dataSorted);
         } else {
-          img = autoRefresh ? dataSorted : dataSorted.reverse();
+          img = autoRefresh ? dataSorted.reverse() : dataSorted;
         }
         setImages(img);
         if (img.length < 20) {
@@ -286,7 +284,7 @@ const Event: React.FC = () => {
         <Tag color="#108ee9">{eventInfo?.category}</Tag>
       </Space>
       <br />
-      <a href={eventInfo?.website}>赛事官网</a>
+      <a href={eventInfo?.website}>Event Website</a>
 
       <Divider>👑Top10 Photos👑</Divider>
       <Masonry
