@@ -37,7 +37,7 @@ import Masonry from "@/components/Masonry";
 import ResponsiveImage from "@/components/ResponsiveImage";
 
 import styles from "./index.module.scss";
-
+const PHOTOS_MAX_SIZE = 100;
 const latestFirstPhoto = (a: IImage, b: IImage) => {
   if (a.date !== b.date) {
     return b.date.localeCompare(a.date);
@@ -164,9 +164,9 @@ const Event: React.FC = () => {
       navTime(nextTime as [string, string]);
     } else {
       let dataSorted;
-      if (imagesRemain.length > 100) {
-        dataSorted = imagesRemain.splice(0, 100);
-        setImagesRemain(imagesRemain.splice(-(imagesRemain.length - 100)));
+      if (imagesRemain.length > PHOTOS_MAX_SIZE) {
+        dataSorted = imagesRemain.splice(0, PHOTOS_MAX_SIZE);
+        setImagesRemain(imagesRemain.splice(-(imagesRemain.length - PHOTOS_MAX_SIZE)));
       } else {
         dataSorted = imagesRemain;
         setImagesRemain([]);
@@ -199,11 +199,11 @@ const Event: React.FC = () => {
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
         let dataSorted = res.data.toSorted(latestFirstPhoto);
-        if (dataSorted.length > 100) {
-          const r = dataSorted.splice(100, dataSorted.length - 1);
+        if (dataSorted.length > PHOTOS_MAX_SIZE) {
+          const r = dataSorted.splice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
           console.log(111, dataSorted.length, r.length);
           setImagesRemain(r);
-          dataSorted = dataSorted.splice(0, 100);
+          dataSorted = dataSorted.splice(0, PHOTOS_MAX_SIZE);
         }
         let img;
         if (isImagePush) {
@@ -221,8 +221,11 @@ const Event: React.FC = () => {
         } else {
           img = autoRefresh ? dataSorted : dataSorted.reverse();
         }
-
         setImages(img);
+        if (img.length < 20) {
+          setIsImagePush(true);
+          navTime(nextTime as [string, string]);
+        }
       }
     );
     stateToUrl();
@@ -319,7 +322,7 @@ const Event: React.FC = () => {
         }}
         hasMore={nextTime != undefined}
         loader={<DotLoading color="primary" />}
-        pullDownToRefreshThreshold={50}
+        scrollThreshold={"20px"}
         endMessage={<Divider>No more photos</Divider>}
       >
         <Masonry
