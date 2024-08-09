@@ -56,6 +56,7 @@ const Event: React.FC = () => {
   const [grapher, setGrapher] = useState<IPhotographer>();
   const [grapherPopupVisible, setGrapherPopupVisible] = useState(false);
   const [images, setImages] = useState<IImage[]>([]);
+  const [imagesRemain, setImagesRemain] = useState<IImage[]>([]);
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
   const [imagePopVisible, setImagePopVisible] = useState(false);
@@ -155,6 +156,38 @@ const Event: React.FC = () => {
 
   const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
+
+  const nextPhotos = () => {
+    setIsImagePush(true);
+    console.log(imagesRemain.length);
+    if (imagesRemain.length == 0) {
+      navTime(nextTime as [string, string]);
+    } else {
+      let dataSorted;
+      if (imagesRemain.length > 100) {
+        dataSorted = imagesRemain.splice(0, 100);
+        setImagesRemain(imagesRemain.splice(-(imagesRemain.length - 100)));
+      } else {
+        dataSorted = imagesRemain;
+        setImagesRemain([]);
+      }
+
+      const divider = {
+        name: "divider",
+        date: dataSorted[0].date,
+        hour: dataSorted[0].hour,
+        second: dataSorted[0].second,
+        time: dataSorted[0].time,
+        minute: dataSorted[0].minute,
+      } as IImage;
+      dataSorted;
+
+      dataSorted = dataSorted.concat(divider);
+      dataSorted = images.concat(dataSorted);
+      setImages(dataSorted);
+    }
+  };
+
   const navTime = useCallback((t: [string, string]) => {
     // scrollTo({ top: 0, behavior: "smooth" });
     setAutoRefresh(false);
@@ -165,24 +198,26 @@ const Event: React.FC = () => {
     if (!grapher?.value) return;
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
-        const dataSorted = res.data.toSorted(latestFirstPhoto);
+        let dataSorted = res.data.toSorted(latestFirstPhoto);
+        if (dataSorted.length > 100) {
+          const r = dataSorted.splice(100, dataSorted.length - 1);
+          console.log(111, dataSorted.length, r.length);
+          setImagesRemain(r);
+          dataSorted = dataSorted.splice(0, 100);
+        }
         let img;
         if (isImagePush) {
-          img = images.concat(res.data.toSorted(latestFirstPhoto).reverse());
-          const hour = img[img.length - 1].hour;
-          const date = img[img.length - 1].date;
-          const second = img[img.length - 1].second;
-          const time = img[img.length - 1].time;
-          const minute = img[img.length - 1].minute;
           const divider = {
             name: "divider",
-            hour: hour,
-            date: date,
-            second: second,
-            time: time,
-            minute: minute,
+            date: currentDateTime[0],
+            hour: currentDateTime[1],
+            second: "00",
+            time: "00",
+            minute: "00",
           } as IImage;
-          img.push(divider);
+          img = images.concat(divider);
+          img = img.concat(res.data.toSorted(latestFirstPhoto).reverse());
+          // img.push(divider);
         } else {
           img = autoRefresh ? dataSorted : dataSorted.reverse();
         }
@@ -280,8 +315,7 @@ const Event: React.FC = () => {
       <InfiniteScroll
         dataLength={images.length}
         next={() => {
-          setIsImagePush(true);
-          navTime(nextTime as [string, string]);
+          nextPhotos();
         }}
         hasMore={nextTime != undefined}
         loader={<DotLoading color="primary" />}
@@ -326,6 +360,7 @@ const Event: React.FC = () => {
         <CheckList
           defaultValue={grapher?.value ? [grapher.value] : []}
           onChange={(val) => {
+            setIsImagePush(false);
             handlePhotoGrapherChange(val[0] as string);
             setGrapherPopupVisible(false);
           }}
@@ -347,7 +382,10 @@ const Event: React.FC = () => {
         visible={dateTimePopVisible}
         value={currentDateTime}
         onClose={() => setDateTimePopVisible(false)}
-        onConfirm={(val) => setCurrentDateTime(val as [string, string])}
+        onConfirm={(val) => {
+          setIsImagePush(false);
+          setCurrentDateTime(val as [string, string]);
+        }}
       />
       <ImageViewer.Multi
         ref={imageViewerRefs}
