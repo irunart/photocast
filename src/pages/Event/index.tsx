@@ -157,7 +157,6 @@ const Event: React.FC = () => {
 
   const nextPhotos = () => {
     setIsImagePush(true);
-    console.log(imagesRemain.length);
     if (imagesRemain.length == 0) {
       navTime(nextTime as [string, string]);
     } else {
@@ -198,7 +197,6 @@ const Event: React.FC = () => {
         let dataSorted = res.data.toSorted(latestFirstPhoto).reverse();
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
           const r = dataSorted.slice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
-          console.log(111, dataSorted.length, r.length);
           setImagesRemain(r);
           dataSorted = dataSorted.slice(0, PHOTOS_MAX_SIZE);
         }

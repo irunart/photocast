@@ -4,6 +4,7 @@ import * as _ from "lodash-es";
 import { Grid, Card, Image, Picker, Button, Space, Tag, Divider } from "antd-mobile";
 
 import { getEventDetail } from "@/services/googleApis";
+import useMediaQuery from "use-media-antd-query";
 
 import type { IEventLists, IEventDetail } from "./type";
 
@@ -22,6 +23,19 @@ const Home = () => {
   const [citySelected, setCitySelected] = useState<string>("All");
   const [categorySelected, setCategorySelected] = useState<string>("All");
   const [eventCount, setEventCount] = useState<number>(0);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const colSize = useMediaQuery();
+  const colSize2ColumnsEvent = {
+    // "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
+    xs: 2,
+    sm: 2,
+    md: 3,
+    lg: 3,
+    xl: 3,
+    xxl: 3,
+  };
+  const columnsEvent = colSize2ColumnsEvent[colSize];
 
   const basicColumns = [
     [{ label: "Hong Kong", value: "Hong Kong" }],
@@ -122,7 +136,7 @@ const Home = () => {
         }}
       </Picker>
       <Divider>There are {eventCount} results</Divider>
-      <Grid columns={2} gap={8}>
+      <Grid columns={columnsEvent} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
             <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
@@ -134,7 +148,7 @@ const Home = () => {
                   </div>
                 }
               >
-                <Image src="https://iest.run/IEST-flag.jpg" style={{ borderRadius: 20 }} fit="cover" />
+                <Image src={item.event_icon_url} style={{ borderRadius: 20 }} fit="cover" />
 
                 <Tag color="#108ee9">
                   {item.date_start}-{item.date_end}
