@@ -56,6 +56,7 @@ const Event: React.FC = () => {
   const [grapher, setGrapher] = useState<IPhotographer>();
   const [grapherPopupVisible, setGrapherPopupVisible] = useState(false);
   const [images, setImages] = useState<IImage[]>([]);
+  const [topImages, setTopImages] = useState<IImage[]>([]);
   const [imagesRemain, setImagesRemain] = useState<IImage[]>([]);
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
@@ -79,6 +80,10 @@ const Event: React.FC = () => {
       setCurrentDateTime(currentTime);
       setPhotographers(grapherLists);
       setGrapher(currentGrapher);
+      const Time = getGrapherAvailableTime(currentGrapher);
+      getPhotoDateHourData(currentGrapher.value, Time[0], Time[1]).then((res: CommonResponse<IImage[]>) => {
+        setTopImages(res.data.slice(0, 10));
+      });
     });
 
     const EventsData = JSON.parse(sessionStorage.getItem("EventsData") as string);
@@ -165,8 +170,8 @@ const Event: React.FC = () => {
     } else {
       let dataSorted;
       if (imagesRemain.length > PHOTOS_MAX_SIZE) {
-        dataSorted = imagesRemain.splice(0, PHOTOS_MAX_SIZE);
-        setImagesRemain(imagesRemain.splice(-(imagesRemain.length - PHOTOS_MAX_SIZE)));
+        dataSorted = imagesRemain.slice(0, PHOTOS_MAX_SIZE);
+        setImagesRemain(imagesRemain.slice(-(imagesRemain.length - PHOTOS_MAX_SIZE)));
       } else {
         dataSorted = imagesRemain;
         setImagesRemain([]);
@@ -200,10 +205,10 @@ const Event: React.FC = () => {
       (res: CommonResponse<IImage[]>) => {
         let dataSorted = res.data.toSorted(latestFirstPhoto);
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
-          const r = dataSorted.splice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
+          const r = dataSorted.slice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
           console.log(111, dataSorted.length, r.length);
           setImagesRemain(r);
-          dataSorted = dataSorted.splice(0, PHOTOS_MAX_SIZE);
+          dataSorted = dataSorted.slice(0, PHOTOS_MAX_SIZE);
         }
         let img;
         if (isImagePush) {
@@ -283,6 +288,19 @@ const Event: React.FC = () => {
       <br />
       <a href={eventInfo?.website}>赛事官网</a>
 
+      <Divider>👑Top10 Photos👑</Divider>
+      <Masonry
+        column={5}
+        gap={8}
+        initailHeight={150}
+        items={topImages.map((image, index) => (
+          // <div key={image.name} onClick={() => openImageViewer(index)}>
+          <div key={image.name} onClick={() => console.log(index)}>
+            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+          </div>
+        ))}
+      />
+      <Divider>...</Divider>
       <p>current photographer below:</p>
       <div onClick={() => setGrapherPopupVisible(true)}>
         <Input
@@ -321,7 +339,12 @@ const Event: React.FC = () => {
           nextPhotos();
         }}
         hasMore={nextTime != undefined}
-        loader={<DotLoading color="primary" />}
+        loader={
+          <Divider>
+            Loading
+            <DotLoading color="primary" />
+          </Divider>
+        }
         scrollThreshold={"20px"}
         endMessage={<Divider>No more photos</Divider>}
       >
@@ -331,8 +354,14 @@ const Event: React.FC = () => {
           initailHeight={150}
           items={images.map((image, index) =>
             image.name == "divider" ? (
-              <Divider>
-                ⬇️{image.hour}:{image.minute}⬇️
+              <Divider
+                style={{
+                  color: "#1677ff",
+                  borderColor: "#1677ff",
+                  borderStyle: "dashed",
+                }}
+              >
+                ⬇️ {image.hour}:{image.minute} ⬇️
               </Divider>
             ) : (
               <div key={image.name} onClick={() => openImageViewer(index)}>
