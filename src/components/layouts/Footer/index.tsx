@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FloatButton, message, Modal } from "antd";
+import { Link } from "react-router-dom";
 
 import { Divider, Space } from "antd-mobile";
 
@@ -62,7 +63,7 @@ const Footer: React.FC = () => {
             </span>
             |
             <span>
-              <a href="https://github.com/irunart/photocast">About</a>
+              <Link to="/about">PhotoCast</Link>
             </span>
           </Space>
         </Divider>
