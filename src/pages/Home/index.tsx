@@ -44,8 +44,6 @@ const Home = () => {
   ];
   const [multColumns, setMultColumns] = useState(basicColumns);
 
-  // const [value, setValue] = useState<(string | null)[]>([])
-
   // init 阶段
   useEffect(() => {
     getEventDetail().then((res: CommonResponse<IEventLists>) => {
@@ -126,10 +124,6 @@ const Home = () => {
           return (
             <div>
               <Button onClick={open}>filter</Button>
-              {/* {items.every(item => item === null)
-                ? '未选择'
-                : 
-                } */}
               <Popover content="click to cancel this filter">
                 <span>
                   <Tag

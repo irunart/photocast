@@ -159,7 +159,6 @@ const Event: React.FC = () => {
     }
   };
 
-  // const prevTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "prev");
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
 
   const nextPhotos = () => {
@@ -393,23 +392,6 @@ const Event: React.FC = () => {
           />
         </Checkbox.Group>
       </InfiniteScroll>
-
-      {/*
-      <div className={styles.timeNavButtons}>
-        {(prevTime && (
-          <Button size="large" onClick={() => navTime(prevTime)}>
-            <LeftOutlined style={{ marginRight: 20 }} />
-            Pre
-          </Button>
-        )) || <div />}
-        {(nextTime && (
-          <Button size="large" onClick={() => navTime(nextTime)}>
-            Next
-            <RightOutlined style={{ marginLeft: 20 }} />
-          </Button>
-        )) || <div />}
-      </div>
-      */}
 
       <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
         <p className="text-center"> Select a photographer below:</p>
