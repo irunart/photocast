@@ -6,7 +6,6 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 
 import { IImageEs } from "./type";
 const Person: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState<IImageEs[]>([]);
 
@@ -17,6 +16,7 @@ const Person: React.FC = () => {
     );
     console.log(img);
     setImages(img || []);
+    setSearchParams(searchParams);
   }, [searchParams]);
 
   return (
