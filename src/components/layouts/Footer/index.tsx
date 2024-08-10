@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FloatButton, message, Modal } from "antd";
 import { Link } from "react-router-dom";
 
-import { Divider, Space } from "antd-mobile";
+import { Space } from "antd-mobile";
 
 import { ShareAltOutlined, CommentOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
@@ -49,30 +49,27 @@ const Footer: React.FC = () => {
         >
           正在加载…
         </iframe>
+        s
       </Modal>
       <div className={styles.footer}>
         {contextHolder}
-        <Divider>
-          <Space>
-            <span>
-              Powered by <a href="https://RunArt.net">RunArt.net</a>
-            </span>
-            |
-            <span>
-              Operated by <a href="https://iest.run">iest.run</a>
-            </span>
-            |
-            <span>
-              <Link to="/about">About</Link>
-            </span>
-          </Space>
-        </Divider>
-        <FloatButton.Group style={{ bottom: 120 }}>
-          <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
-          <FloatButton icon={<CommentOutlined />} onClick={openForm} />
-          <FloatButton.BackTop />
-        </FloatButton.Group>
+        <Space wrap block justify="center" align="center" style={{ textAlign: "center", "--gap": "20px" }}>
+          <span>
+            Powered by <a href="https://RunArt.net">RunArt.net</a>
+          </span>
+          <span>
+            Operated by <a href="https://iest.run">iest.run</a>
+          </span>
+          <span>
+            <Link to="/about">About</Link>
+          </span>
+        </Space>
       </div>
+      <FloatButton.Group style={{ bottom: 120 }}>
+        <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
+        <FloatButton icon={<CommentOutlined />} onClick={openForm} />
+        <FloatButton.BackTop />
+      </FloatButton.Group>
     </>
   );
 };
