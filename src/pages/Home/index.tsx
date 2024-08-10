@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
-import { Grid, Card, Image, Picker, Button, Space, Tag, Divider } from "antd-mobile";
+import { Grid, Card, Image, Picker, Button, Tag, Divider } from "antd-mobile";
 
 import { getEventDetail } from "@/services/googleApis";
 import useMediaQuery from "use-media-antd-query";
+import { Popover } from "antd";
 
 import type { IEventLists, IEventDetail } from "./type";
 
@@ -92,6 +93,22 @@ const Home = () => {
     }
   };
 
+  const cancelFilter = (type: string) => {
+    if (type == "city") {
+      setCitySelected("All");
+      const res =
+        categorySelected != "All" ? EventDetails.filter((event) => event.category == categorySelected) : EventDetails;
+
+      setEventDetailsFiltered(res);
+      setEventCount(res.length);
+    } else {
+      setCategorySelected("All");
+      const res = citySelected != "All" ? EventDetails.filter((event) => event.city == citySelected) : EventDetails;
+      setEventDetailsFiltered(res);
+      setEventCount(res.length);
+    }
+  };
+
   //TODO: api接口 赛事详情,对应图片
   return (
     <>
@@ -102,10 +119,6 @@ const Home = () => {
           setCitySelected(val[0] as string);
           setCategorySelected(val[1] as string);
           filterEvents(val[0] as string, val[1] as string);
-          // console.log('onSelect', val, extend.items)
-        }}
-        onSelect={(val, extend) => {
-          console.log("onSelect", val, extend.items);
         }}
         style={{ touchAction: "pan-y" }}
       >
@@ -117,20 +130,29 @@ const Home = () => {
                 ? '未选择'
                 : 
                 } */}
-
-              <Space>
-                <span title="click to cancel this filter">
-                  <Tag color="#2db7f5" round>
+              <Popover content="click to cancel this filter">
+                <span>
+                  <Tag
+                    color="#2db7f5"
+                    round
+                    onClick={() => {
+                      cancelFilter("city");
+                    }}
+                  >
                     {citySelected}
                   </Tag>
-                </span>
-                <span title="click to cancel this filter">
-                  <Tag color="#87d068" round>
+
+                  <Tag
+                    color="#87d068"
+                    round
+                    onClick={() => {
+                      cancelFilter("category");
+                    }}
+                  >
                     {categorySelected}
                   </Tag>
                 </span>
-                <span></span>
-              </Space>
+              </Popover>
             </div>
           );
         }}
