@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
             </span>
             |
             <span>
-              <Link to="/about">PhotoCast</Link>
+              <Link to="/about">About</Link>
             </span>
           </Space>
         </Divider>
