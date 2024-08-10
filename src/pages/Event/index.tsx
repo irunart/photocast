@@ -6,6 +6,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
+import { FloatButton } from "antd";
+
 import {
   Button,
   CascadePicker,
@@ -17,6 +19,7 @@ import {
   Space,
   Divider,
   DotLoading,
+  Checkbox,
 } from "antd-mobile";
 import * as _ from "lodash-es";
 
@@ -25,6 +28,9 @@ import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
 import type { IData, IImage, IPhotographer, IEventDetail } from "./type";
 
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+
+import { Popover } from "antd";
 
 import Masonry from "@/components/Masonry";
 import ResponsiveImage from "@/components/ResponsiveImage";
@@ -55,6 +61,7 @@ const Event: React.FC = () => {
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
   const [imagePopVisible, setImagePopVisible] = useState(false);
   const [isImagePush, setIsImagePush] = useState(false);
+  const [value, setValue] = useState<string[]>([]);
 
   // page start
   useEffect(() => {
@@ -239,6 +246,11 @@ const Event: React.FC = () => {
     imageViewerRefs.current?.swipeTo(index);
   };
 
+  const photo_request = () => {
+    navigate("/photo_request/?names=" + value);
+    console.log(1);
+  };
+
   // TODO: 抽离组件外部
   const stateToUrl = () => {
     setSearchParams(
@@ -337,28 +349,49 @@ const Event: React.FC = () => {
         scrollThreshold={"20px"}
         endMessage={<Divider>No more photos</Divider>}
       >
-        <Masonry
-          column={3}
-          gap={8}
-          initailHeight={150}
-          items={images.map((image, index) =>
-            image.name == "divider" ? (
-              <Divider
-                style={{
-                  color: "#1677ff",
-                  borderColor: "#1677ff",
-                  borderStyle: "dashed",
-                }}
-              >
-                ⬇️ {image.hour}:{image.minute} ⬇️
-              </Divider>
-            ) : (
-              <div key={image.name} onClick={() => openImageViewer(index)}>
-                <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
-              </div>
-            )
-          )}
-        />
+        <Checkbox.Group
+          value={value}
+          onChange={(val) => {
+            setValue(val as string[]);
+            console.log(value);
+          }}
+        >
+          <Masonry
+            column={3}
+            gap={8}
+            initailHeight={150}
+            items={images.map((image, index) =>
+              image.name == "divider" ? (
+                <Divider
+                  style={{
+                    color: "#1677ff",
+                    borderColor: "#1677ff",
+                    borderStyle: "dashed",
+                  }}
+                >
+                  ⬇️ {image.hour}:{image.minute} ⬇️
+                </Divider>
+              ) : (
+                <div>
+                  <div key={image.name} onClick={() => openImageViewer(index)} style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", right: 0, margin: 10 }}>
+                      <Checkbox
+                        onClick={(event) => {
+                          event.stopPropagation();
+                        }}
+                        block
+                        style={{ "--icon-size": "30px" }}
+                        value={image.name}
+                      ></Checkbox>
+                    </span>
+
+                    <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+                  </div>
+                </div>
+              )
+            )}
+          />
+        </Checkbox.Group>
       </InfiniteScroll>
 
       {/*
@@ -418,6 +451,14 @@ const Event: React.FC = () => {
         onClose={() => setImagePopVisible(false)}
         renderFooter={renderFooter}
       />
+      <Popover
+        placement="left"
+        title={"Shopping Cart"}
+        content={<Button onClick={photo_request}>Go to personalized Page</Button>}
+        trigger="click"
+      >
+        <FloatButton icon={<ShoppingCartOutlined />} />
+      </Popover>
     </div>
   );
 };
