@@ -1,5 +1,6 @@
-import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { CSSProperties, ReactElement, useEffect, useState } from "react";
+import { MasonryElement } from "@/components/MasonryElement";
 
 export interface MasonryProps {
   items: React.ReactNode[];
@@ -7,85 +8,45 @@ export interface MasonryProps {
   initailHeight?: number;
   gap?: number;
   style?: CSSProperties;
+  divider?: React.ReactNode | undefined;
 }
 
-const pxUnitToNumber = (val: string) => {
-  return Number(val.replace("px", ""));
-};
+interface PhotosDivider {
+  photos: React.ReactNode[];
+  divider: React.ReactNode | undefined;
+}
 
 export const Masonry: React.FC<MasonryProps> = (props) => {
   const { items, column, gap = 8, style, initailHeight = 150 } = props;
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState((initailHeight + gap) * ((items.length + column - 1) / column));
-  const reLayout = useCallback(() => {
-    if (!containerRef.current) {
-      return;
-    }
-    const heights = Array.from({ length: column }, () => 0);
-    containerRef.current.childNodes.forEach((child) => {
-      const element = child as HTMLElement;
-      const elementHeight = pxUnitToNumber(window.getComputedStyle(element).height);
-      if (elementHeight === 0 || element.dataset.class === "column-break") {
-        return;
-      }
-      const minHeight = Math.min(...heights);
-      const minColumn = heights.indexOf(minHeight);
-      element.style.order = `${minColumn + 1}`;
-      heights[minColumn] += elementHeight + gap;
-    });
-    flushSync(() => setMaxHeight(Math.ceil(Math.max(...heights))));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [column, gap, items]);
+  const [photosDividers, setPhotosDividers] = useState<PhotosDivider[]>([]);
 
   useEffect(() => {
-    const observer = new ResizeObserver(reLayout);
-    if (containerRef.current) {
-      containerRef.current.childNodes.forEach((child) => observer.observe(child as HTMLElement));
+    const value: PhotosDivider[] = [];
+    console.log(items);
+    let start = 0;
+    for (let i = 0; i < items.length; i++) {
+      if ((items[i] as ReactElement)?.type != "div") {
+        console.log(1);
+        value.push({ photos: items.slice(start, i - 1), divider: items[i] });
+        start = i + 1;
+      }
     }
-    return () => observer.disconnect();
-  }, [reLayout]);
+    value.push({ photos: items.slice(start, items.length), divider: undefined });
+    setPhotosDividers(value);
+    console.log(value);
+    console.log(photosDividers);
+  }, [items]);
 
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        display: "flex",
-        position: "relative",
-        flexFlow: "column wrap",
-        alignContent: "flex-start",
-        boxSizing: "border-box",
-        width: "100%",
-        height: maxHeight + gap,
-        overflow: "hidden",
-        ...style,
-      }}
-    >
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          style={{
-            margin: `0 ${gap}px ${gap}px 0`,
-            width: `calc((100% - ${(column - 1) * gap}px) / ${column})`,
-            order: (idx % column) + 1,
-          }}
-        >
-          {item}
-        </div>
-      ))}
-      {Array.from({ length: column }).map((_, idx) => (
-        <span
-          key={`break-${idx}`}
-          data-class="column-break"
-          style={{
-            flexBasis: "100%",
-            width: 0,
-            padding: 0,
-            order: idx + 1,
-          }}
-        />
-      ))}
-    </div>
-  );
+  return photosDividers.map((i) => (
+    <MasonryElement
+      column={column}
+      gap={gap}
+      initailHeight={initailHeight}
+      items={i.photos}
+      divider={i.divider}
+      style={style}
+    />
+  ));
 };
 
 export default Masonry;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -18,7 +19,6 @@ const Person: React.FC = () => {
     setImages(img || []);
     setSearchParams(searchParams);
   }, [searchParams]);
-
   return (
     <Masonry
       column={2}

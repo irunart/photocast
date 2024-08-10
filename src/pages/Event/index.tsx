@@ -361,13 +361,7 @@ const Event: React.FC = () => {
             initailHeight={150}
             items={images.map((image, index) =>
               image.name == "divider" ? (
-                <Divider
-                  style={{
-                    color: "#1677ff",
-                    borderColor: "#1677ff",
-                    borderStyle: "dashed",
-                  }}
-                >
+                <Divider>
                   ⬇️ {image.hour}:{image.minute} ⬇️
                 </Divider>
               ) : (
