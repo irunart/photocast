@@ -222,7 +222,7 @@ const Event: React.FC = () => {
           img = autoRefresh ? dataSorted.reverse() : dataSorted;
         }
         setImages(img);
-        if (img.length < 20) {
+        if (nextTime && img.length < 20) {
           setIsImagePush(true);
           navTime(nextTime as [string, string]);
         }

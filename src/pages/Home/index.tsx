@@ -164,7 +164,7 @@ const Home = () => {
                   </div>
                 }
               >
-                <Image src={item.event_icon_url} style={{ borderRadius: 20 }} fit="cover" />
+                <Image src={item.event_icon_url} style={{ borderRadius: 20, aspectRatio: "4/3" }} fit="cover" />
 
                 <Tag color="#108ee9">
                   {item.date_start}-{item.date_end}
