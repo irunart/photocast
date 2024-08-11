@@ -19,7 +19,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/event/:event?" element={<Event />} />
-          <Route path="/photo_request/:event?" element={<Person />} />
+          <Route path="/SelectedPhotos/:event?" element={<Person />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

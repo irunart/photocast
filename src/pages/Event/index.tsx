@@ -258,8 +258,8 @@ const Event: React.FC = () => {
     imageViewerRefs.current?.swipeTo(index);
   };
 
-  const photo_request = () => {
-    navigate("/photo_request/?names=" + value);
+  const selectedPhotos = () => {
+    navigate("/SelectedPhotos/?names=" + value);
     console.log(1);
   };
 
@@ -444,7 +444,7 @@ const Event: React.FC = () => {
       <Popover
         placement="left"
         title={"Shopping Cart"}
-        content={<Button onClick={photo_request}>Go to personalized Page</Button>}
+        content={<Button onClick={selectedPhotos}>Go to personalized Page</Button>}
         trigger="click"
       >
         <FloatButton icon={<ShoppingCartOutlined />} />
