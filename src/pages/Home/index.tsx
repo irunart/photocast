@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
-import { Grid, Card, Image, Picker, Button, Tag, Divider } from "antd-mobile";
+import { Grid, Card, Image, Picker, Tag, Divider } from "antd-mobile";
+import { Input } from "antd";
+
+import { BankOutlined, DownOutlined, MenuOutlined } from "@ant-design/icons";
 
 import { getEventDetail } from "@/services/googleApis";
 import useMediaQuery from "use-media-antd-query";
@@ -25,6 +28,9 @@ const Home = () => {
   const [categorySelected, setCategorySelected] = useState<string>("All");
   const [eventCount, setEventCount] = useState<number>(0);
 
+  const [cityPopVisible, setCityPopVisible] = useState(false);
+  const [categoryPopVisible, setCategoryPopVisible] = useState(false);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const colSize = useMediaQuery();
   const colSize2ColumnsEvent = {
@@ -38,11 +44,16 @@ const Home = () => {
   };
   const columnsEvent = colSize2ColumnsEvent[colSize];
 
-  const basicColumns = [
+  const basicColumnsCity = [
     [{ label: "Hong Kong", value: "Hong Kong" }],
+    // [{ label: "IEST Training", value: "IEST Training" }],
+  ];
+  const basicColumnsCategory = [
+    // [{ label: "Hong Kong", value: "Hong Kong" }],
     [{ label: "IEST Training", value: "IEST Training" }],
   ];
-  const [multColumns, setMultColumns] = useState(basicColumns);
+  const [cityColumns, setCityColumns] = useState(basicColumnsCity);
+  const [categoryColumns, setCategoryColumns] = useState(basicColumnsCategory);
 
   // init 阶段
   useEffect(() => {
@@ -62,7 +73,10 @@ const Home = () => {
       const columnsCategories = uniqueCategories.map((item) => {
         return { label: item, value: item };
       });
-      setMultColumns([columnsCites, columnsCategories]);
+      setCityColumns([columnsCites]);
+      setCategoryColumns([columnsCategories]);
+
+      // setMultColumns([columnsCites, columnsCategories]);
 
       sessionStorage.setItem("EventsData", JSON.stringify(res.data));
     });
@@ -110,7 +124,7 @@ const Home = () => {
   //TODO: api接口 赛事详情,对应图片
   return (
     <>
-      <Picker
+      {/* <Picker
         columns={multColumns}
         // value={value}
         onConfirm={(val) => {
@@ -124,33 +138,95 @@ const Home = () => {
           return (
             <div>
               <Button onClick={open}>filter</Button>
-              <Popover content="click to cancel this filter">
-                <span>
-                  <Tag
-                    color="#2db7f5"
-                    round
-                    onClick={() => {
-                      cancelFilter("city");
-                    }}
-                  >
-                    {citySelected}
-                  </Tag>
+              
 
-                  <Tag
-                    color="#87d068"
-                    round
-                    onClick={() => {
-                      cancelFilter("category");
-                    }}
-                  >
-                    {categorySelected}
-                  </Tag>
-                </span>
-              </Popover>
+
+              
             </div>
           );
         }}
-      </Picker>
+      </Picker> */}
+
+      <Grid columns={2} gap={8}>
+        <Grid.Item>
+          <div>City Filter</div>
+        </Grid.Item>
+        <Grid.Item>
+          <div>Category Filter</div>
+        </Grid.Item>
+        <Grid.Item>
+          <div onClick={() => setCityPopVisible(true)} style={{ flex: 1 }}>
+            <Input
+              prefix={<BankOutlined />}
+              value={citySelected}
+              placeholder="filter city"
+              readOnly
+              suffix={<DownOutlined />}
+            />
+          </div>
+        </Grid.Item>
+
+        <Grid.Item>
+          <div onClick={() => setCategoryPopVisible(true)} style={{ flex: 1 }}>
+            <Input
+              prefix={<MenuOutlined />}
+              value={categorySelected}
+              placeholder="filter category"
+              readOnly
+              suffix={<DownOutlined />}
+            />
+          </div>
+        </Grid.Item>
+      </Grid>
+
+      <Picker
+        title="filter city"
+        columns={cityColumns}
+        visible={cityPopVisible}
+        value={[citySelected]}
+        onClose={() => setCityPopVisible(false)}
+        onConfirm={(val) => {
+          setCitySelected(val[0] as string);
+          filterEvents(val[0] as string, categorySelected);
+          setCityPopVisible(false);
+        }}
+      />
+      <Picker
+        title="filter category"
+        columns={categoryColumns}
+        visible={categoryPopVisible}
+        value={[citySelected]}
+        onClose={() => setCategoryPopVisible(false)}
+        onConfirm={(val) => {
+          setCategorySelected(val[0] as string);
+          filterEvents(citySelected, val[0] as string);
+          setCategoryPopVisible(false);
+        }}
+      />
+      <Popover content="click to cancel this filter">
+        <span>
+          <Tag
+            color="#2db7f5"
+            round
+            onClick={() => {
+              cancelFilter("city");
+            }}
+          >
+            {citySelected}
+          </Tag>
+
+          <Tag
+            color="#87d068"
+            round
+            onClick={() => {
+              cancelFilter("category");
+            }}
+          >
+            {categorySelected}
+          </Tag>
+        </span>
+      </Popover>
+
       <Divider>There are {eventCount} results</Divider>
       <Grid columns={columnsEvent} gap={8}>
         {eventDetailsFiltered.map((item) => (

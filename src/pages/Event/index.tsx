@@ -7,6 +7,7 @@ import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@
 import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { FloatButton } from "antd";
+import useMediaQuery from "use-media-antd-query";
 
 import {
   Button,
@@ -62,6 +63,18 @@ const Event: React.FC = () => {
   const [imagePopVisible, setImagePopVisible] = useState(false);
   const [isImagePush, setIsImagePush] = useState(false);
   const [value, setValue] = useState<string[]>([]);
+
+  const colSize = useMediaQuery();
+  const colSize2ColumnsPhotos = {
+    // "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
+    xs: 3,
+    sm: 3,
+    md: 3,
+    lg: 3,
+    xl: 4,
+    xxl: 5,
+  };
+  const columnsPhotos = colSize2ColumnsPhotos[colSize];
 
   // page start
   useEffect(() => {
@@ -356,7 +369,7 @@ const Event: React.FC = () => {
           }}
         >
           <Masonry
-            column={3}
+            column={columnsPhotos}
             gap={8}
             initailHeight={150}
             items={images.map((image, index) =>
@@ -414,6 +427,7 @@ const Event: React.FC = () => {
         visible={dateTimePopVisible}
         value={currentDateTime}
         onClose={() => setDateTimePopVisible(false)}
+        mouseWheel
         onConfirm={(val) => {
           setIsImagePush(false);
           setCurrentDateTime(val as [string, string]);
