@@ -124,29 +124,6 @@ const Home = () => {
   //TODO: api接口 赛事详情,对应图片
   return (
     <>
-      {/* <Picker
-        columns={multColumns}
-        // value={value}
-        onConfirm={(val) => {
-          setCitySelected(val[0] as string);
-          setCategorySelected(val[1] as string);
-          filterEvents(val[0] as string, val[1] as string);
-        }}
-        style={{ touchAction: "pan-y" }}
-      >
-        {(_items, { open }) => {
-          return (
-            <div>
-              <Button onClick={open}>filter</Button>
-              
-
-
-              
-            </div>
-          );
-        }}
-      </Picker> */}
-
       <Grid columns={2} gap={8}>
         <Grid.Item>
           <div>City Filter</div>
@@ -184,6 +161,7 @@ const Home = () => {
         columns={cityColumns}
         visible={cityPopVisible}
         value={[citySelected]}
+        mouseWheel
         onClose={() => setCityPopVisible(false)}
         onConfirm={(val) => {
           setCitySelected(val[0] as string);
@@ -196,6 +174,7 @@ const Home = () => {
         columns={categoryColumns}
         visible={categoryPopVisible}
         value={[citySelected]}
+        mouseWheel
         onClose={() => setCategoryPopVisible(false)}
         onConfirm={(val) => {
           setCategorySelected(val[0] as string);
