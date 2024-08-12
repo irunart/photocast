@@ -6,9 +6,12 @@ import Masonry from "@/components/Masonry";
 import ResponsiveImage from "@/components/ResponsiveImage";
 
 import { IImageEs } from "./type";
+import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button } from "antd-mobile";
 const Person: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState<IImageEs[]>([]);
+
   useEffect(() => {
     const ShoppingData = localStorage.getItem("ShoppingData");
     let img: IImageEs[];
@@ -33,6 +36,7 @@ const Person: React.FC = () => {
     console.log(searchParams);
     setSearchParams(searchParams);
   }, [searchParams]);
+
   return (
     <Masonry
       column={2}
@@ -40,7 +44,23 @@ const Person: React.FC = () => {
       initailHeight={150}
       items={images.map((image, index) => (
         // <div key={image.name} onClick={() => openImageViewer(index)}>
-        <div key={image.name} onClick={() => console.log(index)}>
+        <div key={image.name} onClick={() => console.log(index)} style={{ position: "relative" }}>
+          <span style={{ position: "absolute", right: 0, marginTop: 10, marginRight: 10 }}>
+            <Button shape="rounded">
+              <DeleteOutlined style={{ fontSize: "30px" }} />
+            </Button>
+          </span>
+          <span style={{ position: "absolute", right: 0, marginTop: 60, marginRight: 10 }}>
+            <Button
+              shape="rounded"
+              onClick={() => {
+                window.open("https://runart.net/photo_download/?url=" + image.url);
+              }}
+            >
+              <CloudDownloadOutlined style={{ fontSize: "30px" }} />
+            </Button>
+          </span>
+
           <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
         </div>
       ))}
