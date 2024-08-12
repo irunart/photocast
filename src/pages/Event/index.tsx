@@ -307,11 +307,11 @@ const Event: React.FC = () => {
         autoplay
         autoplaySpeed={2000}
         draggable
-        style={{ width: "90%", aspectRatio: "4/3", display: "flex", marginLeft: "auto", marginRight: "auto" }}
+        style={{ width: "60%", aspectRatio: "4/3", marginLeft: "auto", marginRight: "auto", display: "flex" }}
       >
         {topImages.map((item) => (
-          <div style={{ width: "100%" }}>
-            <Image src={item?.url} fit="cover" />
+          <div style={{ width: "100%", height: "100%" }}>
+            <Image src={item?.url} fit="cover" style={{ width: "100%", height: "100%" }} />
           </div>
         ))}
       </Carousel>
