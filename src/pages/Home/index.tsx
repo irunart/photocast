@@ -104,6 +104,31 @@ const Home = () => {
     }
   };
 
+  const formatDateToMD = (dateString: string) => {
+    const year = parseInt(dateString.slice(0, 4), 10);
+    const month = parseInt(dateString.slice(4, 6), 10) - 1; // 月份是从0开始的
+    const day = parseInt(dateString.slice(6, 8), 10);
+
+    const dateFormat = new Date(year, month, day, 0, 0);
+    const monthS = dateFormat.toLocaleString("default", { month: "short" });
+    const dayS = dateFormat.getDate();
+    let suffix: string = "";
+    switch (dayS) {
+      case 1:
+        suffix = "st";
+        break;
+      case 2:
+        suffix = "nd";
+        break;
+      case 3:
+        suffix = "rd";
+        break;
+      default:
+        suffix = "th";
+    }
+    return `${monthS} ${dayS}${suffix}, ${year}`;
+  };
+
   //TODO: api接口 赛事详情,对应图片
   return (
     <>
@@ -173,18 +198,21 @@ const Home = () => {
             <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
               <Card
                 title={
-                  <div style={{ height: "40px" }}>
+                  <div style={{ marginLeft: "10px", height: "40px" }}>
                     <div>{item.event}</div>
-                    <Tag>{item.category}</Tag>
+                    <Tag color="#FFCA83">{item.category}</Tag>
                   </div>
                 }
               >
                 <Image src={item.event_icon_url} style={{ borderRadius: 20, aspectRatio: "4/3" }} fit="cover" />
-
-                <Tag color="#108ee9">
-                  {item.date_start}-{item.date_end}
-                </Tag>
-                <Tag color="#87d068"> {item.city}</Tag>
+                <div style={{ paddingTop: "5px" }}>
+                  <Tag color="#7F7A65" style={{ marginLeft: "5px" }}>
+                    {formatDateToMD(item.date_start)}
+                  </Tag>
+                  <Tag color="#7F7A65" style={{ marginLeft: "5px" }}>
+                    {item.city}
+                  </Tag>
+                </div>
               </Card>
             </div>
           </Grid.Item>
