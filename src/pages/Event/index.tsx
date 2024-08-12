@@ -61,7 +61,8 @@ const Event: React.FC = () => {
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
   const [imagePopVisible, setImagePopVisible] = useState(false);
   const [isImagePush, setIsImagePush] = useState(false);
-  const [value, setValue] = useState<string[]>([]);
+  const [shoppingValue, setShoppingValue] = useState<string[]>([]);
+  const [isOnLoad, setIsOnload] = useState(false);
 
   const colSize = useMediaQuery();
   const colSize2ColumnsPhotos = {
@@ -102,7 +103,33 @@ const Event: React.FC = () => {
     if (EventsData) {
       setEventInfo(EventsData[event]);
     }
+
+    const ShoppingData = localStorage.getItem("ShoppingData");
+    if (typeof ShoppingData === "string") {
+      setShoppingValue(JSON.parse(ShoppingData as string));
+    } else {
+      setShoppingValue([]);
+    }
+    console.log(ShoppingData);
+
+    setIsOnload(true);
   }, [event]);
+
+  const handleCheckboxonClick = (name: string) => {
+    // console.log(name,shoppingValue,name in shoppingValue)
+    if (shoppingValue.includes(name)) {
+      setShoppingValue(shoppingValue.filter((item) => item !== name));
+    } else {
+      console.log(name);
+      setShoppingValue([...shoppingValue, name]);
+    }
+  };
+
+  useEffect(() => {
+    if (isOnLoad) {
+      localStorage.setItem("ShoppingData", JSON.stringify(shoppingValue));
+    }
+  }, [shoppingValue]);
 
   const [autoRefresh, setAutoRefresh] = useState(false);
   const refreshToLatest = useCallback(() => {
@@ -258,7 +285,7 @@ const Event: React.FC = () => {
   };
 
   const selectedPhotos = () => {
-    navigate("/SelectedPhotos/?names=" + value);
+    navigate("/SelectedPhotos");
     console.log(1);
   };
 
@@ -359,43 +386,37 @@ const Event: React.FC = () => {
         scrollThreshold={"20px"}
         endMessage={<Divider>No more photos</Divider>}
       >
-        <Checkbox.Group
-          value={value}
-          onChange={(val) => {
-            setValue(val as string[]);
-            console.log(value);
-          }}
-        >
-          <Masonry
-            column={columnsPhotos}
-            gap={8}
-            initailHeight={150}
-            items={images.map((image, index) =>
-              image.name == "divider" ? (
-                <Divider>
-                  ⬇️ {image.hour}:{image.minute} ⬇️
-                </Divider>
-              ) : (
-                <div>
-                  <div key={image.name} onClick={() => openImageViewer(index)} style={{ position: "relative" }}>
-                    <span style={{ position: "absolute", right: 0, margin: 10 }}>
-                      <Checkbox
-                        onClick={(event) => {
-                          event.stopPropagation();
-                        }}
-                        block
-                        style={{ "--icon-size": "30px" }}
-                        value={image.name}
-                      ></Checkbox>
-                    </span>
+        <Masonry
+          column={columnsPhotos}
+          gap={8}
+          initailHeight={150}
+          items={images.map((image, index) =>
+            image.name == "divider" ? (
+              <Divider>
+                ⬇️ {image.hour}:{image.minute} ⬇️
+              </Divider>
+            ) : (
+              <div>
+                <div key={image.name} onClick={() => openImageViewer(index)} style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", right: 0, margin: 10 }}>
+                    <Checkbox
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleCheckboxonClick(image.name);
+                      }}
+                      block
+                      style={{ "--icon-size": "30px" }}
+                      value={image.name}
+                      checked={shoppingValue.includes(image.name) ? true : false}
+                    ></Checkbox>
+                  </span>
 
-                    <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
-                  </div>
+                  <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
                 </div>
-              )
-            )}
-          />
-        </Checkbox.Group>
+              </div>
+            )
+          )}
+        />
       </InfiniteScroll>
 
       <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
@@ -445,7 +466,7 @@ const Event: React.FC = () => {
         content={<Button onClick={selectedPhotos}>Go to personalized Page</Button>}
         trigger="click"
       >
-        <FloatButton icon={<ShoppingCartOutlined />} />
+        <FloatButton icon={<ShoppingCartOutlined />} badge={{ count: shoppingValue.length, color: "#FFCA83" }} />
       </Popover>
     </div>
   );

@@ -22,7 +22,6 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
 
   useEffect(() => {
     const value: PhotosDivider[] = [];
-    console.log(items);
     let start = 0;
     for (let i = 0; i < items.length; i++) {
       if ((items[i] as ReactElement)?.type != "div") {
@@ -33,8 +32,6 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
     }
     value.push({ photos: items.slice(start, items.length), divider: undefined });
     setPhotosDividers(value);
-    console.log(value);
-    console.log(photosDividers);
   }, [items]);
 
   return photosDividers.map((i) => (
