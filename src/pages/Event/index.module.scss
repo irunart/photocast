@@ -55,6 +55,7 @@
   .featuredImages {
     width: 360px;
     height: 270px;
+    overflow: hidden;
     display: flex;
     margin: auto 0;
     object-fit: contain;
@@ -65,8 +66,10 @@
   .featuredImages {
     width: 800px;
     height: 600px;
+    overflow: hidden;
     display: flex;
     margin: auto 0;
+
     object-fit: contain;
   }
 }

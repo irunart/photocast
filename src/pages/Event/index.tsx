@@ -16,11 +16,10 @@ import {
   Image,
   ImageViewer,
   Popup,
-  Tag,
-  Space,
   Divider,
   DotLoading,
   Checkbox,
+  List,
 } from "antd-mobile";
 import * as _ from "lodash-es";
 
@@ -328,13 +327,35 @@ const Event: React.FC = () => {
 
   return (
     <div>
-      <Space>
-        <Tag color="#2db7f5">{eventInfo?.event}</Tag>
-        <Tag color="#87d068">{eventInfo?.city}</Tag>
-        <Tag color="#108ee9">{eventInfo?.category}</Tag>
-      </Space>
+      <List header="Event Information">
+        <List.Item>
+          <span style={{ width: "80px", display: "inline-block" }}>
+            <b>name</b>
+          </span>
+          <span>{eventInfo?.event}</span>
+        </List.Item>
+        <List.Item>
+          <span style={{ width: "80px", display: "inline-block" }}>
+            <b>city</b>
+          </span>
+          <span>{eventInfo?.city}</span>
+        </List.Item>
+        <List.Item>
+          <span style={{ width: "80px", display: "inline-block" }}>
+            <b>category</b>
+          </span>
+          <span>{eventInfo?.category}</span>
+        </List.Item>
+        <List.Item>
+          <span style={{ width: "80px", display: "inline-block" }}>
+            <b>website</b>
+          </span>
+          <span>
+            <a href={eventInfo?.website}>{eventInfo?.website}</a>
+          </span>
+        </List.Item>
+      </List>
       <br />
-      <a href={eventInfo?.website}>Event Website</a>
 
       <Divider>Featured Images</Divider>
       <div>
