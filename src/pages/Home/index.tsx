@@ -8,7 +8,6 @@ import { BankOutlined, DownOutlined, MenuOutlined } from "@ant-design/icons";
 
 import { getEventDetail } from "@/services/googleApis";
 import useMediaQuery from "use-media-antd-query";
-import { Popover } from "antd";
 
 import type { IEventLists, IEventDetail } from "./type";
 
@@ -105,22 +104,6 @@ const Home = () => {
     }
   };
 
-  const cancelFilter = (type: string) => {
-    if (type == "city") {
-      setCitySelected("All");
-      const res =
-        categorySelected != "All" ? EventDetails.filter((event) => event.category == categorySelected) : EventDetails;
-
-      setEventDetailsFiltered(res);
-      setEventCount(res.length);
-    } else {
-      setCategorySelected("All");
-      const res = citySelected != "All" ? EventDetails.filter((event) => event.city == citySelected) : EventDetails;
-      setEventDetailsFiltered(res);
-      setEventCount(res.length);
-    }
-  };
-
   //TODO: api接口 赛事详情,对应图片
   return (
     <>
@@ -182,29 +165,6 @@ const Home = () => {
           setCategoryPopVisible(false);
         }}
       />
-      <Popover content="click to cancel this filter">
-        <span>
-          <Tag
-            color="#2db7f5"
-            round
-            onClick={() => {
-              cancelFilter("city");
-            }}
-          >
-            {citySelected}
-          </Tag>
-
-          <Tag
-            color="#87d068"
-            round
-            onClick={() => {
-              cancelFilter("category");
-            }}
-          >
-            {categorySelected}
-          </Tag>
-        </span>
-      </Popover>
 
       <Divider>There are {eventCount} results</Divider>
       <Grid columns={columnsEvent} gap={8}>
