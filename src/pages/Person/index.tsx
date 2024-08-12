@@ -37,6 +37,14 @@ const Person: React.FC = () => {
     setSearchParams(searchParams);
   }, [searchParams]);
 
+  const deletePhoto = (name: string) => {
+    const ShoppingData = localStorage.getItem("ShoppingData");
+    const ShoppingDataList = JSON.parse(ShoppingData as string) as string[];
+    const ShoppingDataListDeleted = ShoppingDataList.filter((item) => item != name);
+    localStorage.setItem("ShoppingData", JSON.stringify(ShoppingDataListDeleted));
+
+    setImages(images.filter((item) => item.name != name));
+  };
   return (
     <Masonry
       column={2}
@@ -46,7 +54,12 @@ const Person: React.FC = () => {
         // <div key={image.name} onClick={() => openImageViewer(index)}>
         <div key={image.name} onClick={() => console.log(index)} style={{ position: "relative" }}>
           <span style={{ position: "absolute", right: 0, marginTop: 10, marginRight: 10 }}>
-            <Button shape="rounded">
+            <Button
+              shape="rounded"
+              onClick={() => {
+                deletePhoto(image.name);
+              }}
+            >
               <DeleteOutlined style={{ fontSize: "30px" }} />
             </Button>
           </span>
