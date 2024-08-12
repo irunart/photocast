@@ -2,9 +2,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
-import { Flex, Input } from "antd";
+import { Flex, Input, Carousel } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { FloatButton } from "antd";
 import useMediaQuery from "use-media-antd-query";
@@ -301,18 +300,21 @@ const Event: React.FC = () => {
       <br />
       <a href={eventInfo?.website}>Event Website</a>
 
-      <Divider>👑Top10 Photos👑</Divider>
-      <Masonry
-        column={5}
-        gap={8}
-        initailHeight={150}
-        items={topImages.map((image, index) => (
-          // <div key={image.name} onClick={() => openImageViewer(index)}>
-          <div key={image.name} onClick={() => console.log(index)}>
-            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+      <Divider>Featured Images</Divider>
+
+      <Carousel
+        arrows
+        autoplay
+        autoplaySpeed={2000}
+        draggable
+        style={{ width: "90%", aspectRatio: "4/3", display: "flex", marginLeft: "auto", marginRight: "auto" }}
+      >
+        {topImages.map((item) => (
+          <div style={{ width: "100%" }}>
+            <Image src={item?.url} fit="cover" />
           </div>
         ))}
-      />
+      </Carousel>
       <Divider>...</Divider>
       <p>current photographer below:</p>
       <div onClick={() => setGrapherPopupVisible(true)}>
