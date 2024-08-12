@@ -7,6 +7,7 @@ import { Flex, Input, Carousel } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { FloatButton } from "antd";
 import useMediaQuery from "use-media-antd-query";
+import { Action } from "antd-mobile/es/components/popover";
 
 import {
   Button,
@@ -30,7 +31,7 @@ import type { IData, IImage, IPhotographer, IEventDetail } from "./type";
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 
-import { Popover } from "antd";
+import { Popover } from "antd-mobile";
 
 import Masonry from "@/components/Masonry";
 import ResponsiveImage from "@/components/ResponsiveImage";
@@ -114,6 +115,19 @@ const Event: React.FC = () => {
 
     setIsOnload(true);
   }, [event]);
+
+  const deleteAllPhotos = () => {
+    setShoppingValue([]);
+  };
+  const selectedPhotos = () => {
+    navigate("/SelectedPhotos");
+    console.log(1);
+  };
+
+  const actions: Action[] = [
+    { key: "Go to personalized Page", icon: null, text: "Go to personalized Page", onClick: selectedPhotos },
+    { key: "Clear all", icon: null, text: "Clear all", onClick: deleteAllPhotos },
+  ];
 
   const handleCheckboxonClick = (name: string) => {
     // console.log(name,shoppingValue,name in shoppingValue)
@@ -282,11 +296,6 @@ const Event: React.FC = () => {
   const openImageViewer = (index: number) => {
     setImagePopVisible(true);
     imageViewerRefs.current?.swipeTo(index);
-  };
-
-  const selectedPhotos = () => {
-    navigate("/SelectedPhotos");
-    console.log(1);
   };
 
   // TODO: 抽离组件外部
@@ -460,14 +469,9 @@ const Event: React.FC = () => {
         onClose={() => setImagePopVisible(false)}
         renderFooter={renderFooter}
       />
-      <Popover
-        placement="left"
-        title={"Shopping Cart"}
-        content={<Button onClick={selectedPhotos}>Go to personalized Page</Button>}
-        trigger="click"
-      >
+      <Popover.Menu actions={actions} onAction={(node) => node.onClick} placement="left-start" trigger="click">
         <FloatButton icon={<ShoppingCartOutlined />} badge={{ count: shoppingValue.length, color: "#FFCA83" }} />
-      </Popover>
+      </Popover.Menu>
     </div>
   );
 };
