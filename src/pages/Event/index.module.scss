@@ -50,3 +50,23 @@
   display: inline-block;
   cursor: pointer;
 }
+
+@media only screen and (min-width: 100px) and (max-width: 800px) {
+  .featuredImages {
+    width: 360px;
+    height: 270px;
+    display: flex;
+    margin: auto 0;
+    object-fit: contain;
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  .featuredImages {
+    width: 800px;
+    height: 600px;
+    display: flex;
+    margin: auto 0;
+    object-fit: contain;
+  }
+}

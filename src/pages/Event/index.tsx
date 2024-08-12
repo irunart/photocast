@@ -301,20 +301,16 @@ const Event: React.FC = () => {
       <a href={eventInfo?.website}>Event Website</a>
 
       <Divider>Featured Images</Divider>
+      <div>
+        <Carousel arrows autoplay autoplaySpeed={2000} draggable>
+          {topImages.map((item) => (
+            <div className={styles.featuredImages}>
+              <Image src={item.url} fit="cover" style={{ maxWidth: "100%", height: "auto" }} />
+            </div>
+          ))}
+        </Carousel>
+      </div>
 
-      <Carousel
-        arrows
-        autoplay
-        autoplaySpeed={2000}
-        draggable
-        style={{ width: "60%", aspectRatio: "4/3", marginLeft: "auto", marginRight: "auto", display: "flex" }}
-      >
-        {topImages.map((item) => (
-          <div style={{ width: "100%", height: "100%" }}>
-            <Image src={item?.url} fit="cover" style={{ width: "100%", height: "100%" }} />
-          </div>
-        ))}
-      </Carousel>
       <Divider>...</Divider>
       <p>current photographer below:</p>
       <div onClick={() => setGrapherPopupVisible(true)}>
