@@ -20,6 +20,7 @@ import {
   DotLoading,
   Checkbox,
   List,
+  Modal,
 } from "antd-mobile";
 import * as _ from "lodash-es";
 
@@ -83,7 +84,26 @@ const Event: React.FC = () => {
     getPhotographers().then((res: CommonResponse<IData[]>) => {
       const grapherLists = getEventPhotoGrapher(res.data, event);
 
-      if (grapherLists.length === 0) return navigate("/home", { replace: true });
+      if (grapherLists.length === 0) {
+        Modal.show({
+          content: "No photos yes",
+          closeOnAction: true,
+          actions: [
+            {
+              key: "Go back",
+              text: "Go back",
+              primary: true,
+              onClick: () => {
+                navigate("/home", { replace: true });
+              },
+            },
+            {
+              key: "I know",
+              text: "I know",
+            },
+          ],
+        });
+      }
 
       const photoGrapherFromSearch = _.find(grapherLists, ["value", searchParams.get("photographer")]);
       const timesFromSearch = searchParams.get("time")?.split("-");
