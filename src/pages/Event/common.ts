@@ -6,7 +6,7 @@ export const getEventPhotoGrapher = (data: IData[], event: string) => {
   // 扁平数据
   const flatDatas = _.map(data, (item) => ({
     ...item.data,
-    label: `${item.data.name}${item.data.location === "N/A" ? "" : " @" + item.data.location}(${countPhotoAmount(item.data)}张)`,
+    label: `${item.data.name}${item.data.location === "N/A" ? "" : " @" + item.data.location}(${countPhotoAmount(item.data)} photos)`,
     photographer_icon_url: item.photographer_icon_url,
     value: item.data.label,
   }));

@@ -124,7 +124,7 @@ const Event: React.FC = () => {
   };
 
   const actions: Action[] = [
-    { key: "Go to personalized Page", icon: null, text: "Go to personalized Page", onClick: selectedPhotos },
+    { key: "Show cart", icon: null, text: "Show cart", onClick: selectedPhotos },
     { key: "Clear all", icon: null, text: "Clear all", onClick: deleteAllPhotos },
   ];
 
