@@ -347,7 +347,7 @@ const Event: React.FC = () => {
 
   return (
     <div>
-      <List header="Event Information">
+      <List header="Event Information" className={styles.InformationContainer}>
         <List.Item>
           <span style={{ width: "80px", display: "inline-block" }}>
             <b>name</b>
