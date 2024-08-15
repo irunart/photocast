@@ -51,29 +51,28 @@
   cursor: pointer;
 }
 
-.featuredImages {
-  overflow: hidden;
-  display: flex;
-  margin: auto 0;
-  object-fit: contain;
-
-  @media only screen and (min-width: 100px) and (max-width: 800px) {
-    width: 360px;
-    height: 270px;
+.carouselWrapper {
+  margin-left: auto;
+  margin-right: auto;
+  @media (max-width: 767px) {
+    width: 100%;
   }
 
-  @media only screen and (min-width: 800px) {
-    width: 800px;
-    height: 600px;
+  @media (min-width: 768px) and (max-width: 1023px) {
+    width: 75%;
+  }
+
+  @media (min-width: 1024px) {
+    width: 50%;
   }
 }
 
 .InformationContainer {
-  @media only screen and (min-width: 100px) and (max-width: 500px) {
+  @media only screen and (min-width: 767px) {
     width: 100%;
   }
 
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: 767px) {
     width: 50%;
   }
 }

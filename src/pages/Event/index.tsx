@@ -3,12 +3,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
-import { Flex, Input, Carousel } from "antd";
+// import { Flex, Input, Carousel } from "antd";
+import { Flex, Input } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { FloatButton } from "antd";
 import useMediaQuery from "use-media-antd-query";
 import { Action } from "antd-mobile/es/components/popover";
-
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {
   Button,
   CascadePicker,
@@ -376,13 +378,13 @@ const Event: React.FC = () => {
         </List.Item>
       </List>
       <br />
-
       <Divider>Featured Images</Divider>
-      <div>
-        <Carousel arrows autoplay autoplaySpeed={2000} draggable>
-          {topImages.map((item) => (
-            <div className={styles.featuredImages}>
-              <Image src={item.url} fit="cover" style={{ maxWidth: "100%", height: "auto" }} />
+      <div className={styles.carouselWrapper}>
+        <Carousel showArrows={true} infiniteLoop={true} autoPlay={true} interval={2000} dynamicHeight>
+          {topImages.map((image, index) => (
+            <div key={index}>
+              <img src={image.url} alt="" />
+              {/* <p className="legend">1</p> */}
             </div>
           ))}
         </Carousel>
