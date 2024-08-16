@@ -45,6 +45,7 @@ const Person: React.FC = () => {
 
     setImages(images.filter((item) => item.name != name));
   };
+
   return (
     <Masonry
       column={2}

@@ -2,15 +2,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ClockCircleOutlined, DownOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, DownOutlined, ShareAltOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
 // import { Flex, Input, Carousel } from "antd";
-import { Flex, Input } from "antd";
+import { Flex, Input, message, QRCode } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
 import { FloatButton } from "antd";
 import useMediaQuery from "use-media-antd-query";
 import { Action } from "antd-mobile/es/components/popover";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import html2canvas from "html2canvas";
+
 import {
   Button,
   CascadePicker,
@@ -66,7 +68,7 @@ const Event: React.FC = () => {
   const [isImagePush, setIsImagePush] = useState(false);
   const [shoppingValue, setShoppingValue] = useState<string[]>([]);
   const [isOnLoad, setIsOnload] = useState(false);
-
+  const [messageApi, contextHolder] = message.useMessage();
   const colSize = useMediaQuery();
   const colSize2ColumnsPhotos = {
     // "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
@@ -145,9 +147,70 @@ const Event: React.FC = () => {
     console.log(1);
   };
 
-  const actions: Action[] = [
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(
+      () => {
+        messageApi.success("Link copied to clipboard");
+      },
+      () => {
+        messageApi.error(
+          "Your browser does not support this feature, please copy the link manually and send it to your friends"
+        );
+      }
+    );
+  };
+
+  const contentRef = useRef(null);
+  const [base64SharePhotos, setBase64SharePhotos] = useState<string>();
+
+  useEffect(() => {
+    if (base64SharePhotos && base64SharePhotos.length > 0) {
+      Modal.alert({
+        content: (
+          <>
+            <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
+            <QRCode
+              errorLevel="H"
+              value={window.location.href}
+              icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+            />
+          </>
+        ),
+      });
+    }
+  }, [base64SharePhotos]);
+  const generatePosters = () => {
+    if (contentRef.current != null) {
+      const element = contentRef.current as HTMLElement;
+      const rect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+      html2canvas(contentRef.current as HTMLElement, {
+        scale: 2,
+        x: scrollLeft,
+        y: scrollTop,
+        width: rect.width,
+        height: window.innerHeight,
+        useCORS: true,
+      }).then((canvas) => {
+        const base64image = canvas.toDataURL("image/png"); // 转换为 base64
+        setBase64SharePhotos(base64image);
+        // const link = document.createElement('a');
+        // link.download = 'screenshot.png';
+        // link.href = base64image;
+        // link.click();
+      });
+    }
+  };
+
+  const actionsCart: Action[] = [
     { key: "Show cart", icon: null, text: "Show cart", onClick: selectedPhotos },
     { key: "Clear all", icon: null, text: "Clear all", onClick: deleteAllPhotos },
+  ];
+  const actionsShare: Action[] = [
+    { key: "Copy Link", icon: null, text: "Copy Link", onClick: copyLink },
+    { key: "Generate posters", icon: null, text: "Generate posters", onClick: generatePosters },
   ];
 
   const handleCheckboxonClick = (name: string) => {
@@ -348,174 +411,184 @@ const Event: React.FC = () => {
   };
 
   return (
-    <div>
-      <List header="Event Information" className={styles.InformationContainer}>
-        <List.Item>
-          <span style={{ width: "80px", display: "inline-block" }}>
-            <b>name</b>
-          </span>
-          <span>{eventInfo?.event}</span>
-        </List.Item>
-        <List.Item>
-          <span style={{ width: "80px", display: "inline-block" }}>
-            <b>city</b>
-          </span>
-          <span>{eventInfo?.city}</span>
-        </List.Item>
-        <List.Item>
-          <span style={{ width: "80px", display: "inline-block" }}>
-            <b>category</b>
-          </span>
-          <span>{eventInfo?.category}</span>
-        </List.Item>
-        <List.Item>
-          <span style={{ width: "80px", display: "inline-block" }}>
-            <b>website</b>
-          </span>
-          <span>
-            <a href={eventInfo?.website}>{eventInfo?.website}</a>
-          </span>
-        </List.Item>
-      </List>
-      <br />
-      <Divider>Featured Images</Divider>
-      <div className={styles.carouselWrapper}>
-        <Carousel showArrows={true} infiniteLoop={true} autoPlay={true} interval={2000} dynamicHeight>
-          {topImages.map((image, index) => (
-            <div key={index}>
-              <img src={image.url} alt="" />
-              {/* <p className="legend">1</p> */}
-            </div>
-          ))}
-        </Carousel>
-      </div>
+    <>
+      <div ref={contentRef}>
+        {contextHolder}
+        <List header="Event Information" className={styles.InformationContainer}>
+          <List.Item>
+            <span style={{ width: "80px", display: "inline-block" }}>
+              <b>name</b>
+            </span>
+            <span>{eventInfo?.event}</span>
+          </List.Item>
+          <List.Item>
+            <span style={{ width: "80px", display: "inline-block" }}>
+              <b>city</b>
+            </span>
+            <span>{eventInfo?.city}</span>
+          </List.Item>
+          <List.Item>
+            <span style={{ width: "80px", display: "inline-block" }}>
+              <b>category</b>
+            </span>
+            <span>{eventInfo?.category}</span>
+          </List.Item>
+          <List.Item>
+            <span style={{ width: "80px", display: "inline-block" }}>
+              <b>website</b>
+            </span>
+            <span>
+              <a href={eventInfo?.website}>{eventInfo?.website}</a>
+            </span>
+          </List.Item>
+        </List>
+        <br />
+        <Divider>Featured Images</Divider>
+        <div className={styles.carouselWrapper}>
+          <Carousel showArrows={true} infiniteLoop={true} autoPlay={true} interval={2000} dynamicHeight>
+            {topImages.map((image, index) => (
+              <div key={index}>
+                <img src={image.url} alt="" />
+                {/* <p className="legend">1</p> */}
+              </div>
+            ))}
+          </Carousel>
+        </div>
 
-      <Divider>...</Divider>
-      <p>current photographer below:</p>
-      <div onClick={() => setGrapherPopupVisible(true)}>
-        <Input
-          prefix={<TeamOutlined />}
-          value={grapher?.label}
-          placeholder="Select a photographer"
-          readOnly
-          suffix={<DownOutlined />}
-        />
-      </div>
-      <p>current photo date time:</p>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div onClick={() => setDateTimePopVisible(true)} style={{ flex: 1 }}>
+        <Divider>...</Divider>
+        <p>current photographer below:</p>
+        <div onClick={() => setGrapherPopupVisible(true)}>
           <Input
-            prefix={<ClockCircleOutlined />}
-            value={currentDateTime.join("-")}
-            placeholder="Select date and time"
+            prefix={<TeamOutlined />}
+            value={grapher?.label}
+            placeholder="Select a photographer"
             readOnly
             suffix={<DownOutlined />}
           />
         </div>
-        <Button
-          size="small"
-          color={autoRefresh ? "primary" : "default"}
-          style={{ borderColor: "#d9d9d9", width: 157, marginLeft: 5 }}
-          onClick={() => setAutoRefresh(!autoRefresh)}
-        >
-          <SyncOutlined spin={autoRefresh} style={{ marginRight: 5 }} />
-          Auto Refresh
-        </Button>
-      </div>
-      <Divider>...</Divider>
-      <InfiniteScroll
-        dataLength={images.length}
-        next={() => {
-          nextPhotos();
-        }}
-        hasMore={nextTime != undefined}
-        loader={
-          <Divider>
-            Loading
-            <DotLoading color="primary" />
-          </Divider>
-        }
-        scrollThreshold={"20px"}
-        endMessage={<Divider>No more photos</Divider>}
-      >
-        <Masonry
-          column={columnsPhotos}
-          gap={8}
-          initailHeight={150}
-          items={images.map((image, index) =>
-            image.name == "divider" ? (
-              <Divider>
-                ⬇️ {image.hour}:{image.minute} ⬇️
-              </Divider>
-            ) : (
-              <div>
-                <div key={image.name} onClick={() => openImageViewer(index)} style={{ position: "relative" }}>
-                  <span style={{ position: "absolute", right: 0, margin: 10 }}>
-                    <Checkbox
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleCheckboxonClick(image.name);
-                      }}
-                      block
-                      style={{ "--icon-size": "30px" }}
-                      value={image.name}
-                      checked={shoppingValue.includes(image.name) ? true : false}
-                    ></Checkbox>
-                  </span>
-
-                  <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
-                </div>
-              </div>
-            )
-          )}
-        />
-      </InfiniteScroll>
-
-      <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
-        <p className="text-center"> Select a photographer below:</p>
-        <CheckList
-          defaultValue={grapher?.value ? [grapher.value] : []}
-          onChange={(val) => {
-            setIsImagePush(false);
-            handlePhotoGrapherChange(val[0] as string);
-            setGrapherPopupVisible(false);
+        <p>current photo date time:</p>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div onClick={() => setDateTimePopVisible(true)} style={{ flex: 1 }}>
+            <Input
+              prefix={<ClockCircleOutlined />}
+              value={currentDateTime.join("-")}
+              placeholder="Select date and time"
+              readOnly
+              suffix={<DownOutlined />}
+            />
+          </div>
+          <Button
+            size="small"
+            color={autoRefresh ? "primary" : "default"}
+            style={{ borderColor: "#d9d9d9", width: 157, marginLeft: 5 }}
+            onClick={() => setAutoRefresh(!autoRefresh)}
+          >
+            <SyncOutlined spin={autoRefresh} style={{ marginRight: 5 }} />
+            Auto Refresh
+          </Button>
+        </div>
+        <Divider>...</Divider>
+        <InfiniteScroll
+          dataLength={images.length}
+          next={() => {
+            nextPhotos();
           }}
-          className={styles.photographers}
+          hasMore={nextTime != undefined}
+          loader={
+            <Divider>
+              Loading
+              <DotLoading color="primary" />
+            </Divider>
+          }
+          scrollThreshold={"20px"}
+          endMessage={<Divider>No more photos</Divider>}
         >
-          {photographers.map((item) => (
-            <CheckList.Item key={item?.value} value={item?.value as string} className={styles.photoGraperItem}>
-              <Flex align="center">
-                <Image src={item?.photographer_icon_url} width={40} height={40} fit="cover" />
-                <span>&nbsp;{item?.label}</span>
-              </Flex>
-            </CheckList.Item>
-          ))}
-        </CheckList>
-      </Popup>
-      <CascadePicker
-        title="select date time"
-        options={grapherDateToCascadeOptions(grapher)}
-        visible={dateTimePopVisible}
-        value={currentDateTime}
-        onClose={() => setDateTimePopVisible(false)}
-        mouseWheel
-        onConfirm={(val) => {
-          setIsImagePush(false);
-          setCurrentDateTime(val as [string, string]);
-        }}
-      />
-      <ImageViewer.Multi
-        ref={imageViewerRefs}
-        images={images.map((i) => i.url as string)}
-        visible={imagePopVisible}
-        defaultIndex={1}
-        onClose={() => setImagePopVisible(false)}
-        renderFooter={renderFooter}
-      />
-      <Popover.Menu actions={actions} onAction={(node) => node.onClick} placement="left-start" trigger="click">
-        <FloatButton icon={<ShoppingCartOutlined />} badge={{ count: shoppingValue.length, color: "#FFCA83" }} />
+          <Masonry
+            column={columnsPhotos}
+            gap={8}
+            initailHeight={150}
+            items={images.map((image, index) =>
+              image.name == "divider" ? (
+                <Divider>
+                  ⬇️ {image.hour}:{image.minute} ⬇️
+                </Divider>
+              ) : (
+                <div>
+                  <div key={image.name} onClick={() => openImageViewer(index)} style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", right: 0, margin: 10 }}>
+                      <Checkbox
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleCheckboxonClick(image.name);
+                        }}
+                        block
+                        style={{ "--icon-size": "30px" }}
+                        value={image.name}
+                        checked={shoppingValue.includes(image.name) ? true : false}
+                      ></Checkbox>
+                    </span>
+
+                    <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+                  </div>
+                </div>
+              )
+            )}
+          />
+        </InfiniteScroll>
+
+        <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
+          <p className="text-center"> Select a photographer below:</p>
+          <CheckList
+            defaultValue={grapher?.value ? [grapher.value] : []}
+            onChange={(val) => {
+              setIsImagePush(false);
+              handlePhotoGrapherChange(val[0] as string);
+              setGrapherPopupVisible(false);
+            }}
+            className={styles.photographers}
+          >
+            {photographers.map((item) => (
+              <CheckList.Item key={item?.value} value={item?.value as string} className={styles.photoGraperItem}>
+                <Flex align="center">
+                  <Image src={item?.photographer_icon_url} width={40} height={40} fit="cover" />
+                  <span>&nbsp;{item?.label}</span>
+                </Flex>
+              </CheckList.Item>
+            ))}
+          </CheckList>
+        </Popup>
+        <CascadePicker
+          title="select date time"
+          options={grapherDateToCascadeOptions(grapher)}
+          visible={dateTimePopVisible}
+          value={currentDateTime}
+          onClose={() => setDateTimePopVisible(false)}
+          mouseWheel
+          onConfirm={(val) => {
+            setIsImagePush(false);
+            setCurrentDateTime(val as [string, string]);
+          }}
+        />
+        <ImageViewer.Multi
+          ref={imageViewerRefs}
+          images={images.map((i) => i.url as string)}
+          visible={imagePopVisible}
+          defaultIndex={1}
+          onClose={() => setImagePopVisible(false)}
+          renderFooter={renderFooter}
+        />
+      </div>
+      <Popover.Menu actions={actionsCart} onAction={(node) => node.onClick} placement="top" trigger="click">
+        <FloatButton
+          icon={<ShoppingCartOutlined />}
+          badge={{ count: shoppingValue.length, color: "#FFCA83" }}
+          style={{ bottom: 100 }}
+        />
       </Popover.Menu>
-    </div>
+      <Popover.Menu actions={actionsShare} onAction={(node) => node.onClick} placement="top" trigger="click">
+        <FloatButton icon={<ShareAltOutlined />} style={{ bottom: 150 }} />
+      </Popover.Menu>
+    </>
   );
 };
 

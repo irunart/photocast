@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
           </span>
         </Space>
       </div>
-      <FloatButton.Group style={{ bottom: 120 }}>
+      <FloatButton.Group style={{ bottom: 200 }}>
         <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
         <FloatButton icon={<CommentOutlined />} onClick={openForm} />
         <FloatButton.BackTop />
