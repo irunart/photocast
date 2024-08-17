@@ -12,6 +12,7 @@ import { Action } from "antd-mobile/es/components/popover";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import html2canvas from "html2canvas";
+import { getEventDetail } from "@/services/googleApis";
 
 import {
   Button,
@@ -31,7 +32,7 @@ import * as _ from "lodash-es";
 
 import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
 
-import type { IData, IImage, IPhotographer, IEventDetail } from "./type";
+import type { IData, IImage, IPhotographer, IEventDetail, IEventLists } from "./type";
 
 import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
 import { ShoppingCartOutlined } from "@ant-design/icons";
@@ -139,6 +140,10 @@ const Event: React.FC = () => {
     const EventsData = JSON.parse(sessionStorage.getItem("EventsData") as string);
     if (EventsData) {
       setEventInfo(EventsData[event]);
+    } else {
+      getEventDetail().then((res: CommonResponse<IEventLists>) => {
+        setEventInfo(res.data[event]);
+      });
     }
 
     const ShoppingData = localStorage.getItem("ShoppingData");
@@ -610,6 +615,7 @@ const Event: React.FC = () => {
           renderFooter={renderFooter}
         />
       </div>
+
       <Popover.Menu actions={actionsCart} onAction={(node) => node.onClick} placement="top" trigger="click">
         <FloatButton
           icon={<ShoppingCartOutlined />}

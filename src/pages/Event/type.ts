@@ -24,7 +24,9 @@ export interface IPhotographer {
   stats: { [date: string]: { [hour: string]: number } };
   photographer_icon_url?: string;
 }
-
+export interface IEventLists {
+  [event: string]: IEventDetail;
+}
 export interface IImage {
   name: string;
   time: string;

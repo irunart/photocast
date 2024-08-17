@@ -8,6 +8,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import { IImageEs } from "./type";
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button } from "antd-mobile";
+import { Link } from "react-router-dom";
+
 const Person: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState<IImageEs[]>([]);
@@ -45,40 +47,84 @@ const Person: React.FC = () => {
 
     setImages(images.filter((item) => item.name != name));
   };
+  const deleteAllPhotos = () => {
+    setImages([]);
+    localStorage.removeItem("ShoppingData");
+  };
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const downloadAllPhotos = async () => {
+    setIsLoading(true);
+
+    try {
+      const promises = images.map(async (item) => {
+        const response = await fetch(item.url);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${item.name}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+
+      await Promise.all(promises);
+    } catch (error) {
+      console.error("Error downloading images:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <Masonry
-      column={2}
-      gap={8}
-      initailHeight={150}
-      items={images.map((image, index) => (
-        // <div key={image.name} onClick={() => openImageViewer(index)}>
-        <div key={image.name} onClick={() => console.log(index)} style={{ position: "relative" }}>
-          <span style={{ position: "absolute", right: 0, marginTop: 10, marginRight: 10 }}>
-            <Button
-              shape="rounded"
-              onClick={() => {
-                deletePhoto(image.name);
-              }}
-            >
-              <DeleteOutlined style={{ fontSize: "30px" }} />
-            </Button>
-          </span>
-          <span style={{ position: "absolute", right: 0, marginTop: 60, marginRight: 10 }}>
-            <Button
-              shape="rounded"
-              onClick={() => {
-                window.open("https://runart.net/photo_download/?url=" + image.url);
-              }}
-            >
-              <CloudDownloadOutlined style={{ fontSize: "30px" }} />
-            </Button>
-          </span>
+    <>
+      <div style={{ marginBottom: 10 }}>
+        <Link to="/">
+          <Button style={{ marginRight: 10 }}>Back to Home</Button>
+        </Link>
 
-          <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
-        </div>
-      ))}
-    />
+        <Button style={{ marginRight: 10 }} onClick={deleteAllPhotos}>
+          Clear All
+        </Button>
+
+        <Button onClick={downloadAllPhotos}>Download All{isLoading}</Button>
+      </div>
+
+      <Masonry
+        column={2}
+        gap={8}
+        initailHeight={150}
+        items={images.map((image, index) => (
+          // <div key={image.name} onClick={() => openImageViewer(index)}>
+          <div key={image.name} onClick={() => console.log(index)} style={{ position: "relative" }}>
+            <span style={{ position: "absolute", right: 0, marginTop: 10, marginRight: 10 }}>
+              <Button
+                shape="rounded"
+                onClick={() => {
+                  deletePhoto(image.name);
+                }}
+              >
+                <DeleteOutlined style={{ fontSize: "30px" }} />
+              </Button>
+            </span>
+            <span style={{ position: "absolute", right: 0, marginTop: 60, marginRight: 10 }}>
+              <Button
+                shape="rounded"
+                onClick={() => {
+                  window.open("https://runart.net/photo_download/?url=" + image.url);
+                }}
+              >
+                <CloudDownloadOutlined style={{ fontSize: "30px" }} />
+              </Button>
+            </span>
+
+            <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+          </div>
+        ))}
+      />
+    </>
   );
 };
 

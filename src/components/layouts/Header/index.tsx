@@ -4,7 +4,9 @@ import { Image } from "antd-mobile";
 const Header = () => {
   return (
     <>
-      <h1>PhotoCast</h1>
+      <Link to="/">
+        <h1>PhotoCast</h1>
+      </Link>
 
       <em className={styles.summary}>
         {"A runners-for-runners photo system by "}
