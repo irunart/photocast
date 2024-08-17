@@ -1,28 +1,27 @@
 import React, { useState } from "react";
-import { FloatButton, message, Modal } from "antd";
+import { FloatButton, Modal } from "antd";
 import { Link } from "react-router-dom";
 
 import { Space } from "antd-mobile";
 
-import { ShareAltOutlined, CommentOutlined } from "@ant-design/icons";
+import { CommentOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
 const Footer: React.FC = () => {
-  const [messageApi, contextHolder] = message.useMessage();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleShareBtnClick = () => {
-    navigator.clipboard.writeText(window.location.href).then(
-      () => {
-        messageApi.success("Link copied to clipboard");
-      },
-      () => {
-        messageApi.error(
-          "Your browser does not support this feature, please copy the link manually and send it to your friends"
-        );
-      }
-    );
-  };
+  // const handleShareBtnClick = () => {
+  //   navigator.clipboard.writeText(window.location.href).then(
+  //     () => {
+  //       messageApi.success("Link copied to clipboard");
+  //     },
+  //     () => {
+  //       messageApi.error(
+  //         "Your browser does not support this feature, please copy the link manually and send it to your friends"
+  //       );
+  //     }
+  //   );
+  // };
 
   const openForm = () => {
     setModalVisible(true); // Open the modal when the form button is clicked
@@ -52,7 +51,6 @@ const Footer: React.FC = () => {
         s
       </Modal>
       <div className={styles.footer}>
-        {contextHolder}
         <Space wrap block justify="center" align="center" style={{ textAlign: "center", "--gap": "20px" }}>
           <span>
             Powered by <a href="https://RunArt.net">RunArt.net</a>
@@ -66,7 +64,7 @@ const Footer: React.FC = () => {
         </Space>
       </div>
       <FloatButton.Group style={{ bottom: 200 }}>
-        <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} />
+        {/* <FloatButton icon={<ShareAltOutlined />} onClick={handleShareBtnClick} /> */}
         <FloatButton icon={<CommentOutlined />} onClick={openForm} />
         <FloatButton.BackTop />
       </FloatButton.Group>

@@ -25,6 +25,7 @@ import {
   Checkbox,
   List,
   Modal,
+  Grid,
 } from "antd-mobile";
 import * as _ from "lodash-es";
 
@@ -176,14 +177,27 @@ const Event: React.FC = () => {
   useEffect(() => {
     if (base64SharePhotos && base64SharePhotos.length > 0) {
       Modal.alert({
+        confirmText: "Screenshot Sharing",
         content: (
           <>
+            <Grid columns={2} gap={8}>
+              <Grid.Item>
+                <QRCode
+                  errorLevel="L"
+                  value={window.location.href}
+                  style={{ width: "100%", height: "auto" }}
+                  icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                />
+              </Grid.Item>
+              <Grid.Item>
+                Event Name:
+                <br></br>
+                <b>{event}</b>
+                <br></br>
+                Scan the QRcode to see more photos
+              </Grid.Item>
+            </Grid>
             <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
-            <QRCode
-              errorLevel="L"
-              value={window.location.href}
-              icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-            />
           </>
         ),
       });
@@ -309,6 +323,10 @@ const Event: React.FC = () => {
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
 
   const nextPhotos = () => {
+    if (!isOnLoad) {
+      return 0;
+    }
+
     setIsImagePush(true);
     if (imagesRemain.length == 0) {
       navTime(nextTime as [string, string]);
