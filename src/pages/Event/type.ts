@@ -29,8 +29,8 @@ export interface IImage {
   name: string;
   time: string;
   date: string;
-  hour: string;
-  minute: string;
-  second: string;
-  url?: string;
+  hour?: string;
+  minute?: string;
+  second?: string;
+  url: string;
 }

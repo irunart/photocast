@@ -60,7 +60,10 @@ const Event: React.FC = () => {
   const [grapher, setGrapher] = useState<IPhotographer>();
   const [grapherPopupVisible, setGrapherPopupVisible] = useState(false);
   const [images, setImages] = useState<IImage[]>([]);
-  const [topImages, setTopImages] = useState<IImage[]>([]);
+  const [topImages, setTopImages] = useState<IImage[]>([
+    { url: "https://iest.run/assets/img/IEST-logo-with-text-horizontal.png", name: "1", time: "1", date: "1" },
+    { url: "https://iest.run/assets/img/IEST-logo-with-text-horizontal.png", name: "1", time: "1", date: "1" },
+  ]);
   const [imagesRemain, setImagesRemain] = useState<IImage[]>([]);
   const [currentDateTime, setCurrentDateTime] = useState<[string, string]>(["", ""]);
   const [dateTimePopVisible, setDateTimePopVisible] = useState(false);
@@ -69,6 +72,7 @@ const Event: React.FC = () => {
   const [shoppingValue, setShoppingValue] = useState<string[]>([]);
   const [isOnLoad, setIsOnload] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [skipCount, setSkipCount] = useState(0);
   const colSize = useMediaQuery();
   const colSize2ColumnsPhotos = {
     // "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
@@ -80,6 +84,13 @@ const Event: React.FC = () => {
     xxl: 5,
   };
   const columnsPhotos = colSize2ColumnsPhotos[colSize];
+
+  // const carouselRef = useRef<Carousel>(null);
+  // useEffect(() => {
+  //   if (carouselRef.current) {
+  //     carouselRef.current.startAutoplay();
+  //   }
+  // }, []);
 
   // page start
   useEffect(() => {
@@ -113,6 +124,7 @@ const Event: React.FC = () => {
       const timesFromSearch = searchParams.get("time")?.split("-");
       const currentGrapher = photoGrapherFromSearch || grapherLists[0];
       const currentTime = getGrapherAvailableTime(currentGrapher, timesFromSearch?.[0], timesFromSearch?.[1]);
+      setSkipCount(parseInt(searchParams.get("skip") || "0"));
 
       setCurrentDateTime(currentTime);
       setPhotographers(grapherLists);
@@ -134,7 +146,6 @@ const Event: React.FC = () => {
     } else {
       setShoppingValue([]);
     }
-    console.log(ShoppingData);
 
     setIsOnload(true);
   }, [event]);
@@ -144,7 +155,6 @@ const Event: React.FC = () => {
   };
   const selectedPhotos = () => {
     navigate("/SelectedPhotos");
-    console.log(1);
   };
 
   const copyLink = () => {
@@ -170,7 +180,7 @@ const Event: React.FC = () => {
           <>
             <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
             <QRCode
-              errorLevel="H"
+              errorLevel="L"
               value={window.location.href}
               icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
             />
@@ -305,12 +315,15 @@ const Event: React.FC = () => {
     } else {
       let dataSorted;
       if (imagesRemain.length > PHOTOS_MAX_SIZE) {
+        setSkipCount(skipCount + 1);
         dataSorted = imagesRemain.slice(0, PHOTOS_MAX_SIZE);
         setImagesRemain(imagesRemain.slice(-(imagesRemain.length - PHOTOS_MAX_SIZE)));
       } else {
+        setSkipCount(0);
         dataSorted = imagesRemain;
         setImagesRemain([]);
       }
+      stateToUrl();
 
       const divider = {
         name: "divider",
@@ -339,9 +352,9 @@ const Event: React.FC = () => {
       (res: CommonResponse<IImage[]>) => {
         let dataSorted = res.data.toSorted(latestFirstPhoto).reverse();
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
-          const r = dataSorted.slice(PHOTOS_MAX_SIZE, dataSorted.length - 1);
+          const r = dataSorted.slice(PHOTOS_MAX_SIZE * skipCount, dataSorted.length - 1);
           setImagesRemain(r);
-          dataSorted = dataSorted.slice(0, PHOTOS_MAX_SIZE);
+          dataSorted = dataSorted.slice(PHOTOS_MAX_SIZE * skipCount, PHOTOS_MAX_SIZE * (skipCount + 1));
         }
         let img;
         if (isImagePush) {
@@ -389,6 +402,7 @@ const Event: React.FC = () => {
         ...Object.fromEntries(params),
         photographer: grapher?.value as string,
         time: currentDateTime.join("-"),
+        skip: skipCount.toString(),
       }),
       { replace: true }
     );
@@ -445,7 +459,7 @@ const Event: React.FC = () => {
         <br />
         <Divider>Featured Images</Divider>
         <div className={styles.carouselWrapper}>
-          <Carousel showArrows={true} infiniteLoop={true} autoPlay={true} interval={2000} dynamicHeight>
+          <Carousel infiniteLoop={true} autoFocus={true} autoPlay={true} interval={2000} dynamicHeight selectedItem={0}>
             {topImages.map((image, index) => (
               <div key={index}>
                 <img src={image.url} alt="" />
