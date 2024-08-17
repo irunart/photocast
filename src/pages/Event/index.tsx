@@ -34,7 +34,7 @@ import { getPhotoDateHourData, getPhotographers } from "@/services/googleApis";
 
 import type { IData, IImage, IPhotographer, IEventDetail, IEventLists } from "./type";
 
-import { getEventPhotoGrapher, grapherDateToCascadeOptions } from "./common";
+import { getEventPhotoGrapher, getPhotoGrapherCount, getPhotosCount, grapherDateToCascadeOptions } from "./common";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 
 import { Popover } from "antd-mobile";
@@ -76,6 +76,9 @@ const Event: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [skipCount, setSkipCount] = useState(0);
   const colSize = useMediaQuery();
+
+  const [photoGrapherCount, setPhotoGrapherCount] = useState(0);
+  const [photosCount, setPhotosCount] = useState(0);
   const colSize2ColumnsPhotos = {
     // "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
     xs: 3,
@@ -100,6 +103,10 @@ const Event: React.FC = () => {
 
     getPhotographers().then((res: CommonResponse<IData[]>) => {
       const grapherLists = getEventPhotoGrapher(res.data, event);
+      const photoGrapherCount_ = getPhotoGrapherCount(res.data, event);
+      const photosCount_ = getPhotosCount(res.data, event);
+      setPhotoGrapherCount(photoGrapherCount_);
+      setPhotosCount(photosCount_);
 
       if (grapherLists.length === 0) {
         Modal.show({
@@ -476,6 +483,11 @@ const Event: React.FC = () => {
             </span>
             <span>
               <a href={eventInfo?.website}>{eventInfo?.website}</a>
+            </span>
+          </List.Item>
+          <List.Item>
+            <span>
+              {photoGrapherCount} of photographers , {photosCount} of photos
             </span>
           </List.Item>
         </List>

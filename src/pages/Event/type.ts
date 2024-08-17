@@ -12,6 +12,7 @@ export interface IEventDetail {
 export interface IData {
   data: IPhotographer;
   photographer_icon_url: string;
+  count?: number;
 }
 
 export interface IPhotographer {

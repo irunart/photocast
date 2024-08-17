@@ -14,6 +14,27 @@ export const getEventPhotoGrapher = (data: IData[], event: string) => {
   return _.filter(flatDatas, { event });
 };
 
+export const getPhotosCount = (data: IData[], event: string) => {
+  // 扁平数据
+  let flatDatas = _.map(data, (item) => ({
+    ...item.data,
+    count: countPhotoAmount(item.data),
+  }));
+  flatDatas = _.filter(flatDatas, { event });
+  let c = 0;
+  for (let index = 0; index < flatDatas.length; index++) {
+    c = c + flatDatas[index].count;
+  }
+  return c;
+};
+
+export const getPhotoGrapherCount = (data: IData[], event: string) => {
+  const flatDatas = _.map(data, (item) => ({
+    ...item.data,
+  }));
+  return _.filter(flatDatas, { event }).length;
+};
+
 export function countPhotoAmount(photographer: IPhotographer, date?: string, hour?: string) {
   let count = 0;
   if (hour != undefined) {
