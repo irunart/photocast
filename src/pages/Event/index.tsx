@@ -76,6 +76,7 @@ const Event: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [skipCount, setSkipCount] = useState(0);
   const colSize = useMediaQuery();
+  const [fromSource, setFromSource] = useState("");
 
   const [photoGrapherCount, setPhotoGrapherCount] = useState(0);
   const [photosCount, setPhotosCount] = useState(0);
@@ -128,8 +129,10 @@ const Event: React.FC = () => {
           ],
         });
       }
-
       const photoGrapherFromSearch = _.find(grapherLists, ["value", searchParams.get("photographer")]);
+      if (_.isNull(photoGrapherFromSearch)) {
+        setFromSource("home");
+      }
       const timesFromSearch = searchParams.get("time")?.split("-");
       const currentGrapher = photoGrapherFromSearch || grapherLists[0];
       const currentTime = getGrapherAvailableTime(currentGrapher, timesFromSearch?.[0], timesFromSearch?.[1]);
@@ -161,8 +164,16 @@ const Event: React.FC = () => {
     }
 
     setIsOnload(true);
+    if (fromSource != "home") {
+      setTimeout(scrollIntoView, 2500);
+    }
   }, [event]);
 
+  const scrollIntoView = () => {
+    if (window.scrollY < 100) {
+      window.scrollBy(0, 500);
+    }
+  };
   const deleteAllPhotos = () => {
     setShoppingValue([]);
   };
@@ -342,6 +353,7 @@ const Event: React.FC = () => {
     setIsImagePush(true);
     if (imagesRemain.length == 0) {
       navTime(nextTime as [string, string]);
+      setSkipCount(0);
     } else {
       let dataSorted;
       if (imagesRemain.length > PHOTOS_MAX_SIZE) {
