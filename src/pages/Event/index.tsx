@@ -345,7 +345,7 @@ const Event: React.FC = () => {
     } else {
       let dataSorted;
       if (imagesRemain.length > PHOTOS_MAX_SIZE) {
-        setSkipCount(skipCount + 1);
+        setSkipCount(skipCount + PHOTOS_MAX_SIZE);
         dataSorted = imagesRemain.slice(0, PHOTOS_MAX_SIZE);
         setImagesRemain(imagesRemain.slice(-(imagesRemain.length - PHOTOS_MAX_SIZE)));
       } else {
@@ -382,9 +382,12 @@ const Event: React.FC = () => {
       (res: CommonResponse<IImage[]>) => {
         let dataSorted = res.data.toSorted(latestFirstPhoto).reverse();
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
-          const r = dataSorted.slice(PHOTOS_MAX_SIZE * skipCount, dataSorted.length - 1);
+          const r = dataSorted.slice(PHOTOS_MAX_SIZE * Math.floor(skipCount / PHOTOS_MAX_SIZE), dataSorted.length - 1);
           setImagesRemain(r);
-          dataSorted = dataSorted.slice(PHOTOS_MAX_SIZE * skipCount, PHOTOS_MAX_SIZE * (skipCount + 1));
+          dataSorted = dataSorted.slice(
+            PHOTOS_MAX_SIZE * Math.floor(skipCount / PHOTOS_MAX_SIZE),
+            PHOTOS_MAX_SIZE * (Math.floor(skipCount / PHOTOS_MAX_SIZE) + 1)
+          );
         }
         let img;
         if (isImagePush) {
