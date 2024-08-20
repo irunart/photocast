@@ -2,7 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ClockCircleOutlined, DownOutlined, ShareAltOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  DownOutlined,
+  ShareAltOutlined,
+  SyncOutlined,
+  TeamOutlined,
+  PictureOutlined,
+} from "@ant-design/icons";
 // import { Flex, Input, Carousel } from "antd";
 import { Flex, Input, message, QRCode } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
@@ -195,33 +202,65 @@ const Event: React.FC = () => {
   };
 
   const contentRef = useRef(null);
+  const ModalContentRef = useRef(null);
   const [base64SharePhotos, setBase64SharePhotos] = useState<string>();
-
+  const screenshotComplete = () => {
+    if (ModalContentRef.current != null) {
+      html2canvas(ModalContentRef.current as HTMLElement, {
+        scale: 2,
+        useCORS: true,
+      }).then((canvas) => {
+        const base64image = canvas.toDataURL("image/png");
+        // setBase64SharePhotos(base64image);
+        // const link = document.createElement('a');
+        // link.download = 'screenshot.png';
+        // link.href = base64image;
+        // link.click();
+        Modal.clear();
+        Modal.show({
+          content: <Image src={base64image} key={base64image} alt="" style={{ width: "100%" }} draggable={true} />,
+          header: (
+            <div>
+              Long press to save image
+              <PictureOutlined />
+            </div>
+          ),
+          showCloseButton: true,
+          closeOnMaskClick: true,
+        });
+      });
+    }
+  };
   useEffect(() => {
     if (base64SharePhotos && base64SharePhotos.length > 0) {
       Modal.alert({
         confirmText: "Screenshot Sharing",
+        afterShow: screenshotComplete,
         content: (
-          <>
-            <Grid columns={2} gap={8}>
+          <div ref={ModalContentRef} style={{ padding: "10px" }}>
+            <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
+            <Grid columns={3} gap={8}>
               <Grid.Item>
-                <QRCode
-                  errorLevel="M"
-                  value={window.location.href}
-                  style={{ width: "100%", height: "auto" }}
-                  icon="https://iest.run/assets/img/IEST-logo-icon-only-sqaure.png"
-                />
+                <div style={{ width: "100px" }}>
+                  <QRCode
+                    errorLevel="M"
+                    value={window.location.href}
+                    style={{ width: "100%", height: "auto" }}
+                    icon="https://iest.run/assets/img/IEST-logo-icon-only-sqaure.png"
+                  />
+                </div>
               </Grid.Item>
-              <Grid.Item>
-                Event Name:
-                <br></br>
-                <b>{event}</b>
-                <br></br>
-                Scan the QRcode to see more photos
+              <Grid.Item span={2}>
+                <div style={{ marginLeft: "10px" }}>
+                  Event Name:
+                  {/* <br></br> */}
+                  <b>{event}</b>
+                  <br></br>
+                  Scan the QRcode to see more photos
+                </div>
               </Grid.Item>
             </Grid>
-            <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
-          </>
+          </div>
         ),
       });
     }
@@ -241,7 +280,7 @@ const Event: React.FC = () => {
         height: window.innerHeight,
         useCORS: true,
       }).then((canvas) => {
-        const base64image = canvas.toDataURL("image/png"); // 转换为 base64
+        const base64image = canvas.toDataURL("image/png");
         setBase64SharePhotos(base64image);
         // const link = document.createElement('a');
         // link.download = 'screenshot.png';
