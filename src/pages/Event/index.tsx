@@ -504,8 +504,8 @@ const Event: React.FC = () => {
             selectedItem={0}
           >
             {topImages.map((image, index) => (
-              <div key={index}>
-                <img src={image.url} alt="" className={styles.carouselItem} />
+              <div key={index} style={{ width: "100%", height: "100%" }}>
+                <img src={image.url} alt="" className={styles.carouselItem} style={{ width: "auto" }} />
                 {/* <p className="legend">1</p> */}
               </div>
             ))}
