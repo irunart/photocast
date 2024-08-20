@@ -54,6 +54,8 @@
 .carouselWrapper {
   margin-left: auto;
   margin-right: auto;
+  // height: 800px;
+
   @media (max-width: 767px) {
     width: 100%;
   }
@@ -67,6 +69,10 @@
   }
 }
 
+.carouselItem {
+  height: auto;
+}
+
 .InformationContainer {
   @media only screen and (min-width: 767px) {
     width: 100%;
@@ -75,4 +81,9 @@
   @media only screen and (min-width: 767px) {
     width: 50%;
   }
+}
+
+.carousel .carousel-indicators {
+  bottom: auto; /* 取消默认的底部定位 */
+  top: 0; /* 设置到顶部 */
 }

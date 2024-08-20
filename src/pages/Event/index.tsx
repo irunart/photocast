@@ -195,10 +195,10 @@ const Event: React.FC = () => {
             <Grid columns={2} gap={8}>
               <Grid.Item>
                 <QRCode
-                  errorLevel="L"
+                  errorLevel="M"
                   value={window.location.href}
                   style={{ width: "100%", height: "auto" }}
-                  icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                  icon="https://iest.run/assets/img/IEST-logo-icon-only-sqaure.png"
                 />
               </Grid.Item>
               <Grid.Item>
@@ -494,10 +494,18 @@ const Event: React.FC = () => {
         <br />
         <Divider>Featured Images</Divider>
         <div className={styles.carouselWrapper}>
-          <Carousel infiniteLoop={true} autoFocus={true} autoPlay={true} interval={2000} dynamicHeight selectedItem={0}>
+          {/* dynamicHeight */}
+          <Carousel
+            infiniteLoop={true}
+            autoFocus={true}
+            autoPlay={true}
+            interval={2000}
+            showThumbs={false}
+            selectedItem={0}
+          >
             {topImages.map((image, index) => (
               <div key={index}>
-                <img src={image.url} alt="" />
+                <img src={image.url} alt="" className={styles.carouselItem} />
                 {/* <p className="legend">1</p> */}
               </div>
             ))}
