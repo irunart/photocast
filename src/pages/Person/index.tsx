@@ -7,9 +7,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 
 import { IImageEs } from "./type";
 import { CloudDownloadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button } from "antd-mobile";
+import { Button, Modal } from "antd-mobile";
 import { Link } from "react-router-dom";
-
 const Person: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState<IImageEs[]>([]);
@@ -57,29 +56,42 @@ const Person: React.FC = () => {
   const downloadAllPhotos = async () => {
     setIsLoading(true);
 
-    try {
-      const promises = images.map(async (item) => {
-        const response = await fetch(item.url);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${item.name}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      });
+    // try {
+    //   const promises = images.map(async (item) => {
+    //     const response = await fetch(item.url);
+    //     const blob = await response.blob();
+    //     const url = URL.createObjectURL(blob);
+    //     const link = document.createElement("a");
+    //     link.href = url;
+    //     link.download = `${item.name}`;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //     URL.revokeObjectURL(url);
+    //   });
 
-      await Promise.all(promises);
-    } catch (error) {
-      console.error("Error downloading images:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    //   await Promise.all(promises);
+    // } catch (error) {
+    //   console.error("Error downloading images:", error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
+    // for (let i =0;i<images.length;i++){
+    //   window.open("https://runart.net/photo_download/?url=" + images[i].url);
+    //   console.log(i)
+    // }
+    Modal.alert({
+      content:
+        "This feature has not yet been implemented.You can download them one by one.Please understand the inconvenience caused to you",
+      confirmText: "I know",
+    });
   };
   return (
     <>
+      <div style={{ paddingBottom: "10px", paddingTop: "10px" }}>
+        The site shows thumbnails and you can download the original images from this page.
+      </div>
+
       <div style={{ marginBottom: 10 }}>
         <Link to="/">
           <Button style={{ marginRight: 10 }}>Back to Home</Button>
