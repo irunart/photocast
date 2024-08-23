@@ -81,9 +81,8 @@ const Person: React.FC = () => {
     //   console.log(i)
     // }
     Modal.alert({
-      content:
-        "This feature has not yet been implemented.You can download them one by one.Please understand the inconvenience caused to you",
-      confirmText: "I know",
+      content: "This feature is under development. Please check back later.",
+      confirmText: "Sure!",
     });
   };
   return (
@@ -97,11 +96,13 @@ const Person: React.FC = () => {
           <Button style={{ marginRight: 10 }}>Back to Home</Button>
         </Link>
 
-        <Button style={{ marginRight: 10 }} onClick={deleteAllPhotos}>
+        <Button color="danger" style={{ marginRight: 10 }} onClick={deleteAllPhotos}>
           Clear All
         </Button>
 
-        <Button onClick={downloadAllPhotos}>Download All{isLoading}</Button>
+        <Button disabled color="primary" onClick={downloadAllPhotos}>
+          Download All{isLoading}
+        </Button>
       </div>
 
       <Masonry
@@ -125,7 +126,7 @@ const Person: React.FC = () => {
               <Button
                 shape="rounded"
                 onClick={() => {
-                  window.open("https://runart.net/photo_download/?url=" + image.url);
+                  window.open("https://runart.net/photo_request/?url=" + image.url);
                 }}
               >
                 <CloudDownloadOutlined style={{ fontSize: "30px" }} />
@@ -133,6 +134,17 @@ const Person: React.FC = () => {
             </span>
 
             <ResponsiveImage minHeight={150} lazy src={image?.url} fit="cover" />
+            <div>
+              <Button
+                color="primary"
+                size="large"
+                onClick={() => {
+                  window.open("https://runart.net/photo_request/?url=" + image.url);
+                }}
+              >
+                Download original
+              </Button>
+            </div>
           </div>
         ))}
       />
