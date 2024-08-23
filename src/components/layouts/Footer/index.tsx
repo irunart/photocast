@@ -46,18 +46,21 @@ const Footer: React.FC = () => {
           height="400"
           style={{ border: "none" }}
         >
-          正在加载…
+          Loading...
         </iframe>
         s
       </Modal>
+      <hr />
       <div className={styles.footer}>
         <Space wrap block justify="center" align="center" style={{ textAlign: "center", "--gap": "20px" }}>
           <span>
             Powered by <a href="https://RunArt.net">RunArt.net</a>
           </span>
+          |
           <span>
             Operated by <a href="https://iest.run">iest.run</a>
           </span>
+          |
           <span>
             <Link to="/about">About</Link>
           </span>

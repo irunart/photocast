@@ -118,7 +118,7 @@ const Event: React.FC = () => {
 
       if (grapherLists.length === 0) {
         Modal.show({
-          content: "No photos yes",
+          content: "No photos yet.",
           closeOnAction: true,
           actions: [
             {

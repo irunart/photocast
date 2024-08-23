@@ -195,22 +195,16 @@ const Home = () => {
       <Grid columns={columnsEvent} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
-            <div style={{ border: "2px solid #000000", borderRadius: "15px" }}>
-              <Card
-                title={
-                  <div style={{ marginLeft: "10px", height: "40px" }}>
-                    <div>{item.event}</div>
-                    <Tag color="#FFCA83">{item.category}</Tag>
-                  </div>
-                }
-              >
-                <Image src={item.event_icon_url} style={{ borderRadius: 20, aspectRatio: "4/3" }} fit="cover" />
-                <div style={{ paddingTop: "5px" }}>
-                  <Tag color="#7F7A65" style={{ marginLeft: "5px" }}>
-                    {formatDateToMD(item.date_start)}
-                  </Tag>
+            <div style={{ border: "1px solid #000000", borderColor: "grey" }}>
+              <Card title={<Image src={item.event_icon_url} style={{ aspectRatio: "4/3" }} fit="cover" />}>
+                <div style={{ marginLeft: "10px", height: "40px" }}>
+                  <div>{item.event}</div>
+                  <Tag color="#4E7684">{item.category}</Tag>
                   <Tag color="#7F7A65" style={{ marginLeft: "5px" }}>
                     {item.city}
+                  </Tag>
+                  <Tag color="" fill="outline" style={{ marginLeft: "5px" }}>
+                    {formatDateToMD(item.date_start)}
                   </Tag>
                 </div>
               </Card>
