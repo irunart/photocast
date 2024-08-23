@@ -541,7 +541,7 @@ const Event: React.FC = () => {
           </List.Item>
           <List.Item>
             <span>
-              {photoGrapherCount} of photographers , {photosCount} of photos
+              {photoGrapherCount} photographers , {photosCount} photos
             </span>
           </List.Item>
         </List>
