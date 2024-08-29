@@ -25,8 +25,7 @@ export const Masonry: React.FC<MasonryProps> = (props) => {
     let start = 0;
     for (let i = 0; i < items.length; i++) {
       if ((items[i] as ReactElement)?.type != "div") {
-        console.log(1);
-        value.push({ photos: items.slice(start, i - 1), divider: items[i] });
+        value.push({ photos: items.slice(start, i), divider: items[i] });
         start = i + 1;
       }
     }

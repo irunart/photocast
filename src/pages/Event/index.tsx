@@ -361,25 +361,25 @@ const Event: React.FC = () => {
   ): [string, string] | undefined => {
     const dates: string[] = Object.keys(grapher.available_time);
     const dateIndex = dates.indexOf(date);
-    let times = grapher.available_time[dates[dateIndex]];
+    const times = grapher.available_time[dates[dateIndex]];
     const timeIndex = times.indexOf(time);
-    let targetTimeIndex = action === "prev" ? timeIndex - 1 : timeIndex + 1;
+    const targetTimeIndex = action === "prev" ? timeIndex - 1 : timeIndex + 1;
     if (targetTimeIndex >= 0 && targetTimeIndex < times.length) {
       return [date, times[targetTimeIndex]];
     }
-    let targetDateIndex = dateIndex;
+    // let targetDateIndex = dateIndex;
     // eslint-disable-next-line no-constant-condition
-    while (true) {
-      targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
-      if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
-        return;
-      }
-      times = grapher.available_time[dates[targetDateIndex]];
-      if (times.length) {
-        targetTimeIndex = action === "prev" ? times.length - 1 : 0;
-        return [dates[targetDateIndex], times[targetTimeIndex]];
-      }
-    }
+    // while (true) {
+    //   targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
+    //   if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
+    //     return;
+    //   }
+    //   times = grapher.available_time[dates[targetDateIndex]];
+    //   if (times.length) {
+    //     targetTimeIndex = action === "prev" ? times.length - 1 : 0;
+    //     return [dates[targetDateIndex], times[targetTimeIndex]];
+    //   }
+    // }
   };
 
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
@@ -421,6 +421,8 @@ const Event: React.FC = () => {
     }
   };
 
+  const throttledNextPhotos = _.throttle(nextPhotos, 1000);
+
   const navTime = useCallback((t: [string, string]) => {
     // scrollTo({ top: 0, behavior: "smooth" });
     setAutoRefresh(false);
@@ -432,6 +434,7 @@ const Event: React.FC = () => {
     getPhotoDateHourData(grapher?.value, currentDateTime[0], currentDateTime[1]).then(
       (res: CommonResponse<IImage[]>) => {
         let dataSorted = res.data.toSorted(latestFirstPhoto).reverse();
+
         if (dataSorted.length > PHOTOS_MAX_SIZE) {
           const r = dataSorted.slice(PHOTOS_MAX_SIZE * Math.floor(skipCount / PHOTOS_MAX_SIZE), dataSorted.length - 1);
           setImagesRemain(r);
@@ -601,9 +604,7 @@ const Event: React.FC = () => {
         <Divider>...</Divider>
         <InfiniteScroll
           dataLength={images.length}
-          next={() => {
-            nextPhotos();
-          }}
+          next={throttledNextPhotos}
           hasMore={nextTime != undefined}
           loader={
             <Divider>
