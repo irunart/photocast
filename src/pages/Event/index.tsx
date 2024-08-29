@@ -239,9 +239,9 @@ const Event: React.FC = () => {
         content: (
           <div ref={ModalContentRef} style={{ padding: "10px" }}>
             <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
-            <Grid columns={3} gap={8}>
+            <Grid columns={4} gap={8}>
               <Grid.Item>
-                <div style={{ width: "100px" }}>
+                <div style={{ width: "80px" }}>
                   <QRCode
                     errorLevel="M"
                     value={window.location.href}
@@ -250,8 +250,8 @@ const Event: React.FC = () => {
                   />
                 </div>
               </Grid.Item>
-              <Grid.Item span={2}>
-                <div style={{ marginLeft: "10px" }}>
+              <Grid.Item span={3}>
+                <div style={{ marginLeft: "10px", fontSize: "small" }}>
                   Event Name:
                   {/* <br></br> */}
                   <b>{event}</b>
