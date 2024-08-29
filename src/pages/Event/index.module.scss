@@ -89,7 +89,7 @@
 }
 
 .InformationContainer {
-  @media only screen and (min-width: 767px) {
+  @media only screen and (max-width: 767px) {
     width: 100%;
   }
 
@@ -101,4 +101,28 @@
 .carousel .carousel-indicators {
   bottom: auto; /* 取消默认的底部定位 */
   top: 0; /* 设置到顶部 */
+}
+
+.Poster {
+  .PosterQRcode {
+    @media only screen and (max-width: 767px) {
+      width: 80px;
+    }
+
+    @media only screen and (min-width: 767px) {
+      width: 120px;
+    }
+  }
+
+  .PosterInformation {
+    margin-left: 10px;
+
+    @media only screen and (max-width: 767px) {
+      font-size: small;
+    }
+
+    @media only screen and (min-width: 767px) {
+      font-size: large;
+    }
+  }
 }

@@ -237,21 +237,22 @@ const Event: React.FC = () => {
         confirmText: "Screenshot Sharing",
         afterShow: screenshotComplete,
         content: (
-          <div ref={ModalContentRef} style={{ padding: "10px" }}>
+          <div ref={ModalContentRef}>
             <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
             <Grid columns={4} gap={8}>
               <Grid.Item>
-                <div style={{ width: "80px" }}>
+                <div className={styles.PosterQRcode}>
                   <QRCode
                     errorLevel="M"
                     value={window.location.href}
                     style={{ width: "100%", height: "auto" }}
+                    bordered={false}
                     icon="https://iest.run/assets/img/IEST-logo-icon-only-sqaure.png"
                   />
                 </div>
               </Grid.Item>
               <Grid.Item span={3}>
-                <div style={{ marginLeft: "10px", fontSize: "small" }}>
+                <div className={styles.PosterInformation}>
                   Event Name:
                   {/* <br></br> */}
                   <b>{event}</b>
