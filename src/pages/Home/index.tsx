@@ -110,7 +110,7 @@ const Home = () => {
     const day = parseInt(dateString.slice(6, 8), 10);
 
     const dateFormat = new Date(year, month, day, 0, 0);
-    const monthS = dateFormat.toLocaleString("default", { month: "short" });
+    const monthS = dateFormat.toLocaleString("en", { month: "short" });
     const dayS = dateFormat.getDate();
     let suffix: string = "";
     switch (dayS) {
@@ -144,7 +144,7 @@ const Home = () => {
             <Input
               prefix={<BankOutlined />}
               value={citySelected}
-              placeholder="filter city"
+              placeholder="filter location"
               readOnly
               suffix={<DownOutlined />}
             />
@@ -165,7 +165,7 @@ const Home = () => {
       </Grid>
 
       <Picker
-        title="filter city"
+        title="filter location"
         columns={cityColumns}
         visible={cityPopVisible}
         value={[citySelected]}
