@@ -98,13 +98,6 @@ const Event: React.FC = () => {
   };
   const columnsPhotos = colSize2ColumnsPhotos[colSize];
 
-  // const carouselRef = useRef<Carousel>(null);
-  // useEffect(() => {
-  //   if (carouselRef.current) {
-  //     carouselRef.current.startAutoplay();
-  //   }
-  // }, []);
-
   // page start
   useEffect(() => {
     if (!event) return navigate("/home", { replace: true });
@@ -557,7 +550,7 @@ const Event: React.FC = () => {
             infiniteLoop={true}
             autoFocus={true}
             autoPlay={true}
-            interval={2000}
+            interval={4000}
             showThumbs={false}
             selectedItem={0}
           >
