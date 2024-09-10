@@ -355,25 +355,25 @@ const Event: React.FC = () => {
   ): [string, string] | undefined => {
     const dates: string[] = Object.keys(grapher.available_time);
     const dateIndex = dates.indexOf(date);
-    const times = grapher.available_time[dates[dateIndex]];
+    let times = grapher.available_time[dates[dateIndex]];
     const timeIndex = times.indexOf(time);
-    const targetTimeIndex = action === "prev" ? timeIndex - 1 : timeIndex + 1;
+    let targetTimeIndex = action === "prev" ? timeIndex - 1 : timeIndex + 1;
     if (targetTimeIndex >= 0 && targetTimeIndex < times.length) {
       return [date, times[targetTimeIndex]];
     }
-    // let targetDateIndex = dateIndex;
+    let targetDateIndex = dateIndex;
     // eslint-disable-next-line no-constant-condition
-    // while (true) {
-    //   targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
-    //   if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
-    //     return;
-    //   }
-    //   times = grapher.available_time[dates[targetDateIndex]];
-    //   if (times.length) {
-    //     targetTimeIndex = action === "prev" ? times.length - 1 : 0;
-    //     return [dates[targetDateIndex], times[targetTimeIndex]];
-    //   }
-    // }
+    while (true) {
+      targetDateIndex = action === "prev" ? targetDateIndex - 1 : targetDateIndex + 1;
+      if (targetDateIndex < 0 || targetDateIndex >= dates.length) {
+        return;
+      }
+      times = grapher.available_time[dates[targetDateIndex]];
+      if (times.length) {
+        targetTimeIndex = action === "prev" ? times.length - 1 : 0;
+        return [dates[targetDateIndex], times[targetTimeIndex]];
+      }
+    }
   };
 
   const nextTime = grapher && navGrapherAvailableTime(grapher, currentDateTime, "next");
@@ -447,6 +447,7 @@ const Event: React.FC = () => {
             time: "00",
             minute: "00",
           } as IImage;
+          console.log(divider);
           img = images.concat(divider);
           img = img.concat(dataSorted);
         } else {
@@ -503,6 +504,31 @@ const Event: React.FC = () => {
         </div>
       </div>
     );
+  };
+
+  const formatDateToMD = (dateString: string) => {
+    const year = parseInt(dateString.slice(0, 4), 10);
+    const month = parseInt(dateString.slice(4, 6), 10) - 1; // 月份是从0开始的
+    const day = parseInt(dateString.slice(6, 8), 10);
+
+    const dateFormat = new Date(year, month, day, 0, 0);
+    const monthS = dateFormat.toLocaleString("en", { month: "short" });
+    const dayS = dateFormat.getDate();
+    let suffix: string = "";
+    switch (dayS) {
+      case 1:
+        suffix = "st";
+        break;
+      case 2:
+        suffix = "nd";
+        break;
+      case 3:
+        suffix = "rd";
+        break;
+      default:
+        suffix = "th";
+    }
+    return `${monthS} ${dayS}${suffix}`;
   };
 
   return (
@@ -616,7 +642,7 @@ const Event: React.FC = () => {
             items={images.map((image, index) =>
               image.name == "divider" ? (
                 <Divider>
-                  ⬇️ {image.hour}:{image.minute} ⬇️
+                  ⬇️ {formatDateToMD(image.date)} {image.hour}:{image.minute} ⬇️
                 </Divider>
               ) : (
                 <div>
