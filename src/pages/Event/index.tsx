@@ -103,7 +103,7 @@ const Event: React.FC = () => {
     if (!event) return navigate("/home", { replace: true });
 
     getPhotographers().then((res: CommonResponse<IData[]>) => {
-      const grapherLists = getEventPhotoGrapher(res.data, event);
+      const grapherLists = getEventPhotoGrapher(res.data, event).filter((g) => Object.keys(g.available_time).length);
       const photoGrapherCount_ = getPhotoGrapherCount(res.data, event);
       const photosCount_ = getPhotosCount(res.data, event);
       setPhotoGrapherCount(photoGrapherCount_);
