@@ -113,16 +113,23 @@
       width: 120px;
     }
   }
+}
 
-  .PosterInformation {
-    margin-left: 10px;
+.PosterInformation {
+  margin-left: 10px;
+  b {
+    padding-bottom: 1px;
+    line-height: 16px;
+  }
+  p {
+    font-size: 12px;
+    line-height: 13px;
+  }
+  @media only screen and (max-width: 767px) {
+    font-size: small;
+  }
 
-    @media only screen and (max-width: 767px) {
-      font-size: small;
-    }
-
-    @media only screen and (min-width: 767px) {
-      font-size: large;
-    }
+  @media only screen and (min-width: 767px) {
+    font-size: large;
   }
 }

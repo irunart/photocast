@@ -2,14 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {
-  ClockCircleOutlined,
-  DownOutlined,
-  ShareAltOutlined,
-  SyncOutlined,
-  TeamOutlined,
-  PictureOutlined,
-} from "@ant-design/icons";
+import { ClockCircleOutlined, DownOutlined, ShareAltOutlined, SyncOutlined, TeamOutlined } from "@ant-design/icons";
 // import { Flex, Input, Carousel } from "antd";
 import { Flex, Input, message, QRCode } from "antd";
 import type { MultiImageViewerRef } from "antd-mobile";
@@ -212,12 +205,7 @@ const Event: React.FC = () => {
         Modal.clear();
         Modal.show({
           content: <Image src={base64image} key={base64image} alt="" style={{ width: "100%" }} draggable={true} />,
-          header: (
-            <div>
-              Long press to save image
-              <PictureOutlined />
-            </div>
-          ),
+          header: <div>Long press to save image</div>,
           showCloseButton: true,
           closeOnMaskClick: true,
         });
@@ -231,7 +219,6 @@ const Event: React.FC = () => {
         afterShow: screenshotComplete,
         content: (
           <div ref={ModalContentRef}>
-            <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
             <Grid columns={4} gap={8}>
               <Grid.Item>
                 <div className={styles.PosterQRcode}>
@@ -246,14 +233,12 @@ const Event: React.FC = () => {
               </Grid.Item>
               <Grid.Item span={3}>
                 <div className={styles.PosterInformation}>
-                  Event Name:
-                  {/* <br></br> */}
                   <b>{event}</b>
-                  <br></br>
-                  Scan the QRcode to see more photos
+                  <p>Scan the QRcode to see more photos</p>
                 </div>
               </Grid.Item>
             </Grid>
+            <img src={base64SharePhotos} key={base64SharePhotos} alt="" style={{ width: "100%" }} />
           </div>
         ),
       });
