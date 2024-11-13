@@ -123,7 +123,6 @@ const scrollIntoView = () => {
 
 const Event: React.FC = () => {
   // State management
-  const [isUrlUpdate, setIsUrlUpdate] = useState(false);
   const [isOnLoad, setIsOnload] = useState(false);
   const [eventInfo, setEventInfo] = useState<IEventDetail>();
   const [photographers, setPhotographers] = useState<IPhotographer[]>([]);
@@ -200,10 +199,10 @@ const Event: React.FC = () => {
     try {
       const EventsData = JSON.parse(sessionStorage.getItem("EventsData") as string);
       if (EventsData) {
-        setEventInfo(EventsData[event]);
+        setEventInfo(EventsData[event as string]);
       } else {
         const response = await getEventDetail();
-        setEventInfo(response.data[event]);
+        setEventInfo(response.data[event as string]);
       }
     } catch (error) {
       console.error("Failed to load event info:", error);
@@ -289,12 +288,12 @@ const Event: React.FC = () => {
   const initializeEventData = async () => {
     try {
       const photographersResponse = await getPhotographers();
-      const photographers = getEventPhotoGrapher(photographersResponse.data, event).filter(
+      const photographers = getEventPhotoGrapher(photographersResponse.data, event as string).filter(
         (g) => Object.keys(g.available_time).length
       );
 
-      const photoGrapherCount = getPhotoGrapherCount(photographersResponse.data, event);
-      const photosCount = getPhotosCount(photographersResponse.data, event);
+      const photoGrapherCount = getPhotoGrapherCount(photographersResponse.data, event as string);
+      const photosCount = getPhotosCount(photographersResponse.data, event as string);
       setPhotoGrapherCount(photoGrapherCount);
       setPhotosCount(photosCount);
 
@@ -553,13 +552,13 @@ const Event: React.FC = () => {
       "skip: ",
       skipCount.toString()
     );
-    setIsUrlUpdate(true);
     setSearchParams(
-      {
-        photographer: currentPhotographer.value,
+      (prev) => ({
+        ...Object.fromEntries(prev),
+        photographer: currentPhotographer.value ?? "",
         time: `${selectedDateTime.date}-${selectedDateTime.time}`,
         skip: skipCount.toString(),
-      },
+      }),
       { replace: true }
     );
   };
@@ -771,7 +770,11 @@ const Event: React.FC = () => {
             className={styles.photographers}
           >
             {photographers.map((photographer) => (
-              <CheckList.Item key={photographer.value} value={photographer.value} className={styles.photoGraperItem}>
+              <CheckList.Item
+                key={photographer.value}
+                value={photographer.value ?? ""}
+                className={styles.photoGraperItem}
+              >
                 <Flex align="center">
                   <Image src={photographer.photographer_icon_url} width={40} height={40} fit="cover" />
                   <span className="ml-2">{photographer.label}</span>
