@@ -48,7 +48,6 @@ const Footer: React.FC = () => {
         >
           Loading...
         </iframe>
-        s
       </Modal>
       <hr />
       <div className={styles.footer}>
