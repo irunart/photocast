@@ -86,22 +86,14 @@ const Home = () => {
   };
 
   const filterEvents = (city: string, category: string) => {
-    if (city != "All" && category != "All") {
-      const res = EventDetails.filter((event) => event.city == city && event.category == category);
-      setEventDetailsFiltered(res);
-      setEventCount(res.length);
-    } else if (city != "All" && category == "All") {
-      const res = EventDetails.filter((event) => event.city == city);
-      setEventDetailsFiltered(res);
-      setEventCount(res.length);
-    } else if (city == "All" && category != "All") {
-      const res = EventDetails.filter((event) => event.category == category);
-      setEventDetailsFiltered(res);
-      setEventCount(res.length);
-    } else {
-      setEventDetailsFiltered(EventDetails);
-      setEventCount(EventDetails.length);
-    }
+    const filteredEvents = EventDetails.filter((event) => {
+      const matchesCity = city === "All" || event.city === city;
+      const matchesCategory = category === "All" || event.category === category;
+      return matchesCity && matchesCategory;
+    });
+
+    setEventDetailsFiltered(filteredEvents);
+    setEventCount(filteredEvents.length);
   };
 
   const formatDateToMD = (dateString: string) => {
@@ -198,16 +190,14 @@ const Home = () => {
             <div style={{ border: "1px solid #000000", borderColor: "grey" }}>
               <Card title={<div>{item.event}</div>}>
                 <Image src={item.event_icon_url} style={{ aspectRatio: "4/3" }} fit="cover" />
-                <div style={{ marginLeft: "10px", height: "40px" }}>
+                <div className="flex flex-wrap gap-1 py-1 justify-center">
                   {/* <div>{item.event}</div> */}
                   <Tag color="#4E7684">{item.category}</Tag>
-                  <Tag color="#7F7A65" style={{ marginLeft: "5px" }}>
-                    {item.city}
-                  </Tag>
-                  <Tag color="" fill="outline" style={{ marginLeft: "5px" }}>
-                    {formatDateToMD(item.date_start)}
-                  </Tag>
+                  <Tag color="#7F7A65">{item.city}</Tag>
                 </div>
+                <Tag color="" className="flex justify-center" fill="outline">
+                  {formatDateToMD(item.date_start)}
+                </Tag>
               </Card>
             </div>
           </Grid.Item>

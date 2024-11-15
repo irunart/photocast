@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
+import dayjs from "dayjs";
 import {
   ClockCircleOutlined,
   DownOutlined,
@@ -40,6 +41,8 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import { getEventPhotoGrapher, getPhotoGrapherCount, getPhotosCount, grapherDateToCascadeOptions } from "./common";
 import type { IImage, IPhotographer, IEventDetail } from "./type";
 import styles from "./index.module.scss";
+import { StyleProvider } from "@ant-design/cssinjs";
+import { zIndex } from "html2canvas/dist/types/css/property-descriptors/z-index";
 
 const PHOTOS_MAX_SIZE = 100;
 
@@ -679,7 +682,6 @@ const Event: React.FC = () => {
 
         {/* Photographer Selection */}
         <Divider />
-        <p>current photographer below:</p>
         <div onClick={() => setGrapherPopupVisible(true)}>
           <Input
             prefix={<TeamOutlined />}
@@ -695,7 +697,7 @@ const Event: React.FC = () => {
           <div onClick={() => setDateTimePopVisible(true)} className="flex-1">
             <Input
               prefix={<ClockCircleOutlined />}
-              value={`${selectedDateTime.date}-${selectedDateTime.time}`}
+              value={`${dayjs(selectedDateTime.date).format("YYYY-MM-DD")} ${selectedDateTime.time}:00`}
               placeholder="Select date and time"
               readOnly
               suffix={<DownOutlined />}
@@ -789,7 +791,7 @@ const Event: React.FC = () => {
           title="Select date and time"
           options={grapherDateToCascadeOptions(currentPhotographer)}
           visible={dateTimePopVisible}
-          value={[currentDateTime.date, currentDateTime.time]}
+          value={[selectedDateTime.date, selectedDateTime.time]}
           onClose={() => setDateTimePopVisible(false)}
           mouseWheel
           onConfirm={(val) => {
