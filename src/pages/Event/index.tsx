@@ -41,8 +41,6 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import { getEventPhotoGrapher, getPhotoGrapherCount, getPhotosCount, grapherDateToCascadeOptions } from "./common";
 import type { IImage, IPhotographer, IEventDetail } from "./type";
 import styles from "./index.module.scss";
-import { StyleProvider } from "@ant-design/cssinjs";
-import { zIndex } from "html2canvas/dist/types/css/property-descriptors/z-index";
 
 const PHOTOS_MAX_SIZE = 100;
 
@@ -367,7 +365,7 @@ const Event: React.FC = () => {
 
     try {
       const response = await getPhotoDateHourData(photographer.value, dateTime.date, dateTime.time);
-      let dataSorted = response.data.toSorted(latestFirstPhoto);
+      const dataSorted = response.data.toSorted(latestFirstPhoto);
 
       if (!isImagePush) {
         // Clear existing data when switching to new date/time
