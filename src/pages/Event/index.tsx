@@ -717,6 +717,7 @@ const Event: React.FC = () => {
         <InfiniteScroll
           dataLength={images.length}
           next={throttledNextPhotos}
+          scrollThreshold={0.8}
           hasMore={hasMoreContent(currentPhotographer, currentDateTime)}
           loader={
             <Divider>
