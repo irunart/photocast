@@ -38,6 +38,12 @@ dependencies:
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
+  i18next:
+    specifier: ^24.2.1
+    version: 24.2.1(typescript@5.6.3)
+  i18next-browser-languagedetector:
+    specifier: ^8.0.2
+    version: 8.0.2
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
@@ -50,6 +56,9 @@ dependencies:
   react-dom:
     specifier: ^18.3.1
     version: 18.3.1(react@18.3.1)
+  react-i18next:
+    specifier: ^15.4.0
+    version: 15.4.0(i18next@24.2.1)(react-dom@18.3.1)(react@18.3.1)
   react-infinite-scroll-component:
     specifier: ^6.1.0
     version: 6.1.0(react@18.3.1)
@@ -2288,6 +2297,13 @@ packages:
       "@babel/runtime": 7.26.0
     dev: false
 
+  /html-parse-stringify@3.0.1:
+    resolution:
+      { integrity: sha512-KknJ50kTInJ7qIScF3jeaFRpMpE8/lfiTdzf/twXyPBLAGrLRTmkz3AdTnKeh40X8k9L2fdYwEp/42WGXIRGcg== }
+    dependencies:
+      void-elements: 3.1.0
+    dev: false
+
   /html2canvas@1.4.1:
     resolution:
       { integrity: sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA== }
@@ -2309,6 +2325,26 @@ packages:
     engines: { node: ">=18" }
     hasBin: true
     dev: true
+
+  /i18next-browser-languagedetector@8.0.2:
+    resolution:
+      { integrity: sha512-shBvPmnIyZeD2VU5jVGIOWP7u9qNG3Lj7mpaiPFpbJ3LVfHZJvVzKR4v1Cb91wAOFpNw442N+LGPzHOHsten2g== }
+    dependencies:
+      "@babel/runtime": 7.26.0
+    dev: false
+
+  /i18next@24.2.1(typescript@5.6.3):
+    resolution:
+      { integrity: sha512-Q2wC1TjWcSikn1VAJg13UGIjc+okpFxQTxjVAymOnSA3RpttBQNMPf2ovcgoFVsV4QNxTfNZMAxorXZXsk4fBA== }
+    peerDependencies:
+      typescript: ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      "@babel/runtime": 7.26.0
+      typescript: 5.6.3
+    dev: false
 
   /ignore@5.3.2:
     resolution:
@@ -3549,6 +3585,27 @@ packages:
       { integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ== }
     dev: false
 
+  /react-i18next@15.4.0(i18next@24.2.1)(react-dom@18.3.1)(react@18.3.1):
+    resolution:
+      { integrity: sha512-Py6UkX3zV08RTvL6ZANRoBh9sL/ne6rQq79XlkHEdd82cZr2H9usbWpUNVadJntIZP2pu3M2rL1CN+5rQYfYFw== }
+    peerDependencies:
+      i18next: ">= 23.2.3"
+      react: ">= 16.8.0"
+      react-dom: "*"
+      react-native: "*"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      "@babel/runtime": 7.26.0
+      html-parse-stringify: 3.0.1
+      i18next: 24.2.1(typescript@5.6.3)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
   /react-infinite-scroll-component@6.1.0(react@18.3.1):
     resolution:
       { integrity: sha512-SQu5nCqy8DxQWpnUVLx7V7b7LcA37aM7tvoWjTLZp1dk6EJibM5/4EJKzOnl07/BsM1Y40sKLuqjCwwH/xV0TQ== }
@@ -3988,7 +4045,6 @@ packages:
       { integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw== }
     engines: { node: ">=14.17" }
     hasBin: true
-    dev: true
 
   /undici-types@6.19.8:
     resolution:
@@ -4081,6 +4137,12 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /void-elements@3.1.0:
+    resolution:
+      { integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w== }
+    engines: { node: ">=0.10.0" }
+    dev: false
 
   /which@2.0.2:
     resolution:

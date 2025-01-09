@@ -1,10 +1,12 @@
 import { message } from "antd";
 import axios from "axios";
+import i18n from "@/i18n";
 
 const baseUrl = "https://storage.googleapis.com/photocast/config/";
 
 const instance = axios.create({
   baseURL: baseUrl,
+  timeout: 10000,
 });
 
 instance.interceptors.request.use(
@@ -23,9 +25,9 @@ instance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      message.error("登录失效，请重新登录");
+      message.error(i18n.t("errors.login_expired"));
     } else {
-      message.error("服务器错误，请检查服务器");
+      message.error(i18n.t("errors.server_error"));
     }
     if (error.response) Promise.reject(error);
   }

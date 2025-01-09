@@ -1,0 +1,49 @@
+{
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "loading": "Loading...",
+    "no_more": "No more photos",
+    "auto_refresh": "Auto Refresh",
+    "filter": {
+      "city": "City Filter",
+      "category": "Category Filter",
+      "location": "filter location",
+      "category_placeholder": "filter category"
+    },
+    "results_count": "There are {{count}} results"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "settings": "Settings"
+  },
+  "photo": {
+    "upload": "Upload Photo",
+    "delete": "Delete Photo",
+    "view": "View Photo",
+    "edit": "Edit Photo",
+    "share": "Share Photo"
+  },
+  "event": {
+    "info": "Event Information",
+    "name": "Event Name",
+    "city": "City",
+    "category": "Category",
+    "website": "Website",
+    "stats": "{{photoGrapherCount}} photographers, {{photosCount}} photos",
+    "featured": "Featured Image",
+    "select_photographer": "Select a photographer",
+    "select_datetime": "Select date and time"
+  },
+  "errors": {
+    "request": "Request error: {{message}}",
+    "server_error": "Server error, please check the server",
+    "login_expired": "Login expired, please login again"
+  },
+  "statement": "Photocast is a platform for runners to share photos. Photocase might add, revmove or update the pictures from time to time. The photos are uploaded by peer runners directly and the platform does not verify copyright ownership. If you want to remove some photos from the platform, please contact us:"
+}

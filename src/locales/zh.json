@@ -1,0 +1,49 @@
+{
+  "common": {
+    "submit": "提交",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "save": "保存",
+    "loading": "加载中...",
+    "no_more": "没有更多照片了",
+    "auto_refresh": "自动刷新",
+    "filter": {
+      "city": "城市筛选",
+      "category": "类别筛选",
+      "location": "筛选地点",
+      "category_placeholder": "筛选类别"
+    },
+    "results_count": "共有 {{count}} 个结果"
+  },
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "settings": "设置"
+  },
+  "photo": {
+    "upload": "上传照片",
+    "delete": "删除照片",
+    "view": "查看照片",
+    "edit": "编辑照片",
+    "share": "分享照片"
+  },
+  "event": {
+    "info": "赛事信息",
+    "name": "赛事名称",
+    "city": "城市",
+    "category": "类别",
+    "website": "网站",
+    "stats": "{{photoGrapherCount}} 位摄影师, {{photosCount}} 张照片",
+    "featured": "精选图片",
+    "select_photographer": "选择摄影师",
+    "select_datetime": "选择日期和时间"
+  },
+  "errors": {
+    "request": "请求错误: {{message}}",
+    "server_error": "服务器错误，请检查服务器",
+    "login_expired": "登录失效，请重新登录"
+  },
+  "statement": "本網頁僅為跑者分享圖片內容提供網路平台與儲存空間，所分享之圖片將不時進行增減或更新。影像由同爲跑者的攝影師上傳，平臺不負責驗證版權。 如希望從本網頁移除部分照片，請與我們聯絡: "
+}

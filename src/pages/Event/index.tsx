@@ -41,6 +41,7 @@ import ResponsiveImage from "@/components/ResponsiveImage";
 import { getEventPhotoGrapher, getPhotoGrapherCount, getPhotosCount, grapherDateToCascadeOptions } from "./common";
 import type { IImage, IPhotographer, IEventDetail } from "./type";
 import styles from "./index.module.scss";
+import { useTranslation } from "react-i18next";
 
 const PHOTOS_MAX_SIZE = 100;
 
@@ -123,6 +124,7 @@ const scrollIntoView = () => {
 };
 
 const Event: React.FC = () => {
+  const { t } = useTranslation();
   // State management
   const [isOnLoad, setIsOnload] = useState(false);
   const [eventInfo, setEventInfo] = useState<IEventDetail>();
@@ -634,40 +636,38 @@ const Event: React.FC = () => {
         {contextHolder}
 
         {/* Event Information */}
-        <List header="Event Information" className={styles.InformationContainer}>
+        <List header={t("event.info")} className={styles.InformationContainer}>
           <List.Item>
             <span className="w-20 inline-block">
-              <b>name</b>
+              <b>{t("event.name")}</b>
             </span>
             <span>{eventInfo?.event}</span>
           </List.Item>
           <List.Item>
             <span className="w-20 inline-block">
-              <b>city</b>
+              <b>{t("event.city")}</b>
             </span>
             <span>{eventInfo?.city}</span>
           </List.Item>
           <List.Item>
             <span className="w-20 inline-block">
-              <b>category</b>
+              <b>{t("event.category")}</b>
             </span>
             <span>{eventInfo?.category}</span>
           </List.Item>
           <List.Item>
             <span className="w-20 inline-block">
-              <b>website</b>
+              <b>{t("event.website")}</b>
             </span>
             <a href={eventInfo?.website}>{eventInfo?.website}</a>
           </List.Item>
           <List.Item>
-            <span>
-              {photoGrapherCount} photographers, {photosCount} photos
-            </span>
+            <span>{t("event.stats", { photoGrapherCount, photosCount })}</span>
           </List.Item>
         </List>
 
         {/* Featured Images Carousel */}
-        <Divider>Featured Images</Divider>
+        <Divider>{t("event.featured")}</Divider>
         <div className={styles.carouselWrapper}>
           <Carousel infiniteLoop autoFocus autoPlay interval={4000} showThumbs={false}>
             {topImages.map((image, index) => (
@@ -684,7 +684,7 @@ const Event: React.FC = () => {
           <Input
             prefix={<TeamOutlined />}
             value={currentPhotographer?.label}
-            placeholder="Select a photographer"
+            placeholder={t("event.select_photographer")}
             readOnly
             suffix={<DownOutlined />}
           />
@@ -696,7 +696,7 @@ const Event: React.FC = () => {
             <Input
               prefix={<ClockCircleOutlined />}
               value={`${dayjs(selectedDateTime.date).format("YYYY-MM-DD")} ${selectedDateTime.time}:00`}
-              placeholder="Select date and time"
+              placeholder={t("event.select_datetime")}
               readOnly
               suffix={<DownOutlined />}
             />
@@ -708,7 +708,7 @@ const Event: React.FC = () => {
             onClick={() => setAutoRefresh(!autoRefresh)}
           >
             <SyncOutlined spin={autoRefresh} className="mr-1" />
-            Auto Refresh
+            {t("common.auto_refresh")}
           </Button>
         </div>
 
@@ -721,11 +721,11 @@ const Event: React.FC = () => {
           hasMore={hasMoreContent(currentPhotographer, currentDateTime)}
           loader={
             <Divider>
-              Loading
+              {t("common.loading")}
               <DotLoading />
             </Divider>
           }
-          endMessage={<Divider>No more photos</Divider>}
+          endMessage={<Divider>{t("common.no_more")}</Divider>}
         >
           <Masonry
             column={columnsPhotos}
@@ -763,7 +763,6 @@ const Event: React.FC = () => {
           />
         </InfiniteScroll>
 
-        {/* Popups and Modals */}
         <Popup visible={grapherPopupVisible} onMaskClick={() => setGrapherPopupVisible(false)} destroyOnClose>
           <CheckList
             defaultValue={currentPhotographer?.value ? [currentPhotographer.value] : []}
@@ -785,9 +784,8 @@ const Event: React.FC = () => {
           </CheckList>
         </Popup>
 
-        {/* DateTime Picker */}
         <CascadePicker
-          title="Select date and time"
+          title={t("event.select_datetime")}
           options={grapherDateToCascadeOptions(currentPhotographer)}
           visible={dateTimePopVisible}
           value={[selectedDateTime.date, selectedDateTime.time]}

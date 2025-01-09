@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as _ from "lodash-es";
 import { Grid, Card, Image, Picker, Tag, Divider } from "antd-mobile";
 import { Input } from "antd";
+import { useTranslation } from "react-i18next";
 
 import { BankOutlined, DownOutlined, MenuOutlined } from "@ant-design/icons";
 
@@ -13,6 +14,7 @@ import type { IEventLists, IEventDetail } from "./type";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // let EventDetails:IEventDetail[]=[];
 
@@ -126,17 +128,17 @@ const Home = () => {
     <>
       <Grid columns={2} gap={8}>
         <Grid.Item>
-          <div>City Filter</div>
+          <div>{t("common.filter.city")}</div>
         </Grid.Item>
         <Grid.Item>
-          <div>Category Filter</div>
+          <div>{t("common.filter.category")}</div>
         </Grid.Item>
         <Grid.Item>
           <div onClick={() => setCityPopVisible(true)} style={{ flex: 1 }}>
             <Input
               prefix={<BankOutlined />}
               value={citySelected}
-              placeholder="filter location"
+              placeholder={t("common.filter.location")}
               readOnly
               suffix={<DownOutlined />}
             />
@@ -148,7 +150,7 @@ const Home = () => {
             <Input
               prefix={<MenuOutlined />}
               value={categorySelected}
-              placeholder="filter category"
+              placeholder={t("common.filter.category_placeholder")}
               readOnly
               suffix={<DownOutlined />}
             />
@@ -157,7 +159,7 @@ const Home = () => {
       </Grid>
 
       <Picker
-        title="filter location"
+        title={t("common.filter.location")}
         columns={cityColumns}
         visible={cityPopVisible}
         value={[citySelected]}
@@ -170,7 +172,7 @@ const Home = () => {
         }}
       />
       <Picker
-        title="filter category"
+        title={t("common.filter.category_placeholder")}
         columns={categoryColumns}
         visible={categoryPopVisible}
         value={[citySelected]}
@@ -183,7 +185,7 @@ const Home = () => {
         }}
       />
 
-      <Divider>There are {eventCount} results</Divider>
+      <Divider>{t("common.results_count", { count: eventCount })}</Divider>
       <Grid columns={columnsEvent} gap={8}>
         {eventDetailsFiltered.map((item) => (
           <Grid.Item onClick={() => goEventDetail(item.event)} key={item.event}>
