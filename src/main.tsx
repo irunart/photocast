@@ -11,8 +11,8 @@ import zhTW from "antd/locale/zh_TW";
 
 import NiceModal from "@ebay/nice-modal-react";
 import dayjs from "dayjs";
-import weekday from "dayjs/plugin/weekday";
-import localeData from "dayjs/plugin/localeData";
+// import weekday from "dayjs/plugin/weekday";
+// import localeData from "dayjs/plugin/localeData";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import "dayjs/locale/zh-cn";
 import toObject from "dayjs/plugin/toObject";
