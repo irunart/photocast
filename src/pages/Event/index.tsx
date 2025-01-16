@@ -344,8 +344,11 @@ const Event: React.FC = () => {
         initialDateTime.date,
         initialDateTime.time
       );
+
+      const sortLatestData = [...topImagesResponse.data];
+      sortLatestData.sort(latestFirstPhoto);
       // live sort last first
-      setTopImages(topImagesResponse.data.sort(latestFirstPhoto).slice(0, 10));
+      setTopImages(sortLatestData.slice(0, 10));
 
       // Load initial photos
       await loadPhotos(selectedPhotographer, initialDateTime, topImagesResponse.data);
