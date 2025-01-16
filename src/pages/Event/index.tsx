@@ -344,7 +344,8 @@ const Event: React.FC = () => {
         initialDateTime.date,
         initialDateTime.time
       );
-      setTopImages(topImagesResponse.data.slice(0, 10));
+      // live sort last first
+      setTopImages(topImagesResponse.data.sort(latestFirstPhoto).slice(0, 10));
 
       // Load initial photos
       await loadPhotos(selectedPhotographer, initialDateTime, topImagesResponse.data);
@@ -441,7 +442,7 @@ const Event: React.FC = () => {
     setImagesRemain([]);
     setSkipCount(0);
 
-    await loadPhotos(selectedPhotographer, newDateTime);
+    await loadPhotos(selectedPhotographer, newDateTime, []);
   };
 
   // Screenshot and QR code handling
@@ -502,7 +503,7 @@ const Event: React.FC = () => {
 
     const curDTString = currentDateTime.date + "-" + currentDateTime.time;
     if (curDTString !== searchParams.get("time")) {
-      loadPhotos(currentPhotographer, currentDateTime);
+      loadPhotos(currentPhotographer, currentDateTime, []);
     }
   }, [currentDateTime, currentPhotographer]);
 
