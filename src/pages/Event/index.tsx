@@ -169,10 +169,9 @@ const Event: React.FC = () => {
     console.log("event init:", searchParams.get("time"), searchParams.get("photographer"));
 
     const init = async () => {
+      setIsOnload(true);
       try {
         await initializeEventData();
-        setIsOnload(true);
-
         if (fromSource !== "home") {
           setTimeout(scrollIntoView, 2500);
         }
@@ -180,6 +179,7 @@ const Event: React.FC = () => {
         console.error("Initialization error:", error);
         messageApi.error("Failed to initialize");
       }
+      setIsOnload(false);
     };
 
     init();
@@ -308,8 +308,6 @@ const Event: React.FC = () => {
       const photoGrapherFromSearch = _.find(photographers, ["value", searchParams.get("photographer")]);
       const selectedPhotographer = photoGrapherFromSearch || photographers[0];
 
-      setIsOnload(true);
-
       if (_.isNull(photoGrapherFromSearch)) {
         setFromSource("home");
       }
@@ -349,7 +347,7 @@ const Event: React.FC = () => {
       setTopImages(topImagesResponse.data.slice(0, 10));
 
       // Load initial photos
-      await loadPhotos(selectedPhotographer, initialDateTime);
+      await loadPhotos(selectedPhotographer, initialDateTime, topImagesResponse.data);
 
       // Load event info
       await loadEventInfo();
@@ -362,12 +360,17 @@ const Event: React.FC = () => {
     }
   };
 
-  const loadPhotos = async (photographer: IPhotographer, dateTime: TimeNavigation) => {
+  const loadPhotos = async (photographer: IPhotographer, dateTime: TimeNavigation, topImages: IImage[]) => {
     if (!photographer?.value) return;
 
     try {
-      const response = await getPhotoDateHourData(photographer.value, dateTime.date, dateTime.time);
-      const dataSorted = response.data.toSorted(latestFirstPhoto);
+      let dataSorted: IImage[] = [];
+      if (topImages && topImages.length > 0) {
+        dataSorted = topImages;
+      } else {
+        const response = await getPhotoDateHourData(photographer.value, dateTime.date, dateTime.time);
+        dataSorted = response.data;
+      }
 
       if (!isImagePush) {
         // Clear existing data when switching to new date/time
