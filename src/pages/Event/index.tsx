@@ -18,6 +18,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import html2canvas from "html2canvas";
 import * as _ from "lodash-es";
+import debounce from "lodash/debounce";
 
 import {
   Button,
@@ -283,7 +284,6 @@ const Event: React.FC = () => {
 
     const divider = createDividerImage(currentDateTime);
     setImages((prev) => [...prev, divider, ...newImages]);
-    updateUrlParams();
   };
 
   const initializeEventData = async () => {
@@ -382,10 +382,6 @@ const Event: React.FC = () => {
           handleLargePhotoSet(dataSorted);
         } else {
           setImages(autoRefresh ? dataSorted.reverse() : dataSorted);
-        }
-        // Only update URL when loading selected time
-        if (dateTime.date === selectedDateTime.date && dateTime.time === selectedDateTime.time) {
-          updateUrlParams();
         }
       } else {
         if (dataSorted.length > 0) {
@@ -508,6 +504,7 @@ const Event: React.FC = () => {
     if (curDTString !== searchParams.get("time")) {
       loadPhotos(currentPhotographer, currentDateTime, []);
     }
+    updateUrlParams();
   }, [currentDateTime, currentPhotographer]);
 
   // UI Actions
@@ -551,27 +548,140 @@ const Event: React.FC = () => {
     }
   };
 
+  const getCurrentVisibleImageTime = () => {
+    // 获取所有图片元素
+    const imageElements = document.querySelectorAll("[data-image-time]");
+    if (!imageElements.length) return null;
+
+    // 获取视窗高度
+    const viewportHeight = window.innerHeight;
+    const threshold = viewportHeight / 3; // 1/3 视窗高度作为阈值
+
+    let currentVisibleTime = null;
+    let nextVisibleTime = null;
+
+    // 遍历所有图片元素
+    for (const element of imageElements) {
+      const rect = element.getBoundingClientRect();
+
+      // 如果元素在视窗内
+      if (rect.top >= -rect.height && rect.bottom <= viewportHeight + rect.height) {
+        const dateTime = element.getAttribute("data-image-time");
+        if (dateTime) {
+          const [date, time] = dateTime.split("-");
+
+          // 如果是第一个可见的时间，记录为当前时间
+          if (!currentVisibleTime) {
+            currentVisibleTime = { date, time };
+          }
+          // 如果已经有当前时间，且这是不同的时间，记录为下一个时间
+          else if (dateTime !== `${currentVisibleTime.date}-${currentVisibleTime.time}`) {
+            nextVisibleTime = { date, time };
+            break;
+          }
+        }
+      }
+    }
+
+    // 如果有下一个时间，计算这个时间段的图片在视窗中的占比
+    if (nextVisibleTime && currentVisibleTime) {
+      const nextTimeElements = document.querySelectorAll(
+        `[data-image-time="${nextVisibleTime.date}-${nextVisibleTime.time}"]`
+      );
+
+      let visibleHeight = 0;
+      nextTimeElements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        // 只计算在视窗内的部分高度
+        if (rect.top < viewportHeight && rect.bottom > 0) {
+          const visibleTop = Math.max(0, rect.top);
+          const visibleBottom = Math.min(viewportHeight, rect.bottom);
+          visibleHeight += visibleBottom - visibleTop;
+        }
+      });
+
+      // 如果下一个时间段的图片占据视窗超过 1/3，就切换到下一个时间
+      if (visibleHeight >= threshold) {
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            "切换到下一个时间:",
+            `${nextVisibleTime.date}-${nextVisibleTime.time}`,
+            "可见高度比例:",
+            Math.round((visibleHeight / viewportHeight) * 100) + "%"
+          );
+        }
+        return nextVisibleTime;
+      } else if (process.env.NODE_ENV === "development") {
+        console.log(
+          "保持当前时间:",
+          `${currentVisibleTime.date}-${currentVisibleTime.time}`,
+          "下一时间可见高度比例:",
+          Math.round((visibleHeight / viewportHeight) * 100) + "%"
+        );
+      }
+    }
+
+    return currentVisibleTime;
+  };
+
   const updateUrlParams = () => {
     if (!currentPhotographer) return;
-    console.log(
-      "updateUrlParams:",
-      " photographer:",
-      currentPhotographer.value,
-      "time:",
-      `${selectedDateTime.date}-${selectedDateTime.time}`,
-      "skip: ",
-      skipCount.toString()
-    );
-    setSearchParams(
-      (prev) => ({
-        ...Object.fromEntries(prev),
-        photographer: currentPhotographer.value ?? "",
-        time: `${selectedDateTime.date}-${selectedDateTime.time}`,
-        skip: skipCount.toString(),
-      }),
-      { replace: true }
-    );
+
+    // 尝试获取当前可见图片的时间
+    const visibleImageTime = getCurrentVisibleImageTime();
+    const timeToUse = visibleImageTime || currentDateTime;
+
+    // 获取当前 URL 参数
+    const currentParams = Object.fromEntries(searchParams);
+    const newParams = {
+      photographer: currentPhotographer.value ?? "",
+      time: `${timeToUse.date}-${timeToUse.time}`,
+      skip: skipCount.toString(),
+    };
+
+    // 检查参数是否有变化
+    const hasChanged = Object.entries(newParams).some(([key, value]) => currentParams[key] !== value);
+
+    // 只有在参数发生变化时才更新 URL
+    if (hasChanged) {
+      console.log(
+        "updateUrlParams:",
+        " photographer:",
+        newParams.photographer,
+        "time:",
+        newParams.time,
+        "skip: ",
+        newParams.skip
+      );
+
+      setSearchParams(
+        (prev) => ({
+          ...Object.fromEntries(prev),
+          ...newParams,
+        }),
+        { replace: true }
+      );
+    }
   };
+
+  const debouncedUpdateUrlParams = useCallback(
+    debounce(() => {
+      updateUrlParams();
+    }, 500),
+    [updateUrlParams]
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      debouncedUpdateUrlParams();
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      debouncedUpdateUrlParams.cancel();
+    };
+  }, [debouncedUpdateUrlParams]);
 
   const handleImageSelect = (imageName: string) => {
     setShoppingValue((prev) =>
@@ -744,14 +854,14 @@ const Event: React.FC = () => {
                   ⬇️ {formatDateToMD(image.date)} {image.hour}:{image.minute} ⬇️
                 </Divider>
               ) : (
-                <div key={image.name} className="relative">
+                <div key={image.name} className="relative" data-image-time={`${image.date}-${image.hour}`}>
                   <div
                     onClick={() => {
                       setImagePopVisible(true);
                       imageViewerRefs.current?.swipeTo(index);
                     }}
                   >
-                    <span className="absolute right-0 m-2">
+                    <span className="absolute right-2 top-2 z-10">
                       <Checkbox
                         onClick={(e) => {
                           e.stopPropagation();
