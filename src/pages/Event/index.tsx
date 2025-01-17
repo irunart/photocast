@@ -169,7 +169,6 @@ const Event: React.FC = () => {
     console.log("event init:", searchParams.get("time"), searchParams.get("photographer"));
 
     const init = async () => {
-      setIsOnload(true);
       try {
         await initializeEventData();
         if (fromSource !== "home") {
@@ -179,7 +178,6 @@ const Event: React.FC = () => {
         console.error("Initialization error:", error);
         messageApi.error("Failed to initialize");
       }
-      setIsOnload(false);
     };
 
     init();
@@ -250,7 +248,7 @@ const Event: React.FC = () => {
   };
 
   const throttledNextPhotos = _.throttle(() => {
-    if (!isOnLoad || !currentPhotographer) return;
+    if (isOnLoad || !currentPhotographer) return;
 
     setIsImagePush(true);
     if (imagesRemain.length === 0) {
@@ -366,7 +364,7 @@ const Event: React.FC = () => {
 
   const loadPhotos = async (photographer: IPhotographer, dateTime: TimeNavigation, topImages: IImage[]) => {
     if (!photographer?.value) return;
-
+    setIsOnload(true);
     try {
       let dataSorted: IImage[] = [];
       if (topImages && topImages.length > 0) {
@@ -399,6 +397,8 @@ const Event: React.FC = () => {
     } catch (error) {
       console.error("Failed to load photos:", error);
       messageApi.error("Failed to load photos");
+    } finally {
+      setIsOnload(false);
     }
   };
 
