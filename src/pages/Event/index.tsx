@@ -231,6 +231,7 @@ const Event: React.FC = () => {
 
     const latestTime = getPhotographerAvailableTime(currentPhotographer);
     setCurrentDateTime(latestTime);
+    setSelectedDateTime(latestTime);
   }, [currentPhotographer]);
 
   const getPhotographerAvailableTime = (photographer: IPhotographer, date?: string, time?: string): TimeNavigation => {
@@ -434,6 +435,7 @@ const Event: React.FC = () => {
 
     const newDateTime = getPhotographerAvailableTime(selectedPhotographer);
     setCurrentDateTime(newDateTime);
+    setSelectedDateTime(newDateTime);
     setGrapherPopupVisible(false);
 
     // Clear existing images before loading new ones
