@@ -126,6 +126,8 @@ const scrollIntoView = () => {
 const Event: React.FC = () => {
   const { t } = useTranslation();
   // State management
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const [isOnLoad, setIsOnload] = useState(false);
   const [eventInfo, setEventInfo] = useState<IEventDetail>();
   const [photographers, setPhotographers] = useState<IPhotographer[]>([]);
@@ -317,7 +319,6 @@ const Event: React.FC = () => {
 
       setPhotographers(photographers);
       setCurrentPhotographer(selectedPhotographer);
-      setSkipCount(parseInt(searchParams.get("skip") || "0"));
 
       // Initialize with latest available time
       let initialDateTime = getPhotographerAvailableTime(selectedPhotographer);
@@ -331,7 +332,6 @@ const Event: React.FC = () => {
           }
         }
       }
-
       // Set both selected and current datetime
       setSelectedDateTime(initialDateTime);
       setCurrentDateTime(initialDateTime);
@@ -356,11 +356,23 @@ const Event: React.FC = () => {
 
       // Load shopping data
       loadShoppingData();
+      setIsInitialized(true);
     } catch (error) {
       console.error("Failed to initialize event data:", error);
       messageApi.error("Failed to load event data");
     }
   };
+
+  useEffect(() => {
+    const skip = parseInt(searchParams.get("skip") || "0");
+    setSkipCount(skip);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      initializeEventData();
+    }
+  }, [skipCount]);
 
   const loadPhotos = async (photographer: IPhotographer, dateTime: TimeNavigation, topImages: IImage[]) => {
     if (!photographer?.value) return;
