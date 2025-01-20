@@ -367,7 +367,6 @@ const Event: React.FC = () => {
     if (!isOnLoad) {
       return 0;
     }
-
     setIsImagePush(true);
     if (imagesRemain.length == 0) {
       navTime(nextTime as [string, string]);
