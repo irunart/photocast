@@ -193,10 +193,8 @@ const Event: React.FC = () => {
   }, [fromSource]);
 
   useEffect(() => {
-    if (isOnLoad) {
-      localStorage.setItem("ShoppingData", JSON.stringify(shoppingValue));
-    }
-  }, [shoppingValue, isOnLoad]);
+    localStorage.setItem("ShoppingData", JSON.stringify(shoppingValue));
+  }, [shoppingValue]);
 
   // Helper functions for loading data
   const loadEventInfo = async () => {
