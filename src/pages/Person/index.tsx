@@ -26,7 +26,7 @@ const Person: React.FC = () => {
     }
 
     setImages(img);
-  });
+  }, []);
   useEffect(() => {
     // const names = searchParams.get("names")?.split(",");
     // const img = names?.map(
